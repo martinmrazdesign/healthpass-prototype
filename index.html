@@ -147,8 +147,25 @@
       showSplashThenPin();
     };
 
+    function showPinScreenOnly() {
+      var pinScreen = document.getElementById('hp-pin-screen');
+      document.getElementById('hp-splash-screen').style.display = 'none';
+      pinScreen.style.display = 'block';
+      pinScreen.style.opacity = '1';
+      pinScreen.style.pointerEvents = 'auto';
+      document.getElementById('hp-pin-content').classList.add('is-visible');
+      initPinKeypad();
+    }
+
+    // A link opened straight into a live demo (e.g. a QR code someone scans)
+    // should land on the PIN screen immediately — skip the splash the one
+    // time it'd just be friction, via ?skip=1.
+    var skipSplashOnLoad = new URLSearchParams(location.search).has('skip');
+
     if (sessionStorage.getItem('hp_unlocked') === '1') {
       window.hpUnlock();
+    } else if (skipSplashOnLoad) {
+      showPinScreenOnly();
     } else {
       showSplashThenPin();
     }
