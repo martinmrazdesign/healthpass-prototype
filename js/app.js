@@ -1,6 +1,12 @@
 /* HealthPass clickable prototype — single-page app, hash-routed, fully client-side.
    Every screen is rendered from js/data.js. There is no server and no network call. */
 
+/* iOS Safari only honors :active on <a>/<div> if *something* in the document
+   is listening for touch events — otherwise it skips straight past it, no
+   flash at all. This listener does nothing; its only job is to turn :active
+   on. (Buttons don't need this — :active already works on form controls.) */
+document.addEventListener('touchstart', function () {}, { passive: true });
+
 const APP_NAME = 'healthpass';
 const LOGO = 'svg/logo-healthpass.svg';
 
@@ -474,7 +480,7 @@ window.openQrModal = function (title, data, icon) {
       cornersSquareOptions: { color: '#0a3922', type: 'extra-rounded' },
       cornersDotOptions: { color: '#0a3922', type: 'dot' },
       backgroundOptions: { color: '#ffffff' },
-      image: icon || 'svg/logo-healthpass.svg?v=10',
+      image: icon || 'svg/logo-healthpass.svg?v=11',
       imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
     }).append(container);
   } catch (e) {
@@ -605,7 +611,6 @@ function renderLabResultsDetail(id) {
 
 function renderAllergiesList() {
   const rows = ALLERGIES.map((a) => cardRow({
-    icon: CATEGORIES.allergies.icon,
     title: a.substance,
     subtitle: a.type,
     trailing: statusBadge(a.criticality === 'High' ? 'highRisk' : 'mediumRisk'),
