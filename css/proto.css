@@ -26,6 +26,10 @@
     --purple-darkest:  var(--lavender-darkest);
 }
 
+/* Kills the gray/blue flash mobile browsers draw on any tap target (links,
+   rows, buttons) by default — this app has its own :active states where it
+   wants them, so the browser's own highlight is just visual noise. */
+* { -webkit-tap-highlight-color: transparent; }
 html, body { margin: 0; padding: 0; }
 body {
     /* Figma specifies "SF Pro Display" for every text style in this file.
@@ -45,6 +49,14 @@ button {
     appearance: none;
     -webkit-tap-highlight-color: transparent;
 }
+
+/* Replaces the disabled native tap flash with an intentional one. Links get
+   a flat gray fill — their rounding comes for free from the row/card's own
+   overflow:hidden, so this only needs a color, not its own border-radius.
+   Buttons already carry their own shape/color, so a brightness dip reads as
+   "pressed" without fighting whatever background they already have. */
+a:active { background-color: var(--gray-lightest); }
+button:active { filter: brightness(0.93); }
 
 #hp-app { min-height: 100vh; max-width: 412px; margin: 0 auto; }
 

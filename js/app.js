@@ -8,7 +8,6 @@ const CATEGORIES = {
   vitals:        { label: 'Vitals',        accent: 'var(--vitals-accent)',        surface: 'var(--vitals-surface)',        lightest: 'var(--vitals-base)',        icon: 'svg/hp-vitals-light.svg',        iconDark: 'svg/hp-vitals-dark.svg' },
   prescription:  { label: 'Medications',   accent: 'var(--medications-accent)',   surface: 'var(--medications-surface)',   lightest: 'var(--medications-base)',   icon: 'svg/hp-medications-light.svg',   iconDark: 'svg/hp-medications-dark.svg' },
   labresults:    { label: 'Test Results',  accent: 'var(--test-results-accent)',  surface: 'var(--test-results-surface)',  lightest: 'var(--test-results-base)',  icon: 'svg/hp-lab-results-light.svg',   iconDark: 'svg/hp-lab-results-dark.svg' },
-  conditions:    { label: 'Conditions',    accent: 'var(--conditions-accent)',    surface: 'var(--conditions-surface)',    lightest: 'var(--conditions-base)',    icon: 'svg/hp-conditions-light.svg',    iconDark: 'svg/hp-conditions-dark.svg' },
   visits:        { label: 'Visits',        accent: 'var(--visits-accent)',        surface: 'var(--visits-surface)',        lightest: 'var(--visits-base)',        icon: 'svg/hp-visits-light.svg',        iconDark: 'svg/hp-visits-dark.svg' },
   allergies:     { label: 'Allergies',     accent: 'var(--allergies-accent)',     surface: 'var(--allergies-surface)',     lightest: 'var(--allergies-base)',     icon: 'svg/hp-allergies-light.svg',     iconDark: 'svg/hp-allergies-dark.svg' },
   immunizations: { label: 'Vaccinations',  accent: 'var(--vaccinations-accent)',  surface: 'var(--vaccinations-surface)',  lightest: 'var(--vaccinations-base)',  icon: 'svg/hp-vaccinations-light.svg',  iconDark: 'svg/hp-vaccinations-dark.svg' },
@@ -344,7 +343,6 @@ function renderHome() {
         <div style="background:var(--app-surface);border-radius:24px;overflow:hidden;padding:8px 0;">
           ${healthRow('#/labresults', CATEGORIES.labresults.icon, 'Test Results', 8)}
           ${healthRow('#/vitals', CATEGORIES.vitals.icon, 'Vitals', 0)}
-          ${healthRow('#/conditions', CATEGORIES.conditions.icon, 'Conditions', 0)}
           ${healthRow('#/prescription', CATEGORIES.prescription.icon, 'Medications', 0)}
           ${healthRow('#/immunizations', CATEGORIES.immunizations.icon, 'Vaccinations', 0)}
           ${healthRow('#/visits', CATEGORIES.visits.icon, 'Visits', 2)}
@@ -476,7 +474,7 @@ window.openQrModal = function (title, data, icon) {
       cornersSquareOptions: { color: '#0a3922', type: 'extra-rounded' },
       cornersDotOptions: { color: '#0a3922', type: 'dot' },
       backgroundOptions: { color: '#ffffff' },
-      image: icon || 'svg/logo-healthpass.svg?v=8',
+      image: icon || 'svg/logo-healthpass.svg?v=9',
       imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
     }).append(container);
   } catch (e) {
@@ -501,7 +499,6 @@ function renderVitalsList() {
   const rows = VITALS.map((v) => `
     <a href="#/vitals/${v.id}" style="text-decoration:none;color:inherit;display:block;">
       <div style="display:flex;align-items:center;gap:12px;">
-        <img src="${CATEGORIES.vitals.icon}" width="48" height="48" alt="" style="flex-shrink:0;">
         <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;">
           <div class="text regular" style="color:var(--gray-darkest);">${esc(v.name)}</div>
           <div class="header" style="font-size:24px;line-height:1;color:var(--app-text);">${esc(v.value)}</div>
@@ -538,7 +535,6 @@ function renderPrescriptionList() {
   const rows = MEDICATIONS.map((m) => `
     <a href="#/prescription/${m.id}" style="text-decoration:none;color:inherit;display:block;">
       ${cardRow({
-        icon: CATEGORIES.prescription.icon,
         title: m.name,
         subtitle: m.dosage,
         date: m.authoredDate,
@@ -568,14 +564,16 @@ function renderPrescriptionDetail(id) {
 }
 
 function renderLabResultsList() {
-  const rows = LAB_RESULTS.map((r) => `
+  const rows = LAB_RESULTS.map((r) => {
+    const inProgress = r.status !== 'Final';
+    return `
     <a href="#/labresults/${r.id}" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px;">
       <div style="flex:1;min-width:0;">
         <div class="title" style="color:var(--app-text);">${esc(r.name)}</div>
       </div>
-      ${statusBadge(r.status === 'Final' ? 'done' : 'inProgress')}
-      ${chevronButton()}
-    </a>`);
+      ${inProgress ? statusBadge('inProgress') : chevronButton()}
+    </a>`;
+  });
   return listPage({ category: 'labresults', title: 'Test Results', backUrl: '#/home', rows });
 }
 
@@ -605,24 +603,11 @@ function renderLabResultsDetail(id) {
   });
 }
 
-function renderConditionsList() {
-  const rows = CONDITIONS.map((c) => `
-    <div style="display:flex;align-items:center;gap:12px;">
-      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;">
-        <div class="title" style="color:var(--app-text);">${esc(c.name)}</div>
-        ${c.severity ? `<div class="text bold" style="color:var(--gray-darkest);">Severity: ${esc(c.severity)}</div>` : ''}
-        <div class="text regular" style="color:var(--gray-dark);">${esc(c.recordedDate)}</div>
-      </div>
-      ${statusBadge(c.status === 'Active' ? 'inProgress' : 'done')}
-    </div>`);
-  return listPage({ category: 'conditions', title: 'Conditions', backUrl: '#/home', rows });
-}
-
 function renderAllergiesList() {
   const rows = ALLERGIES.map((a) => cardRow({
     icon: CATEGORIES.allergies.icon,
     title: a.substance,
-    subtitle: `Reaction: ${a.reaction}`,
+    subtitle: a.type,
     trailing: statusBadge(a.criticality === 'High' ? 'highRisk' : 'mediumRisk'),
   }));
   return listPage({ category: 'allergies', title: 'Allergies', backUrl: '#/home', rows });
@@ -635,7 +620,6 @@ function renderImmunizationsList() {
         <div class="title" style="color:var(--app-text);">${esc(v.vaccine)}</div>
         <div class="text regular" style="color:var(--gray-dark);">${esc(v.date)}</div>
       </div>
-      ${statusBadge('done')}
     </div>`);
   return listPage({ category: 'immunizations', title: 'Vaccinations', backUrl: '#/home', rows });
 }
@@ -733,7 +717,6 @@ function route() {
     case 'vitals':        html = id ? renderVitalsDetail(id) : renderVitalsList(); break;
     case 'prescription':  html = id ? renderPrescriptionDetail(id) : renderPrescriptionList(); break;
     case 'labresults':     html = id ? renderLabResultsDetail(id) : renderLabResultsList(); break;
-    case 'conditions':     html = renderConditionsList(); break;
     case 'allergies':      html = renderAllergiesList(); break;
     case 'immunizations':  html = renderImmunizationsList(); break;
     case 'visits':         html = id ? renderVisitsDetail(id) : renderVisitsList(); break;

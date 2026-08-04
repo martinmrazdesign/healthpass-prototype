@@ -65,17 +65,16 @@ const LAB_RESULTS = [
       { name: 'IGRA Result', value: 'Negative', range: 'Negative', flag: 'Normal' },
     ],
     aiSummary: 'A screening test for tuberculosis exposure. The negative result means no evidence of TB infection was found.' },
-];
-
-const CONDITIONS = [
-  { name: 'Seasonal Allergic Rhinitis', severity: 'Mild', status: 'Active', badgeVariant: 'secondary', recordedDate: 'Mar 2, 2026' },
-  { name: 'Chickenpox', severity: null, status: 'Resolved', badgeVariant: 'default', recordedDate: 'Aug 14, 2010' },
+  { id: 'lr-3', name: 'Lipid Panel', conclusion: '', category: 'Chemistry',
+    status: 'In Progress', badgeVariant: 'secondary', reportDate: 'Aug 1, 2026',
+    observations: [],
+    aiSummary: 'Your results are still being processed by the lab. Check back once the test is complete.' },
 ];
 
 const ALLERGIES = [
-  { substance: 'Penicillin', reaction: 'Skin rash', criticality: 'High', recordedDate: 'Jan 2018' },
-  { substance: 'Peanuts', reaction: 'Swelling, hives', criticality: 'High', recordedDate: 'Jun 2015' },
-  { substance: 'Pollen', reaction: 'Sneezing, itchy eyes', criticality: 'Low', recordedDate: 'Mar 2026' },
+  { substance: 'Penicillin', type: 'Medication', reaction: 'Skin rash', criticality: 'High', recordedDate: 'Jan 2018' },
+  { substance: 'Peanuts', type: 'Food', reaction: 'Swelling, hives', criticality: 'High', recordedDate: 'Jun 2015' },
+  { substance: 'Pollen', type: 'Environmental', reaction: 'Sneezing, itchy eyes', criticality: 'Low', recordedDate: 'Mar 2026' },
 ];
 
 const IMMUNIZATIONS = [
