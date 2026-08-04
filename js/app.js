@@ -352,7 +352,10 @@ window.openQrModal = function () {
       data: 'https://wa.me/15550100000?text=healthpass-demo-share-3225',
       dotsOptions: { color: '#0a3922', type: 'rounded' },
       cornersSquareOptions: { color: '#0a3922', type: 'extra-rounded' },
+      cornersDotOptions: { color: '#0a3922', type: 'dot' },
       backgroundOptions: { color: '#ffffff' },
+      image: 'svg/logo-healthpass.svg',
+      imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
     }).append(container);
   } catch (e) {
     container.innerHTML = '<span style="color:var(--gray-base);">QR preview unavailable</span>';
