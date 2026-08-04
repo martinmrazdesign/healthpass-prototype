@@ -476,7 +476,7 @@ window.openQrModal = function (title, data, icon) {
       cornersSquareOptions: { color: '#0a3922', type: 'extra-rounded' },
       cornersDotOptions: { color: '#0a3922', type: 'dot' },
       backgroundOptions: { color: '#ffffff' },
-      image: icon || 'svg/logo-healthpass.svg?v=7',
+      image: icon || 'svg/logo-healthpass.svg?v=8',
       imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
     }).append(container);
   } catch (e) {
