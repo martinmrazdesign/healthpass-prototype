@@ -36,7 +36,15 @@ body {
     background: var(--app-base);
 }
 a { color: inherit; }
-button { font: inherit; }
+/* Without this, iOS Safari renders its own native control chrome (a light
+   blue-tinted pill) on <button> and ignores any inline background/border —
+   the CSS "sets" it, the browser just doesn't use it. */
+button {
+    font: inherit;
+    -webkit-appearance: none;
+    appearance: none;
+    -webkit-tap-highlight-color: transparent;
+}
 
 #hp-app { min-height: 100vh; max-width: 412px; margin: 0 auto; }
 
