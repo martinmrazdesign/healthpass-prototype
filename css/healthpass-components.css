@@ -1,0 +1,459 @@
+/* =============================================================================
+   HealthPass Component Styles
+   Loaded by all HealthPass pages via shared/head_styles.liquid
+   ============================================================================= */
+
+
+/* --- Design tokens --------------------------------------------------------- */
+
+:root {
+    --white: #ffffff; --black: #000000;
+    --app-base: #f5f2eb; --app-surface: var(--white); --app-text: var(--black); --app-accent: var(--green-light);
+    --yellow-lightest: #f7f2d8; --yellow-light: #e7d88a; --yellow-base: #d8c833; --yellow-dark: #817224; --yellow-darkest: #403911;
+    --green-lightest:  #d2f2e3; --green-light:  #77d9ab; --green-base:  #1dbf73; --green-dark:  #137345; --green-darkest:  #0a3922;
+    --red-lightest:    #ffe1d8; --red-light:    #fea689; --red-base:    #ff643b; --red-dark:    #984023; --red-darkest:    #4c2011;
+    --lavender-lightest: #eee2ff; --lavender-light: #d7c0ff; --lavender-base: #c09dff; --lavender-dark: #834fca; --lavender-darkest: #460095;
+    --blue-lightest:   #ccf0f8; --blue-light:   #66d2ea; --blue-base:   #00b4dc; --blue-dark:   #006c85; --blue-darkest:   #003642;
+    --pink-lightest:   #fce6ff; --pink-light:   #f3b3fe; --pink-base:   #eb80fd; --pink-dark:   #8e4d97; --pink-darkest:   #47264c;
+    --gray-lightest:   #f6f6f7; --gray-light:   #d9dadb; --gray-base:   #b1b4b5; --gray-dark:   #5a5f62; --gray-darkest:   #383c3e;
+    --orange-lightest: #fdeadc; --orange-light: #fcc59a; --orange-base: #f8720c; --orange-darkest: #632d03;
+    --medications-base: var(--yellow-lightest); --medications-surface: var(--yellow-light); --medications-accent: var(--yellow-darkest);
+    --test-results-base: var(--blue-lightest);  --test-results-surface: var(--blue-light);  --test-results-accent: var(--blue-darkest);
+    --vitals-base:    var(--red-lightest);      --vitals-surface:    var(--red-light);      --vitals-accent:    var(--red-darkest);
+    --conditions-base: var(--gray-lightest);    --conditions-surface: var(--gray-light);    --conditions-accent: var(--gray-darkest);
+    --visits-base:    var(--lavender-lightest); --visits-surface:    var(--lavender-light); --visits-accent:    var(--lavender-darkest);
+    --allergies-base:  var(--green-lightest);   --allergies-surface:  var(--green-light);   --allergies-accent:  var(--green-darkest);
+    --vaccinations-base: var(--orange-lightest); --vaccinations-surface: var(--orange-light); --vaccinations-accent: var(--orange-darkest);
+    --procedures-base: var(--pink-lightest);    --procedures-surface: var(--pink-light);    --procedures-accent: var(--pink-darkest);
+    --about-base:    var(--green-lightest);     --about-surface:    var(--white);           --about-accent:    var(--green-darkest);
+}
+
+
+/* --- Typography ------------------------------------------------------------ */
+
+.display  { font-size: 40px; font-weight: 500; line-height: 40px; letter-spacing: -0.02em; }
+.header   { font-size: 32px; font-weight: 500; line-height: 32px; letter-spacing: -0.02em; }
+.subheader { font-size: 24px; font-weight: 500; line-height: 28px; letter-spacing: -0.02em; }
+.title    { font-size: 20px; font-weight: 500; line-height: 24px; letter-spacing: -0.02em; }
+.subtitle { font-size: 18px; font-weight: 500; line-height: 20px; letter-spacing: -0.02em; }
+.text.bold    { font-size: 16px; font-weight: 500; line-height: 20px; letter-spacing: -0.02em; }
+.text.regular { font-size: 16px; font-weight: 400; line-height: 20px; letter-spacing: -0.02em; }
+.text.small   { font-size: 14px; font-weight: 500; line-height: 18px; letter-spacing: -0.02em; }
+
+
+/* --- HTMX ------------------------------------------------------------------ */
+
+.htmx-indicator { display: none; }
+.htmx-request .htmx-indicator { display: inline-block; }
+.htmx-request.htmx-indicator { opacity: 0.5; }
+
+
+/* --- Page spinner ---------------------------------------------------------- */
+
+@keyframes hp-spin { to { transform: rotate(360deg); } }
+
+
+/* --- Section layout -------------------------------------------------------- */
+
+.hp-section-content { position: relative; margin: 0 16px; padding-top: 14px; }
+.hp-card-list { display: flex; flex-direction: column; gap: 2px; margin-top: 2px; }
+
+
+/* --- Count badge ----------------------------------------------------------- */
+
+/* Base pill — inline use (e.g. section headers) */
+.hp-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--green-light);
+    color: var(--green-darkest);
+    border-radius: 24px;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 6px;
+    font-size: 16px;
+    line-height: 1;
+}
+
+/* Card corner variant — absolute positioned top-right of a card */
+.hp-badge--card {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+}
+
+
+/* --- Health grid ----------------------------------------------------------- */
+
+.hp-health-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px;
+}
+.hp-grid-card {
+    background: var(--app-surface);
+    border-radius: 4px;
+    padding: 16px 8px 12px;
+    min-height: 112px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    overflow: hidden;
+    position: relative;
+}
+.hp-grid-card--tl { border-radius: 24px 4px 4px 4px; }
+.hp-grid-card--tr { border-radius: 4px 24px 4px 4px; }
+.hp-grid-card--bl { border-radius: 4px 4px 4px 24px; }
+.hp-grid-card--br { border-radius: 4px 4px 24px 4px; }
+
+
+/* --- Section header icons -------------------------------------------------- */
+
+.hp-section-icon    img { width: 64px !important; height: 64px !important; }
+.hp-section-icon-md img { width: 48px !important; height: 48px !important; }
+.hp-section-icon-sm img { width: 32px !important; height: 32px !important; }
+
+
+/* --- Skeleton shimmer ------------------------------------------------------ */
+/*
+ * .hp-nsk — navigation skeleton elements (section/detail page transitions)
+ * .hp-sk  — PIN page landing skeleton (shown while first page loads)
+ * Both use the same shimmer animation.
+ */
+
+@keyframes hp-shimmer {
+    0%   { background-position: -400px 0; }
+    100% { background-position:  400px 0; }
+}
+
+.hp-nsk, .hp-sk {
+    background: linear-gradient(90deg, rgba(0,0,0,0.06) 25%, rgba(0,0,0,0.11) 50%, rgba(0,0,0,0.06) 75%);
+    background-size: 400px 100%;
+    animation: hp-shimmer 1.4s ease-in-out infinite;
+}
+
+/* Full-screen overlay shown during page transitions */
+.hp-nsk-overlay {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: var(--app-base);
+    overflow-y: auto;
+}
+
+
+/* --- PIN page -------------------------------------------------------------- */
+/*
+ * Scoped to .hp-pin-page on <body> so these styles don't leak to other pages.
+ * The fixed body positioning is intentional: prevents iOS from shifting the
+ * viewport upward when the keyboard opens on the PIN entry screen.
+ */
+
+.hp-pin-page {
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--app-base);
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    touch-action: manipulation;
+}
+
+.hp-pin-page *, .hp-pin-page *::before, .hp-pin-page *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    touch-action: manipulation;
+}
+
+
+/* --- Loading screen -------------------------------------------------------- */
+
+.hp-loading-bar-track {
+    width: 160px;
+    height: 3px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 99px;
+    overflow: hidden;
+}
+
+.hp-loading-bar {
+    height: 100%;
+    width: 0%;
+    background: var(--green-base);
+    border-radius: 99px;
+    transition: width 0.25s ease;
+}
+
+.hp-loading-text {
+    color: var(--gray-dark);
+    font-size: 14px;
+    line-height: 20px;
+    text-align: center;
+}
+
+
+/* --- PIN form -------------------------------------------------------------- */
+
+.hp-pin-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding: 0;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+.hp-pin-content.is-visible { opacity: 1; }
+
+.hp-app-name {
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 32px;
+    font-weight: 500;
+    line-height: 36px;
+    letter-spacing: -2px;
+    color: var(--app-text);
+    font-feature-settings: 'liga' off, 'clig' off;
+    margin-bottom: 0;
+}
+
+.hp-pin-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    width: 100%;
+}
+
+
+.hp-pin-dots {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    padding: 4px 0;
+}
+
+.hp-pin-dot {
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: transparent;
+    border: 2px solid var(--app-text);
+    transition: background 0.12s ease, transform 0.12s ease;
+}
+
+.hp-pin-dot--filled {
+    background: var(--app-text);
+    transform: scale(1.15);
+}
+
+/* Verification animation — progressive fill */
+.hp-pin-dot--scan-gray  { background: var(--gray-dark); }
+.hp-pin-dot--scan-black { background: var(--app-text); transform: scale(1.15); }
+
+/* Error state driven by [data-error] so it's instant — no JS timing gap */
+.hp-pin-container[data-error] .hp-pin-dot {
+    background: var(--red-darkest) !important;
+    border-color: var(--red-darkest) !important;
+    transform: scale(1.15);
+}
+.hp-pin-container[data-error] #hp-pin-heading {
+    color: var(--red-darkest) !important;
+}
+
+@keyframes hp-dots-shake {
+    0%,100% { transform: translateX(0); }
+    20%     { transform: translateX(-8px); }
+    40%     { transform: translateX(8px); }
+    60%     { transform: translateX(-5px); }
+    80%     { transform: translateX(5px); }
+}
+.hp-pin-dots--shake { animation: hp-dots-shake 0.4s ease; }
+
+
+.hp-pin-inline-error {
+    font-size: 13px;
+    color: var(--red-base);
+    text-align: center;
+    margin-top: 4px;
+}
+
+.hp-keypad {
+    display: grid;
+    grid-template-columns: repeat(3, 80px);
+    gap: 16px;
+}
+
+.hp-key {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: none;
+    background: var(--app-surface);
+    color: var(--app-text);
+    font-size: 26px;
+    font-weight: 500;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    touch-action: manipulation;
+    transition: background 0.1s ease;
+}
+
+.hp-key:active, .hp-key--pressed { background: var(--gray-light); }
+
+.hp-key--empty {
+    background: transparent;
+    box-shadow: none;
+    pointer-events: none;
+}
+
+.hp-key--back { font-size: 18px; color: var(--gray-dark); }
+
+
+/* --- PIN card (legacy / develop-branch card-based PIN styles) -------------- */
+
+.hp-pin-card {
+    background: var(--app-surface);
+    border-radius: 24px;
+    overflow: hidden;
+    width: 256px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.hp-card-header {
+    background: var(--green-light);
+    height: 81px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px 16px 0 0;
+}
+
+.hp-unlock-text {
+    position: absolute;
+    left: 18px;
+    top: 15px;
+    color: var(--green-darkest);
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 16px;
+    white-space: nowrap;
+}
+
+.hp-lock-icon {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+}
+
+.hp-card-wave {
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 38px;
+}
+.hp-card-wave svg { width: 100%; height: 100%; display: block; }
+
+.hp-pin-inputs {
+    display: flex;
+    gap: 17px;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 14px 24px;
+    margin-top: -1px;
+}
+
+.hp-pin-slot {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hp-slot-display {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    font-size: 32px;
+    font-weight: 500;
+    color: var(--app-text);
+    line-height: 1;
+    font-variant-numeric: lining-nums tabular-nums;
+}
+.hp-slot-display:empty::before {
+    content: '●';
+    font-size: 14px;
+    opacity: 0.35;
+}
+.hp-pin-slot:focus-within .hp-slot-display:empty::before {
+    display: none;
+}
+
+.hp-pin-digit {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: transparent;
+    caret-color: var(--visits-accent);
+    text-align: center;
+    font-size: 32px;
+    -webkit-appearance: none;
+    z-index: 1;
+}
+
+.hp-helper-text {
+    color: var(--gray-dark);
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+}
+
+.hp-pin-error {
+    color: #dc3545;
+    font-size: 14px;
+    text-align: center;
+}
+
+@keyframes hp-pin-shake {
+    0%,100% { transform: translateX(0); }
+    18%     { transform: translateX(-10px); }
+    36%     { transform: translateX(10px); }
+    54%     { transform: translateX(-6px); }
+    72%     { transform: translateX(6px); }
+    88%     { transform: translateX(-3px); }
+}
+.hp-pin-card--shake { animation: hp-pin-shake 0.45s ease; }
+
+.hp-pin-attempts {
+    color: var(--gray-dark);
+    font-size: 13px;
+    text-align: center;
+}

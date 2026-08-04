@@ -1,0 +1,82 @@
+/* Prototype-only additions on top of healthpass-components.css (unmodified original). */
+
+/*
+ * Figma color verification (file "HealthPass (Copy)", Foundations page) —
+ * checked every token healthpass-components.css defines against the Figma
+ * variables actually used on the homepage:
+ *
+ *   green, red, yellow, blue, gray, and purple/lavender all matched exactly,
+ *   hex for hex — no change needed.
+ *   orange did NOT match (Figma: light #fcc59a / darkest #632d03 / base
+ *   #f8720c vs. our old #fbc49a / #622c03 / #f7720c) — corrected above in
+ *   healthpass-components.css.
+ *   pink (used for "procedures") has no corresponding node in the 3 Figma
+ *   screens reviewed so far — left as-is, unverified.
+ *
+ * Figma's own token names differ from ours only for one family: it calls
+ * "purple" what we call "lavender" (identical values). Aliased below so a
+ * future change referencing a Figma redline by its Figma name still resolves
+ * to the right token without a find-and-replace across the whole app.
+ */
+:root {
+    --purple-lightest: var(--lavender-lightest);
+    --purple-light:    var(--lavender-light);
+    --purple-base:     var(--lavender-base);
+    --purple-dark:     var(--lavender-dark);
+    --purple-darkest:  var(--lavender-darkest);
+}
+
+html, body { margin: 0; padding: 0; }
+body {
+    /* Figma specifies "SF Pro Display" for every text style in this file.
+       ui-sans-serif/-apple-system/BlinkMacSystemFont resolve to SF Pro on
+       Apple platforms (no separate webfont needed); Segoe UI/Roboto cover
+       Windows/Android as a reasonable fallback (matches the real app's stack). */
+    font-family: 'SF Pro Display', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--app-base);
+}
+a { color: inherit; }
+button { font: inherit; }
+
+#hp-app { min-height: 100vh; max-width: 412px; margin: 0 auto; }
+
+.hp-divider { height: 1px; background: rgba(0,0,0,0.07); margin: 0 20px; }
+
+.hp-row {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 20px;
+}
+
+/* Force a true circle (the shared hp-badge rule uses min-width + horizontal
+   padding, which renders as a pill/oval rather than a circle for 1-2 chars). */
+.hp-badge {
+    width: 24px;
+    padding: 0;
+}
+
+.hp-badge-outline {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 24px;
+    padding: 3px 10px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.hp-bar-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    height: 90px;
+    padding-top: 8px;
+}
+.hp-bar-col { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; }
+.hp-bar { width: 100%; max-width: 28px; border-radius: 6px 6px 2px 2px; background: var(--green-base); }
+.hp-bar-label { font-size: 11px; color: var(--gray-dark); }
+
+.hp-proto-fade { animation: hp-proto-fade 0.18s ease; }
+@keyframes hp-proto-fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }

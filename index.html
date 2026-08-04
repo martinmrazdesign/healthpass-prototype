@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>healthpass</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<link rel="icon" href="svg/logo-healthpass.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/healthpass-components.css">
+<link rel="stylesheet" href="css/launch-animation.css">
+<link rel="stylesheet" href="css/proto.css">
+</head>
+<body class="hp-pin-page" id="hp-body">
+
+  <!-- ============================ SPLASH / LOADING SCREEN ============================ -->
+  <!-- Recovered from an abandoned branch in the real HealthPass app (icons flying
+       into a folder, then peeking out the top) — played as its own screen, then
+       hands off to the PIN screen below. -->
+  <div id="hp-splash-screen" style="position:fixed;inset:0;z-index:300;">
+    <div id="hp-splash" class="hp-splash">
+      <div id="hp-splash-inner" class="hp-splash-inner">
+        <svg class="hp-splash-folder-bg" width="176" height="148" viewBox="0 0 176 148" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0 43C0 31.9543 8.9543 23 20 23H156C167.046 23 176 31.9543 176 43V128C176 139.046 167.046 148 156 148H20C8.95431 148 0 139.046 0 128V43Z" fill="#77D9AB"/>
+        </svg>
+
+        <img src="svg/launch-peek-3.svg" class="hp-splash-peek hp-splash-peek-1" alt="">
+        <img src="svg/launch-peek-2.svg" class="hp-splash-peek hp-splash-peek-2" alt="">
+        <img src="svg/launch-peek-1.svg" class="hp-splash-peek hp-splash-peek-3" alt="">
+
+        <img src="svg/launch-allergies.svg"   class="hp-cloud-icon hp-ci-1" alt="">
+        <img src="svg/launch-medications.svg" class="hp-cloud-icon hp-ci-2" alt="">
+        <img src="svg/launch-visits.svg"      class="hp-cloud-icon hp-ci-3" alt="">
+        <img src="svg/launch-conditions.svg"  class="hp-cloud-icon hp-ci-4" alt="">
+        <img src="svg/launch-vaccination.svg" class="hp-cloud-icon hp-ci-5" alt="">
+        <img src="svg/launch-testresults.svg" class="hp-cloud-icon hp-ci-6" alt="">
+        <img src="svg/launch-procedures.svg"  class="hp-cloud-icon hp-ci-7" alt="">
+        <img src="svg/launch-vitals.svg"      class="hp-cloud-icon hp-ci-8" alt="">
+        <img src="svg/launch-about.svg"       class="hp-cloud-icon hp-ci-9" alt="">
+
+        <svg class="hp-splash-folder-fg" width="176" height="148" viewBox="0 0 176 148" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M29.2326 147.838H146.376C156.608 147.838 161.724 147.838 165.632 145.847C169.07 144.095 171.865 141.3 173.617 137.863C175.608 133.954 175.608 128.838 175.608 118.606V73.2931L175.765 44.2409C175.847 28.9301 175.888 21.2748 172.945 15.4009C170.355 10.2337 166.201 6.01593 161.073 3.34879C155.244 0.316835 147.589 0.242524 132.279 0.0939004L126.443 0.0372487C118.855 -0.0364129 115.061 -0.0732437 111.434 0.656491C108.217 1.30384 105.105 2.39545 102.188 3.89996C98.9006 5.59595 95.9611 7.99499 90.082 12.7931L86.7475 15.5145L86.7474 15.5146C78.8936 21.9243 74.9667 25.1292 70.5779 27.4093C66.6844 29.4321 62.5319 30.9115 58.2365 31.8062C53.3947 32.8147 48.3259 32.8147 38.1885 32.8147H31.0151C30.8814 32.8147 30.8146 32.8147 30.7581 32.8149C13.7968 32.877 0.0624542 46.6114 0.000320435 63.5726C0.000167847 63.6121 0.00012207 63.6566 0.000106812 63.7253V63.8297V118.606C0.000106812 128.838 0.000106812 133.954 1.99144 137.863C3.74307 141.3 6.53807 144.095 9.97585 145.847C13.8841 147.838 19.0002 147.838 29.2326 147.838Z" fill="#0A3922"/>
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M88.4214 67.9409C82.3376 62.6344 73.3404 61.5485 66.3534 67.5069C58.7957 73.9519 57.6977 84.8064 63.6741 92.482C65.7413 95.1369 69.5877 98.9922 73.4432 102.662C77.3419 106.373 81.3944 110.029 83.9739 112.326L84.0311 112.377C84.4538 112.754 84.8765 113.13 85.2662 113.425C85.7043 113.757 86.2422 114.098 86.9283 114.303C87.8959 114.593 88.949 114.593 89.9165 114.303C90.6026 114.098 91.1405 113.757 91.5786 113.425C91.9684 113.13 92.391 112.754 92.8137 112.377L92.8709 112.326C95.4504 110.029 99.503 106.373 103.402 102.662C107.257 98.9922 111.104 95.1369 113.171 92.482C119.124 84.8359 118.196 73.8977 110.464 67.4841C103.4 61.6235 94.4983 62.6324 88.4214 67.9409Z" fill="#FF643B"/>
+        </svg>
+      </div>
+
+      <div style="position:absolute;left:0;right:0;bottom:96px;display:flex;flex-direction:column;align-items:center;gap:14px;">
+        <p class="hp-loading-text">Loading your health info</p>
+        <div class="hp-loading-bar-track">
+          <div id="hp-loading-bar" class="hp-loading-bar"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ PIN SCREEN ============================ -->
+  <div id="hp-pin-screen" style="opacity:0;pointer-events:none;">
+    <div class="hp-pin-content" id="hp-pin-content" style="height:100%;padding:32px 24px 0;">
+      <p class="hp-app-name" style="text-align:center;">healthpass</p>
+      <div class="hp-pin-container">
+        <div style="padding-top:24px;display:flex;flex-direction:column;align-items:center;gap:13px;">
+          <p id="hp-pin-heading" style="font-size:18px;font-weight:500;color:var(--app-text);letter-spacing:-0.02em;text-align:center;">Unlock healthpass with your PIN</p>
+          <div class="hp-pin-dots">
+            <div class="hp-pin-dot"></div>
+            <div class="hp-pin-dot"></div>
+            <div class="hp-pin-dot"></div>
+            <div class="hp-pin-dot"></div>
+          </div>
+        </div>
+
+        <div style="flex:1;"></div>
+
+        <div class="hp-keypad">
+          <button type="button" class="hp-key" data-digit="1">1</button>
+          <button type="button" class="hp-key" data-digit="2">2</button>
+          <button type="button" class="hp-key" data-digit="3">3</button>
+          <button type="button" class="hp-key" data-digit="4">4</button>
+          <button type="button" class="hp-key" data-digit="5">5</button>
+          <button type="button" class="hp-key" data-digit="6">6</button>
+          <button type="button" class="hp-key" data-digit="7">7</button>
+          <button type="button" class="hp-key" data-digit="8">8</button>
+          <button type="button" class="hp-key" data-digit="9">9</button>
+          <div class="hp-key hp-key--empty"></div>
+          <button type="button" class="hp-key" data-digit="0">0</button>
+          <button type="button" class="hp-key hp-key--back" data-action="backspace">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M9.49942 3.00007C9.53267 3.00011 9.56619 3.00015 9.6 3.00015L17.2413 3.00014C18.0463 3.00013 18.7106 3.00012 19.2518 3.04434C19.8139 3.09026 20.3306 3.18883 20.816 3.43612C21.5686 3.81961 22.1805 4.43153 22.564 5.18418C22.8113 5.66952 22.9099 6.18622 22.9558 6.74832C23 7.28951 23 7.95386 23 8.75882V15.2415C23 16.0464 23 16.7108 22.9558 17.252C22.9099 17.8141 22.8113 18.3308 22.564 18.8161C22.1805 19.5688 21.5686 20.1807 20.816 20.5642C20.3306 20.8115 19.8139 20.91 19.2518 20.956C18.7106 21.0002 18.0463 21.0002 17.2413 21.0001H9.6C9.5662 21.0001 9.53267 21.0002 9.49942 21.0002C9.01262 21.0008 8.5838 21.0012 8.17616 20.8848C7.81847 20.7827 7.48291 20.6149 7.18657 20.39C6.84886 20.1338 6.59194 19.7904 6.30029 19.4007L1.92 13.5601C1.66653 13.2251 1.41782 12.8965 1.31589 12.5093C1.22804 12.1755 1.22804 11.8247 1.31589 11.491C1.41782 11.1038 1.66653 10.7752 1.8649 10.5132L6.24 4.68015C6.59194 4.20987 6.84886 3.86653 7.18657 3.61027C7.48291 3.38542 7.81847 3.21763 8.17616 3.11548C8.5838 2.99906 9.01262 2.99954 9.49942 3.00007ZM10.2929 8.29304C10.6834 7.90251 11.3166 7.90251 11.7071 8.29304L14 10.5859L16.2929 8.29304C16.6834 7.90251 17.3166 7.90251 17.7071 8.29304C18.0976 8.68356 18.0976 9.31673 17.7071 9.70725L15.4142 12.0001L17.7071 14.293C18.0976 14.6836 18.0976 15.3167 17.7071 15.7073C17.3166 16.0978 16.6834 16.0978 16.2929 15.7073L14 13.4144L11.7071 15.7073C11.3166 16.0978 10.6834 16.0978 10.2929 15.7073C9.90237 15.3167 9.90237 14.6836 10.2929 14.293L12.5858 12.0001L10.2929 9.70725C9.90237 9.31673 9.90237 8.68356 10.2929 8.29304Z" fill="currentColor"/></svg>
+          </button>
+        </div>
+
+        <div style="flex:1;"></div>
+
+        <p class="text regular" style="color:var(--gray-dark);text-align:center;padding-bottom:calc(40px + env(safe-area-inset-bottom, 0px));">Prototype PIN: 1234</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ APP SHELL ============================ -->
+  <div id="hp-app-shell" style="display:none;">
+    <div id="hp-spinner" style="display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;pointer-events:none;">
+      <div style="width:24px;height:24px;border-radius:50%;border:2.5px solid rgba(29,59,42,0.15);border-top-color:#1D3B2A;animation:hp-spin 0.65s linear infinite;"></div>
+    </div>
+    <div id="hp-app"></div>
+  </div>
+
+  <script src="js/qr-code-styling-1.6.0-rc.1.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/pin.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/launch-animation.js"></script>
+  <script>
+    window.hpUnlock = function () {
+      sessionStorage.setItem('hp_unlocked', '1');
+      document.getElementById('hp-body').classList.remove('hp-pin-page');
+      document.getElementById('hp-splash-screen').style.display = 'none';
+      document.getElementById('hp-pin-screen').style.display = 'none';
+      document.getElementById('hp-app-shell').style.display = 'block';
+      window.hpBootApp();
+    };
+
+    function showSplashThenPin() {
+      var splashScreen = document.getElementById('hp-splash-screen');
+      var pinScreen = document.getElementById('hp-pin-screen');
+
+      splashScreen.style.display = 'block';
+      splashScreen.style.opacity = '1';
+      splashScreen.style.transition = 'none';
+      pinScreen.style.display = 'block';
+      pinScreen.style.opacity = '0';
+      pinScreen.style.pointerEvents = 'none';
+
+      playLaunchAnimation(function () {
+        splashScreen.style.transition = 'opacity 0.4s ease';
+        splashScreen.style.opacity = '0';
+        setTimeout(function () {
+          splashScreen.style.display = 'none';
+          pinScreen.style.transition = 'opacity 0.4s ease';
+          pinScreen.style.pointerEvents = 'auto';
+          pinScreen.style.opacity = '1';
+          document.getElementById('hp-pin-content').classList.add('is-visible');
+          initPinKeypad();
+        }, 400);
+      });
+    }
+
+    window.showPinScreen = function () {
+      document.getElementById('hp-body').classList.add('hp-pin-page');
+      document.getElementById('hp-app-shell').style.display = 'none';
+      location.hash = '';
+      showSplashThenPin();
+    };
+
+    if (sessionStorage.getItem('hp_unlocked') === '1') {
+      window.hpUnlock();
+    } else {
+      showSplashThenPin();
+    }
+  </script>
+</body>
+</html>

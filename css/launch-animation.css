@@ -1,0 +1,135 @@
+/*
+ * launch-animation.css — Splash screen animation for the PIN page.
+ *
+ * Loaded only by pin_page.liquid. Together with launch-animation.js and the
+ * #hp-splash markup in pin_page.liquid, these three pieces form the complete
+ * launch animation feature.
+ *
+ * To disable the animation entirely, remove all three from pin_page.liquid:
+ *   1. <link rel="stylesheet" href=".../launch-animation.css">
+ *   2. The #hp-splash div
+ *   3. <script src=".../launch-animation.js">
+ */
+
+
+/* --- Splash animation ------------------------------------------------------ */
+
+.hp-splash {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background-color: var(--app-base);
+    overflow: visible;
+    z-index: 1;
+}
+
+/*
+ * Fixed positioning = always relative to the VIEWPORT, regardless of scroll,
+ * parent offsets, or document structure. This guarantees the folder lands
+ * exactly 50px from the viewport bottom on every browser.
+ * left: calc(50% - 170px) centers the 340px box without a transform.
+ */
+.hp-splash-inner {
+    position: fixed;
+    bottom: 50px;
+    left: calc(50% - 170px);
+    width: 340px;
+    height: 200px;
+    z-index: 10;
+}
+
+/* Folder background — behind icons so they appear to fly INTO the folder */
+.hp-splash-folder-bg {
+    position: absolute;
+    left: 82px;
+    bottom: 0;
+    width: 176px;
+    height: 148px;
+    z-index: 2;
+}
+
+/* Folder foreground — in front of icons, completes the "inside folder" illusion */
+.hp-splash-folder-fg {
+    position: absolute;
+    left: 82px;
+    bottom: 0;
+    width: 176px;
+    height: 148px;
+    z-index: 4;
+}
+
+/* Cloud icons: fly in → shake → collapse into folder */
+.hp-cloud-icon {
+    position: absolute;
+    width: 65px;
+    height: 65px;
+    z-index: 3;
+    opacity: 0;
+    animation: hp-cloud-anim 2.0s forwards;
+}
+
+/*
+ * Positions taken directly from Figma frame 1521:21844 (412×917 phone).
+ * --ex/--ey : enter offset (from off-screen relative to each icon's final pos)
+ * --cx/--cy : collapse offset to folder center
+ * --rot     : initial rotation, --lr: landing rotation
+ */
+.hp-ci-1 { top:-317px; left: 30px; --ex:-80px; --ey:-40px; --cx: 108px; --cy: 411px; --rot:-18deg; --lr: -5deg; animation-delay:0.00s; }
+.hp-ci-2 { top:-354px; left:213px; --ex: 80px; --ey:-20px; --cx: -75px; --cy: 448px; --rot: 22deg; --lr:  7deg; animation-delay:0.05s; }
+.hp-ci-3 { top:-258px; left:239px; --ex:100px; --ey:-50px; --cx:-101px; --cy: 352px; --rot:-12deg; --lr: -4deg; animation-delay:0.10s; }
+.hp-ci-4 { top:-194px; left:136px; --ex:-20px; --ey:-60px; --cx:   2px; --cy: 288px; --rot: 15deg; --lr:  6deg; animation-delay:0.15s; }
+.hp-ci-5 { top:-164px; left:215px; --ex: 80px; --ey:-40px; --cx: -77px; --cy: 258px; --rot:-20deg; --lr: -6deg; animation-delay:0.20s; }
+.hp-ci-6 { top:-217px; left: 41px; --ex:-90px; --ey:-40px; --cx:  97px; --cy: 311px; --rot: 10deg; --lr:  4deg; animation-delay:0.25s; }
+.hp-ci-7 { top:-290px; left:138px; --ex:  0px; --ey:-40px; --cx:   0px; --cy: 384px; --rot:-25deg; --lr: -3deg; animation-delay:0.30s; }
+.hp-ci-8 { top:-127px; left: 55px; --ex:-70px; --ey:-20px; --cx:  83px; --cy: 221px; --rot: 18deg; --lr:  8deg; animation-delay:0.35s; }
+.hp-ci-9 { top:-105px; left:146px; --ex: 30px; --ey: 30px; --cx:  -8px; --cy: 199px; --rot:-14deg; --lr: -7deg; animation-delay:0.40s; }
+
+@keyframes hp-cloud-anim {
+    0%  { opacity: 0; transform: translate(var(--ex), var(--ey)) scale(0.3) rotate(var(--rot)); animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1); }
+    15% { opacity: 1; transform: translate(0, 0) scale(1) rotate(var(--lr)); animation-timing-function: linear; }
+    19% { transform: rotate(calc(var(--lr) - 7deg)); animation-timing-function: linear; }
+    23% { transform: rotate(calc(var(--lr) + 7deg)); animation-timing-function: linear; }
+    27% { transform: rotate(calc(var(--lr) - 7deg)); animation-timing-function: linear; }
+    31% { transform: rotate(calc(var(--lr) + 7deg)); animation-timing-function: linear; }
+    35% { transform: rotate(calc(var(--lr) - 7deg)); animation-timing-function: linear; }
+    39% { transform: rotate(calc(var(--lr) + 7deg)); animation-timing-function: linear; }
+    43% { transform: rotate(calc(var(--lr) - 7deg)); animation-timing-function: linear; }
+    47% { transform: rotate(calc(var(--lr) + 7deg)); animation-timing-function: linear; }
+    51% { transform: rotate(calc(var(--lr) - 7deg)); animation-timing-function: linear; }
+    55% { transform: rotate(calc(var(--lr) + 7deg)); animation-timing-function: linear; }
+    59% { transform: rotate(calc(var(--lr) - 7deg)); animation-timing-function: linear; }
+    63% { transform: rotate(var(--lr)); animation-timing-function: ease-in; }
+    69% { opacity: 1; transform: translate(0, 0) rotate(var(--lr)); animation-timing-function: cubic-bezier(0.4, 0, 1, 1); }
+    80% { opacity: 1; transform: translate(var(--cx), var(--cy)) rotate(var(--lr)); animation-timing-function: linear; }
+    87% { opacity: 0; transform: translate(var(--cx), var(--cy)) rotate(var(--lr)); }
+   100% { opacity: 0; transform: translate(var(--cx), var(--cy)) rotate(var(--lr)); }
+}
+
+/* Peek icons: emerge from behind folder after all icons collapse */
+.hp-splash-peek {
+    position: absolute;
+    width: 64px;
+    height: 90px;
+    z-index: 3;
+    opacity: 0;
+}
+
+.hp-splash-peek-1 { top: 32px; left:  88px; animation: hp-peek-1-anim 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) 2.3s forwards; }
+.hp-splash-peek-2 { top: 12px; left: 136px; animation: hp-peek-2-anim 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) 2.4s forwards; }
+.hp-splash-peek-3 { top:  0px; left: 188px; animation: hp-peek-3-anim 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) 2.5s forwards; }
+
+@keyframes hp-peek-1-anim {
+    0%   { opacity: 0; transform: translateY(80px) rotate(-12deg); }
+    20%  { opacity: 1; }
+    100% { opacity: 1; transform: translateY(0)    rotate(-12deg); }
+}
+@keyframes hp-peek-2-anim {
+    0%   { opacity: 0; transform: translateY(80px) rotate(3deg); }
+    20%  { opacity: 1; }
+    100% { opacity: 1; transform: translateY(0)    rotate(3deg); }
+}
+@keyframes hp-peek-3-anim {
+    0%   { opacity: 0; transform: translateY(80px) rotate(18deg); }
+    20%  { opacity: 1; }
+    100% { opacity: 1; transform: translateY(0)    rotate(18deg); }
+}
