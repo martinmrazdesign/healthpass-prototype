@@ -159,7 +159,7 @@ function listPage({ category, title, backUrl, rows }) {
     <div style="min-height:100vh;padding-bottom:40px;">
       <div class="hp-section-content">
         <div style="position:relative;">
-          <a href="${backUrl}" style="position:absolute;left:0;top:0;z-index:10;width:64px;height:64px;display:flex;align-items:center;justify-content:center;text-decoration:none;">
+          <a href="${backUrl}" style="position:absolute;left:0;top:0;z-index:10;width:64px;height:64px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;text-decoration:none;">
             ${backArrow(c.accent)}
           </a>
           <img src="${c.iconDark}" width="80" height="80" alt="" style="position:absolute;right:16px;top:16px;z-index:10;">
@@ -191,7 +191,7 @@ function detailPage({ category, title, badgeHtml, subtitleLeft, subtitleRight, c
     <div style="min-height:100vh;padding-bottom:40px;">
       <div class="hp-section-content">
         <div style="position:relative;">
-          <a href="${backUrl}" style="position:absolute;left:0;top:0;z-index:10;width:64px;height:64px;display:flex;align-items:center;justify-content:center;text-decoration:none;">
+          <a href="${backUrl}" style="position:absolute;left:0;top:0;z-index:10;width:64px;height:64px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;text-decoration:none;">
             ${backArrow(c.accent)}
           </a>
           <button onclick="openQrModal('${esc(title)}', '${esc(shareUrl)}', '${c.icon}')" style="position:absolute;right:16px;top:16px;z-index:10;width:40px;height:40px;border-radius:32px;background:${c.lightest};border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;">
@@ -263,7 +263,7 @@ function renderHome() {
   const activityCard = (item) => {
     const m = ACTIVITY_META[item.category];
     return `
-    <a href="${item.detailUrl}" style="text-decoration:none;display:block;width:min(58vw,200px);flex-shrink:0;">
+    <a href="${item.detailUrl}" style="text-decoration:none;display:block;width:min(58vw,200px);flex-shrink:0;border-radius:24px;overflow:hidden;">
       <div style="background:var(--app-surface);border-radius:24px;overflow:hidden;width:100%;height:172px;position:relative;">
         <div style="background:${m.surface};height:41px;position:relative;border-radius:16px 16px 0 0;display:flex;align-items:center;">
           <span class="text bold" style="padding-left:14px;color:${m.accent};">${esc(item.label)}</span>
@@ -474,7 +474,7 @@ window.openQrModal = function (title, data, icon) {
       cornersSquareOptions: { color: '#0a3922', type: 'extra-rounded' },
       cornersDotOptions: { color: '#0a3922', type: 'dot' },
       backgroundOptions: { color: '#ffffff' },
-      image: icon || 'svg/logo-healthpass.svg?v=9',
+      image: icon || 'svg/logo-healthpass.svg?v=10',
       imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
     }).append(container);
   } catch (e) {
