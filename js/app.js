@@ -183,6 +183,11 @@ function detailPage({ category, title, badgeHtml, subtitleLeft, subtitleRight, c
   if (chartHtml) extraRows.push(chartHtml);
   const allCards = [...extraRows, ...cards];
 
+  /* location.hash is already the current detail route at render time (route()
+     sets it before calling this), so this is a real deep link back to this
+     exact record — scanning it lands here, not just on the app in general. */
+  const shareUrl = `${location.origin}${location.pathname}?skip=1${location.hash}`;
+
   return `
     <div style="min-height:100vh;padding-bottom:40px;">
       <div class="hp-section-content">
@@ -190,9 +195,9 @@ function detailPage({ category, title, badgeHtml, subtitleLeft, subtitleRight, c
           <a href="${backUrl}" style="position:absolute;left:0;top:0;z-index:10;width:64px;height:64px;display:flex;align-items:center;justify-content:center;text-decoration:none;">
             ${backArrow(c.accent)}
           </a>
-          <div style="position:absolute;right:16px;top:16px;z-index:10;width:40px;height:40px;border-radius:32px;background:${c.lightest};display:flex;align-items:center;justify-content:center;">
+          <button onclick="openQrModal('${esc(title)}', '${esc(shareUrl)}', '${c.icon}')" style="position:absolute;right:16px;top:16px;z-index:10;width:40px;height:40px;border-radius:32px;background:${c.lightest};border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;">
             ${shareIcon(c.accent)}
-          </div>
+          </button>
           ${waveTop(c.surface)}
           <div style="background:${c.surface};border-radius:0 0 20px 20px;height:146px;box-sizing:border-box;padding:24px;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;margin-top:-1px;">
             <div class="header" style="color:${c.accent};">${esc(title)}</div>
@@ -323,24 +328,6 @@ function renderHome() {
         ${iconButton({ size: 'L', style: 'Primary', onclick: 'openQrModal()', iconHtml: '<img src="svg/figma-icon-qr.svg" width="24" height="24" alt="">' })}
       </div>
 
-      <div id="qr-backdrop" onclick="closeQrModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);backdrop-filter:blur(4px);z-index:149;opacity:0;"></div>
-      <div id="qr-modal" style="display:none;position:fixed;left:0;right:0;bottom:0;max-width:412px;margin:0 auto;background:var(--app-base);border-radius:24px 24px 0 0;z-index:150;padding:32px;box-sizing:border-box;max-height:75vh;overflow-y:auto;transform:translateY(100%);transition:transform 0.3s ease;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
-          <div class="header" style="color:var(--app-text);">${esc(PATIENT.name)}</div>
-          ${iconButton({ size: 'M', style: 'Secondary', onclick: 'closeQrModal()', iconHtml: closeIcon('var(--app-text)') })}
-        </div>
-        <div style="background:var(--app-surface);border-radius:24px;padding:16px;text-align:center;">
-          <div id="qrcode-modal" style="display:flex;align-items:center;justify-content:center;min-height:316px;"></div>
-        </div>
-        <div style="margin-top:24px;text-align:center;">
-          <div class="text regular" style="color:var(--gray-dark);margin-bottom:8px;">PIN code</div>
-          <div style="display:inline-flex;gap:8px;">
-            ${'3225'.split('').map((d) => `<span class="header" style="background:var(--app-surface);color:var(--app-text);width:44px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;">${d}</span>`).join('')}
-          </div>
-          <div class="text regular" style="color:var(--gray-dark);margin-top:12px;font-size:13px;">Share this PIN with the person scanning the QR code</div>
-        </div>
-      </div>
-
       <div style="display:flex;align-items:center;gap:8px;padding:32px 16px 12px;">
         <span class="title" style="color:var(--app-text);">Recents</span>
         <div class="text small hp-badge">8</div>
@@ -460,7 +447,11 @@ window.closeFamilyPanel = function () {
   hideBackdrop('family-panel-backdrop');
   setTimeout(() => { panel.style.display = 'none'; }, 300);
 };
-window.openQrModal = function () {
+/* Shared QR share sheet, reused across the home page ("share my whole record")
+   and every detail page ("share this record"). Content is filled in fresh on
+   each open since it differs per page — title, the link the QR encodes, and
+   the icon shown in its center (category icon instead of the app logo). */
+window.openQrModal = function (title, data, icon) {
   const modal = document.getElementById('qr-modal');
   initSheetDrag('qr-modal', window.closeQrModal);
   showBackdrop('qr-backdrop');
@@ -469,18 +460,23 @@ window.openQrModal = function () {
   void modal.offsetWidth; // force reflow so the transform transition below animates
   modal.style.transform = 'translateY(0)';
 
+  const titleEl = document.getElementById('qr-modal-title');
+  if (titleEl) titleEl.textContent = title || PATIENT.name;
+
+  const pinEl = document.getElementById('qr-modal-pin');
+  if (pinEl) pinEl.innerHTML = '3225'.split('').map((d) => `<span class="header" style="background:var(--app-surface);color:var(--app-text);width:44px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;">${d}</span>`).join('');
+
   const container = document.getElementById('qrcode-modal');
-  if (container.dataset.rendered) return;
-  container.dataset.rendered = '1';
+  container.innerHTML = '';
   try {
     new QRCodeStyling({
       width: 316, height: 316, type: 'svg',
-      data: 'https://wa.me/15550100000?text=healthpass-demo-share-3225',
+      data: data || 'https://wa.me/15550100000?text=healthpass-demo-share-3225',
       dotsOptions: { color: '#0a3922', type: 'rounded' },
       cornersSquareOptions: { color: '#0a3922', type: 'extra-rounded' },
       cornersDotOptions: { color: '#0a3922', type: 'dot' },
       backgroundOptions: { color: '#ffffff' },
-      image: 'svg/logo-healthpass.svg?v=6',
+      image: icon || 'svg/logo-healthpass.svg?v=7',
       imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
     }).append(container);
   } catch (e) {

@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <title>healthpass</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<link rel="icon" href="svg/logo-healthpass.svg?v=6" type="image/svg+xml">
-<link rel="stylesheet" href="css/healthpass-components.css?v=6">
-<link rel="stylesheet" href="css/launch-animation.css?v=6">
-<link rel="stylesheet" href="css/proto.css?v=6">
+<link rel="icon" href="svg/logo-healthpass.svg?v=7" type="image/svg+xml">
+<link rel="stylesheet" href="css/healthpass-components.css?v=7">
+<link rel="stylesheet" href="css/launch-animation.css?v=7">
+<link rel="stylesheet" href="css/proto.css?v=7">
 </head>
 <body class="hp-pin-page" id="hp-body">
 
@@ -98,13 +98,35 @@
       <div style="width:24px;height:24px;border-radius:50%;border:2.5px solid rgba(29,59,42,0.15);border-top-color:#1D3B2A;animation:hp-spin 0.65s linear infinite;"></div>
     </div>
     <div id="hp-app"></div>
+
+    <!-- QR share sheet — lives outside #hp-app so it survives page navigation
+         (its content is filled in dynamically per-page by openQrModal()). -->
+    <div id="qr-backdrop" onclick="closeQrModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);backdrop-filter:blur(4px);z-index:149;opacity:0;"></div>
+    <div id="qr-modal" style="display:none;position:fixed;left:0;right:0;bottom:0;max-width:412px;margin:0 auto;background:var(--app-base);border-radius:24px 24px 0 0;z-index:150;padding:32px;box-sizing:border-box;max-height:75vh;overflow-y:auto;transform:translateY(100%);transition:transform 0.3s ease;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+        <div class="header" id="qr-modal-title" style="color:var(--app-text);"></div>
+        <button onclick="closeQrModal()" style="width:40px;height:40px;border-radius:999px;background:var(--app-surface);border:none;cursor:pointer;padding:4px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M5.29289 5.29289C5.68342 4.90237 6.31658 4.90237 6.70711 5.29289L12 10.5858L17.2929 5.29289C17.6834 4.90237 18.3166 4.90237 18.7071 5.29289C19.0976 5.68342 19.0976 6.31658 18.7071 6.70711L13.4142 12L18.7071 17.2929C19.0976 17.6834 19.0976 18.3166 18.7071 18.7071C18.3166 19.0976 17.6834 19.0976 17.2929 18.7071L12 13.4142L6.70711 18.7071C6.31658 19.0976 5.68342 19.0976 5.29289 18.7071C4.90237 18.3166 4.90237 17.6834 5.29289 17.2929L10.5858 12L5.29289 6.70711C4.90237 6.31658 4.90237 5.68342 5.29289 5.29289Z" fill="var(--app-text)"/>
+          </svg>
+        </button>
+      </div>
+      <div style="background:var(--app-surface);border-radius:24px;padding:16px;text-align:center;">
+        <div id="qrcode-modal" style="display:flex;align-items:center;justify-content:center;min-height:316px;"></div>
+      </div>
+      <div style="margin-top:24px;text-align:center;">
+        <div class="text regular" style="color:var(--gray-dark);margin-bottom:8px;">PIN code</div>
+        <div id="qr-modal-pin" style="display:inline-flex;gap:8px;"></div>
+        <div class="text regular" style="color:var(--gray-dark);margin-top:12px;font-size:13px;">Share this PIN with the person scanning the QR code</div>
+      </div>
+    </div>
   </div>
 
-  <script src="js/qr-code-styling-1.6.0-rc.1.js?v=6"></script>
-  <script src="js/data.js?v=6"></script>
-  <script src="js/pin.js?v=6"></script>
-  <script src="js/app.js?v=6"></script>
-  <script src="js/launch-animation.js?v=6"></script>
+  <script src="js/qr-code-styling-1.6.0-rc.1.js?v=7"></script>
+  <script src="js/data.js?v=7"></script>
+  <script src="js/pin.js?v=7"></script>
+  <script src="js/app.js?v=7"></script>
+  <script src="js/launch-animation.js?v=7"></script>
   <script>
     window.hpUnlock = function () {
       sessionStorage.setItem('hp_unlocked', '1');
