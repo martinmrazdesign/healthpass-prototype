@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <title>healthpass</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<link rel="icon" href="svg/logo-healthpass.svg?v=11" type="image/svg+xml">
-<link rel="stylesheet" href="css/healthpass-components.css?v=11">
-<link rel="stylesheet" href="css/launch-animation.css?v=11">
-<link rel="stylesheet" href="css/proto.css?v=11">
+<link rel="icon" href="svg/logo-healthpass.svg?v=12" type="image/svg+xml">
+<link rel="stylesheet" href="css/healthpass-components.css?v=12">
+<link rel="stylesheet" href="css/launch-animation.css?v=12">
+<link rel="stylesheet" href="css/proto.css?v=12">
 </head>
 <body class="hp-pin-page" id="hp-body">
 
@@ -53,10 +53,9 @@
 
   <!-- ============================ PIN SCREEN ============================ -->
   <div id="hp-pin-screen" style="opacity:0;pointer-events:none;">
-    <div class="hp-pin-content" id="hp-pin-content" style="height:100%;padding:0 24px;">
-      <div class="hp-pin-container">
-        <div style="flex:0.6;"></div>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:13px;">
+    <div class="hp-pin-content" id="hp-pin-content" style="height:100%;padding:40px 24px 0;">
+      <div class="hp-pin-container" style="flex:0 0 auto;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:24px;">
           <p id="hp-pin-heading" style="font-size:18px;font-weight:500;color:var(--app-text);letter-spacing:-0.02em;text-align:center;">Unlock HealthPass with PIN</p>
           <div class="hp-pin-dots">
             <div class="hp-pin-dot"></div>
@@ -66,7 +65,7 @@
           </div>
         </div>
 
-        <div style="flex:1;"></div>
+        <div style="height:72px;"></div>
 
         <div class="hp-keypad">
           <button type="button" class="hp-key" data-digit="1">1</button>
@@ -85,7 +84,7 @@
           </button>
         </div>
 
-        <div style="flex:1;"></div>
+        <div style="height:72px;"></div>
 
         <p class="text regular" style="color:var(--gray-dark);text-align:center;padding-bottom:calc(40px + env(safe-area-inset-bottom, 0px));">Prototype PIN: 1234</p>
       </div>
@@ -122,11 +121,11 @@
     </div>
   </div>
 
-  <script src="js/qr-code-styling-1.6.0-rc.1.js?v=11"></script>
-  <script src="js/data.js?v=11"></script>
-  <script src="js/pin.js?v=11"></script>
-  <script src="js/app.js?v=11"></script>
-  <script src="js/launch-animation.js?v=11"></script>
+  <script src="js/qr-code-styling-1.6.0-rc.1.js?v=12"></script>
+  <script src="js/data.js?v=12"></script>
+  <script src="js/pin.js?v=12"></script>
+  <script src="js/app.js?v=12"></script>
+  <script src="js/launch-animation.js?v=12"></script>
   <script>
     window.hpUnlock = function () {
       sessionStorage.setItem('hp_unlocked', '1');
