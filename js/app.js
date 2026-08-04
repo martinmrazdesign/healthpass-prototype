@@ -363,13 +363,13 @@ window.openQrModal = function () {
   container.dataset.rendered = '1';
   try {
     new QRCodeStyling({
-      width: 316, height: 316, type: 'canvas',
+      width: 316, height: 316, type: 'svg',
       data: 'https://wa.me/15550100000?text=healthpass-demo-share-3225',
       dotsOptions: { color: '#0a3922', type: 'rounded' },
       cornersSquareOptions: { color: '#0a3922', type: 'extra-rounded' },
       cornersDotOptions: { color: '#0a3922', type: 'dot' },
       backgroundOptions: { color: '#ffffff' },
-      image: 'svg/logo-healthpass.svg',
+      image: 'svg/logo-healthpass.svg?v=2',
       imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
     }).append(container);
   } catch (e) {
