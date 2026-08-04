@@ -117,7 +117,7 @@ const STATUS_LABELS = {
 function statusBadge(kind) {
   const s = STATUS_LABELS[kind] || STATUS_LABELS.done;
   return `<div style="background:${s.bg};display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:8px;flex-shrink:0;">
-    <img src="${s.icon}" width="16" height="16" alt="">
+    <img src="${s.icon}" style="height:16px;width:auto;display:block;" alt="">
     <span class="text bold" style="color:${s.color};">${esc(s.text)}</span>
   </div>`;
 }
@@ -259,7 +259,7 @@ function renderHome() {
             <span class="header" style="color:var(--app-text);">${esc(PATIENT.name)}</span>
             ${hasFamily ? iconButton({ size: 'M', style: 'Secondary', onclick: 'toggleFamilyDropdown()', iconHtml: '<img src="svg/hp-chevron-down.svg" width="24" height="24" alt="">' }) : ''}
           </div>
-          <div id="family-panel-backdrop" onclick="closeFamilyPanel()" style="display:none;position:fixed;inset:0;background:rgba(10,57,34,0.08);backdrop-filter:blur(4px);z-index:100;"></div>
+          <div id="family-panel-backdrop" onclick="closeFamilyPanel()" style="display:none;position:fixed;inset:0;background:rgba(10,57,34,0.08);backdrop-filter:blur(4px);z-index:100;opacity:0;"></div>
           <div id="family-panel" style="display:none;position:fixed;bottom:0;left:0;right:0;background:var(--app-base);border-radius:24px 24px 0 0;z-index:101;padding:32px;max-height:85vh;overflow-y:auto;box-sizing:border-box;transform:translateY(100%);transition:transform 0.3s ease;">
             <div style="width:36px;height:4px;border-radius:2px;background:var(--gray-light);margin:0 auto 20px;"></div>
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
@@ -285,7 +285,7 @@ function renderHome() {
         ${iconButton({ size: 'L', style: 'Primary', onclick: 'openQrModal()', iconHtml: '<img src="svg/figma-icon-qr.svg" width="24" height="24" alt="">' })}
       </div>
 
-      <div id="qr-backdrop" onclick="closeQrModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:149;"></div>
+      <div id="qr-backdrop" onclick="closeQrModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);backdrop-filter:blur(4px);z-index:149;opacity:0;"></div>
       <div id="qr-modal" style="display:none;position:fixed;left:0;right:0;bottom:0;max-width:412px;margin:0 auto;background:var(--app-base);border-radius:24px 24px 0 0;z-index:150;padding:32px;box-sizing:border-box;max-height:75vh;overflow-y:auto;transform:translateY(100%);transition:transform 0.3s ease;">
         <div style="width:36px;height:4px;border-radius:2px;background:var(--gray-light);margin:0 auto 20px;"></div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
@@ -384,34 +384,49 @@ function initSheetDrag(sheetId, closeFn) {
   sheet.addEventListener('touchcancel', finish);
 }
 
+/* Backdrops fade in/out in step with their sheet's slide, instead of
+   snapping visible/hidden — same 300ms as the sheet transform below. */
+function showBackdrop(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.style.display = 'block';
+  el.style.transition = 'none';
+  el.style.opacity = '0';
+  void el.offsetWidth; // force reflow so the transition below animates
+  el.style.transition = 'opacity 0.3s ease';
+  el.style.opacity = '1';
+}
+function hideBackdrop(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.style.transition = 'opacity 0.3s ease';
+  el.style.opacity = '0';
+  setTimeout(() => { el.style.display = 'none'; }, 300);
+}
+
 window.toggleFamilyDropdown = function () {
   const panel = document.getElementById('family-panel');
-  const backdrop = document.getElementById('family-panel-backdrop');
   if (!panel) return;
   const isOpen = panel.style.display === 'block';
   if (isOpen) { window.closeFamilyPanel(); return; }
   initSheetDrag('family-panel', window.closeFamilyPanel);
-  backdrop.style.display = 'block';
+  showBackdrop('family-panel-backdrop');
   panel.style.display = 'block';
   void panel.offsetWidth; // force reflow so the transform transition below animates
   panel.style.transform = 'translateY(0)';
 };
 window.closeFamilyPanel = function () {
   const panel = document.getElementById('family-panel');
-  const backdrop = document.getElementById('family-panel-backdrop');
   if (!panel) return;
   panel.style.transition = 'transform 0.3s ease';
   panel.style.transform = 'translateY(100%)';
-  setTimeout(() => {
-    panel.style.display = 'none';
-    if (backdrop) backdrop.style.display = 'none';
-  }, 300);
+  hideBackdrop('family-panel-backdrop');
+  setTimeout(() => { panel.style.display = 'none'; }, 300);
 };
 window.openQrModal = function () {
   const modal = document.getElementById('qr-modal');
-  const backdrop = document.getElementById('qr-backdrop');
   initSheetDrag('qr-modal', window.closeQrModal);
-  backdrop.style.display = 'block';
+  showBackdrop('qr-backdrop');
   modal.style.display = 'block';
   document.body.style.overflow = 'hidden';
   void modal.offsetWidth; // force reflow so the transform transition below animates
@@ -428,7 +443,7 @@ window.openQrModal = function () {
       cornersSquareOptions: { color: '#0a3922', type: 'extra-rounded' },
       cornersDotOptions: { color: '#0a3922', type: 'dot' },
       backgroundOptions: { color: '#ffffff' },
-      image: 'svg/logo-healthpass.svg?v=2',
+      image: 'svg/logo-healthpass.svg?v=3',
       imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
     }).append(container);
   } catch (e) {
@@ -438,14 +453,11 @@ window.openQrModal = function () {
 
 window.closeQrModal = function () {
   const modal = document.getElementById('qr-modal');
-  const backdrop = document.getElementById('qr-backdrop');
   modal.style.transition = 'transform 0.3s ease';
   modal.style.transform = 'translateY(100%)';
   document.body.style.overflow = '';
-  setTimeout(() => {
-    modal.style.display = 'none';
-    backdrop.style.display = 'none';
-  }, 300);
+  hideBackdrop('qr-backdrop');
+  setTimeout(() => { modal.style.display = 'none'; }, 300);
 };
 
 /* ---------------------------------------------------------------------- */
