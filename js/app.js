@@ -78,6 +78,26 @@ function chevronButton() {
   </div>`;
 }
 
+function closeIcon(color, size = 24) {
+  return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M5.29289 5.29289C5.68342 4.90237 6.31658 4.90237 6.70711 5.29289L12 10.5858L17.2929 5.29289C17.6834 4.90237 18.3166 4.90237 18.7071 5.29289C19.0976 5.68342 19.0976 6.31658 18.7071 6.70711L13.4142 12L18.7071 17.2929C19.0976 17.6834 19.0976 18.3166 18.7071 18.7071C18.3166 19.0976 17.6834 19.0976 17.2929 18.7071L12 13.4142L6.70711 18.7071C6.31658 19.0976 5.68342 19.0976 5.29289 18.7071C4.90237 18.3166 4.90237 17.6834 5.29289 17.2929L10.5858 12L5.29289 6.70711C4.90237 6.31658 4.90237 5.68342 5.29289 5.29289Z" fill="${color}"/>
+  </svg>`;
+}
+
+/* Matches Figma's "Button" component (node 122:14927) — Icon variant only
+   (we have no "Combined" text+icon buttons in this prototype). Three sizes
+   (S:32 / M:40 / L:48, all with 4px padding around the icon) and three
+   styles (Primary: green-light bg, Secondary: white bg, Ghost: transparent). */
+const BUTTON_ICON_SIZE = { S: 32, M: 40, L: 48 };
+
+function iconButton({ size = 'M', style = 'Secondary', iconHtml, onclick = '', extra = '' }) {
+  const px = BUTTON_ICON_SIZE[size];
+  const bg = style === 'Primary' ? 'var(--green-light)' : style === 'Secondary' ? 'var(--app-surface)' : 'transparent';
+  return `<button ${onclick ? `onclick="${onclick}"` : ''} style="width:${px}px;height:${px}px;border-radius:999px;background:${bg};border:none;cursor:pointer;padding:4px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;flex-shrink:0;${extra}">
+    ${iconHtml}
+  </button>`;
+}
+
 /* Matches Figma's "Labels" component (node 244:6244) exactly — 10 fixed
    states across Progress/Range/Risk types, each with its own icon/bg/text
    color. Use the state's own key, don't invent new ones. */
@@ -237,16 +257,13 @@ function renderHome() {
         <div style="position:relative;">
           <div style="display:flex;align-items:center;gap:7px;">
             <span class="header" style="color:var(--app-text);">${esc(PATIENT.name)}</span>
-            ${hasFamily ? `
-            <button onclick="toggleFamilyDropdown()" style="background:var(--app-surface);border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;padding:0;">
-              <img src="svg/hp-chevron-down.svg" width="24" height="24" alt="">
-            </button>` : ''}
+            ${hasFamily ? iconButton({ size: 'M', style: 'Secondary', onclick: 'toggleFamilyDropdown()', iconHtml: '<img src="svg/hp-chevron-down.svg" width="24" height="24" alt="">' }) : ''}
           </div>
           <div id="family-panel-backdrop" onclick="closeFamilyPanel()" style="display:none;position:fixed;inset:0;background:rgba(10,57,34,0.08);backdrop-filter:blur(4px);z-index:100;"></div>
           <div id="family-panel" style="display:none;position:fixed;bottom:0;left:0;right:0;background:var(--app-base);border-radius:24px 24px 0 0;z-index:101;padding:32px;max-height:85vh;overflow-y:auto;">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
               <div class="header" style="color:var(--app-text);">Select profile</div>
-              <button onclick="closeFamilyPanel()" style="background:var(--app-surface);border:none;cursor:pointer;width:40px;height:40px;border-radius:48px;">✕</button>
+              ${iconButton({ size: 'M', style: 'Secondary', onclick: 'closeFamilyPanel()', iconHtml: closeIcon('var(--app-text)') })}
             </div>
             <div style="display:flex;flex-direction:column;gap:2px;">
               <a href="#/home" onclick="closeFamilyPanel();return false;" style="display:flex;align-items:center;justify-content:space-between;background:var(--app-surface);height:100px;padding:24px;border-radius:24px 24px 4px 4px;text-decoration:none;overflow:hidden;">
@@ -264,19 +281,17 @@ function renderHome() {
             </div>
           </div>
         </div>
-        <button onclick="openQrModal()" style="width:48px;height:48px;border-radius:32px;background:var(--green-light);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;">
-          <img src="svg/figma-icon-qr.svg" width="24" height="24" alt="">
-        </button>
+        ${iconButton({ size: 'L', style: 'Primary', onclick: 'openQrModal()', iconHtml: '<img src="svg/figma-icon-qr.svg" width="24" height="24" alt="">' })}
       </div>
 
       <div id="qr-backdrop" onclick="closeQrModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:149;"></div>
       <div id="qr-modal" style="display:none;position:fixed;left:0;right:0;bottom:0;max-width:412px;margin:0 auto;background:var(--app-base);border-radius:24px 24px 0 0;z-index:150;padding:32px;box-sizing:border-box;max-height:75vh;overflow-y:auto;transform:translateY(100%);transition:transform 0.3s ease;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
           <div class="header" style="color:var(--app-text);">${esc(PATIENT.name)}</div>
-          <button onclick="closeQrModal()" style="background:var(--app-surface);border:none;cursor:pointer;width:40px;height:40px;border-radius:48px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">✕</button>
+          ${iconButton({ size: 'M', style: 'Secondary', onclick: 'closeQrModal()', iconHtml: closeIcon('var(--app-text)') })}
         </div>
-        <div style="background:var(--app-surface);border-radius:24px;padding:24px;text-align:center;">
-          <div id="qrcode-modal" style="display:flex;align-items:center;justify-content:center;min-height:300px;"></div>
+        <div style="background:var(--app-surface);border-radius:24px;padding:16px;text-align:center;">
+          <div id="qrcode-modal" style="display:flex;align-items:center;justify-content:center;min-height:316px;"></div>
         </div>
         <div style="margin-top:24px;text-align:center;">
           <div class="text regular" style="color:var(--gray-dark);margin-bottom:8px;">PIN code</div>
@@ -348,7 +363,7 @@ window.openQrModal = function () {
   container.dataset.rendered = '1';
   try {
     new QRCodeStyling({
-      width: 300, height: 300, type: 'canvas',
+      width: 316, height: 316, type: 'canvas',
       data: 'https://wa.me/15550100000?text=healthpass-demo-share-3225',
       dotsOptions: { color: '#0a3922', type: 'rounded' },
       cornersSquareOptions: { color: '#0a3922', type: 'extra-rounded' },
