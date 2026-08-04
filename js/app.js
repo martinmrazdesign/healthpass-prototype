@@ -260,7 +260,8 @@ function renderHome() {
             ${hasFamily ? iconButton({ size: 'M', style: 'Secondary', onclick: 'toggleFamilyDropdown()', iconHtml: '<img src="svg/hp-chevron-down.svg" width="24" height="24" alt="">' }) : ''}
           </div>
           <div id="family-panel-backdrop" onclick="closeFamilyPanel()" style="display:none;position:fixed;inset:0;background:rgba(10,57,34,0.08);backdrop-filter:blur(4px);z-index:100;"></div>
-          <div id="family-panel" style="display:none;position:fixed;bottom:0;left:0;right:0;background:var(--app-base);border-radius:24px 24px 0 0;z-index:101;padding:32px;max-height:85vh;overflow-y:auto;">
+          <div id="family-panel" style="display:none;position:fixed;bottom:0;left:0;right:0;background:var(--app-base);border-radius:24px 24px 0 0;z-index:101;padding:32px;max-height:85vh;overflow-y:auto;box-sizing:border-box;transform:translateY(100%);transition:transform 0.3s ease;">
+            <div style="width:36px;height:4px;border-radius:2px;background:var(--gray-light);margin:0 auto 20px;"></div>
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
               <div class="header" style="color:var(--app-text);">Select profile</div>
               ${iconButton({ size: 'M', style: 'Secondary', onclick: 'closeFamilyPanel()', iconHtml: closeIcon('var(--app-text)') })}
@@ -286,6 +287,7 @@ function renderHome() {
 
       <div id="qr-backdrop" onclick="closeQrModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:149;"></div>
       <div id="qr-modal" style="display:none;position:fixed;left:0;right:0;bottom:0;max-width:412px;margin:0 auto;background:var(--app-base);border-radius:24px 24px 0 0;z-index:150;padding:32px;box-sizing:border-box;max-height:75vh;overflow-y:auto;transform:translateY(100%);transition:transform 0.3s ease;">
+        <div style="width:36px;height:4px;border-radius:2px;background:var(--gray-light);margin:0 auto 20px;"></div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
           <div class="header" style="color:var(--app-text);">${esc(PATIENT.name)}</div>
           ${iconButton({ size: 'M', style: 'Secondary', onclick: 'closeQrModal()', iconHtml: closeIcon('var(--app-text)') })}
@@ -334,24 +336,81 @@ function renderHome() {
     </div>`;
 }
 
+/* Lets a bottom-sheet element (qr-modal / family-panel) be dragged down to
+   dismiss, matching native mobile sheet behavior. Only engages once the
+   touch has moved >8px downward (so ordinary taps/clicks on rows inside the
+   sheet are untouched), and only when the sheet's own scroll is already at
+   the top (so it doesn't hijack scrolling a long list). Idempotent per
+   element instance — safe to call every time the sheet is opened, since the
+   markup is re-created on each home-page render. */
+function initSheetDrag(sheetId, closeFn) {
+  const sheet = document.getElementById(sheetId);
+  if (!sheet || sheet.dataset.dragBound) return;
+  sheet.dataset.dragBound = '1';
+
+  let startY = 0, active = false, dragging = false;
+
+  sheet.addEventListener('touchstart', (e) => {
+    if (sheet.scrollTop > 0) { active = false; return; }
+    active = true;
+    dragging = false;
+    startY = e.touches[0].clientY;
+  }, { passive: true });
+
+  sheet.addEventListener('touchmove', (e) => {
+    if (!active) return;
+    const delta = e.touches[0].clientY - startY;
+    if (!dragging) {
+      if (delta > 8) { dragging = true; sheet.style.transition = 'none'; }
+      else if (delta < 0) { active = false; return; }
+      else return;
+    }
+    e.preventDefault();
+    sheet.style.transform = `translateY(${delta}px)`;
+  }, { passive: false });
+
+  function finish(e) {
+    if (!active) return;
+    active = false;
+    if (!dragging) return;
+    dragging = false;
+    sheet.style.transition = 'transform 0.3s ease';
+    const lastY = (e.changedTouches && e.changedTouches[0].clientY) || startY;
+    const delta = Math.max(0, lastY - startY);
+    if (delta > 100) closeFn();
+    else sheet.style.transform = 'translateY(0)';
+  }
+  sheet.addEventListener('touchend', finish);
+  sheet.addEventListener('touchcancel', finish);
+}
+
 window.toggleFamilyDropdown = function () {
   const panel = document.getElementById('family-panel');
   const backdrop = document.getElementById('family-panel-backdrop');
   if (!panel) return;
-  const isOpen = panel.style.display !== 'none';
+  const isOpen = panel.style.display === 'block';
   if (isOpen) { window.closeFamilyPanel(); return; }
-  panel.style.display = 'block';
+  initSheetDrag('family-panel', window.closeFamilyPanel);
   backdrop.style.display = 'block';
+  panel.style.display = 'block';
+  void panel.offsetWidth; // force reflow so the transform transition below animates
+  panel.style.transform = 'translateY(0)';
 };
 window.closeFamilyPanel = function () {
   const panel = document.getElementById('family-panel');
   const backdrop = document.getElementById('family-panel-backdrop');
-  if (panel) panel.style.display = 'none';
-  if (backdrop) backdrop.style.display = 'none';
+  if (!panel) return;
+  panel.style.transition = 'transform 0.3s ease';
+  panel.style.transform = 'translateY(100%)';
+  setTimeout(() => {
+    panel.style.display = 'none';
+    if (backdrop) backdrop.style.display = 'none';
+  }, 300);
 };
 window.openQrModal = function () {
   const modal = document.getElementById('qr-modal');
   const backdrop = document.getElementById('qr-backdrop');
+  initSheetDrag('qr-modal', window.closeQrModal);
   backdrop.style.display = 'block';
   modal.style.display = 'block';
   document.body.style.overflow = 'hidden';
@@ -380,6 +439,7 @@ window.openQrModal = function () {
 window.closeQrModal = function () {
   const modal = document.getElementById('qr-modal');
   const backdrop = document.getElementById('qr-backdrop');
+  modal.style.transition = 'transform 0.3s ease';
   modal.style.transform = 'translateY(100%)';
   document.body.style.overflow = '';
   setTimeout(() => {
