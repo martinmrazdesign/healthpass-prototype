@@ -16,6 +16,19 @@ const CATEGORIES = {
   about:         { label: 'About me',      accent: 'var(--green-dark)',          surface: 'var(--white)',                 lightest: 'var(--about-base)',         icon: 'svg/hp-about-light.svg',         iconDark: 'svg/hp-about-dark.svg' },
 };
 
+/* Per-kind document icons (Figma "Icon=<kind>, Background=Light" export set).
+   Falls back to the generic document icon for any kind not in this list. */
+const DOCUMENT_ICONS = {
+  'Visit summary': 'svg/hp-doc-visit-summary.svg',
+  'Lab report':     'svg/hp-doc-lab-results.svg',
+  'Prescription':   'svg/hp-doc-prescription.svg',
+  'Referral':        'svg/hp-doc-referral.svg',
+  'Sick note':       'svg/hp-doc-sicknote.svg',
+};
+function docIcon(kind) {
+  return DOCUMENT_ICONS[kind] || 'svg/hp-doc-generic.svg';
+}
+
 /* Recents activity cards use their own icon/wave art + colors, distinct from the
    Your Health row icons above — matches the Figma "Activity" component variants. */
 const ACTIVITY_META = {
@@ -188,7 +201,7 @@ function detailPage({ category, title, badgeHtml, subtitleLeft, subtitleRight, c
           </div>
         </div>
         ${sectionBox(allCards)}
-        ${extraSections.filter((rows) => rows.length).map((rows) => `<div style="margin-top:20px;">${sectionBox(rows)}</div>`).join('')}
+        ${extraSections.filter((rows) => rows.length).map((rows) => `<div style="margin-top:1px;">${sectionBox(rows)}</div>`).join('')}
       </div>
     </div>`;
 }
@@ -466,7 +479,7 @@ window.openQrModal = function () {
       cornersSquareOptions: { color: '#0a3922', type: 'extra-rounded' },
       cornersDotOptions: { color: '#0a3922', type: 'dot' },
       backgroundOptions: { color: '#ffffff' },
-      image: 'svg/logo-healthpass.svg?v=4',
+      image: 'svg/logo-healthpass.svg?v=5',
       imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
     }).append(container);
   } catch (e) {
@@ -671,7 +684,7 @@ function renderVisitsDetail(id) {
   ];
   const documentRows = v.documents.map((d) => `
     <a href="#/documents" style="text-decoration:none;color:inherit;display:block;">
-      ${cardRow({ title: d.kind, subtitle: d.description, date: d.date, trailing: chevronButton() })}
+      ${cardRow({ icon: docIcon(d.kind), title: d.kind, trailing: chevronButton() })}
     </a>`);
   return detailPage({
     category: 'visits', title: v.title, badgeHtml: '', subtitleLeft: v.provider, subtitleRight: v.date,
