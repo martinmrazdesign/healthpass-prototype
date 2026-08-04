@@ -276,7 +276,7 @@ function renderHome() {
           <button onclick="closeQrModal()" style="background:var(--app-surface);border:none;cursor:pointer;width:40px;height:40px;border-radius:48px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">✕</button>
         </div>
         <div style="background:var(--app-surface);border-radius:24px;padding:24px;text-align:center;">
-          <div id="qrcode-modal" style="display:flex;align-items:center;justify-content:center;min-height:220px;"></div>
+          <div id="qrcode-modal" style="display:flex;align-items:center;justify-content:center;min-height:300px;"></div>
         </div>
         <div style="margin-top:24px;text-align:center;">
           <div class="text regular" style="color:var(--gray-dark);margin-bottom:8px;">PIN code</div>
@@ -348,7 +348,7 @@ window.openQrModal = function () {
   container.dataset.rendered = '1';
   try {
     new QRCodeStyling({
-      width: 220, height: 220, type: 'canvas',
+      width: 300, height: 300, type: 'canvas',
       data: 'https://wa.me/15550100000?text=healthpass-demo-share-3225',
       dotsOptions: { color: '#0a3922', type: 'rounded' },
       cornersSquareOptions: { color: '#0a3922', type: 'extra-rounded' },
