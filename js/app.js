@@ -210,13 +210,14 @@ function detailPage({ category, title, badgeHtml, subtitleLeft, subtitleRight, c
    page — a gradient-tinted nested card (distinct from the plainer "AI
    Summary" block used on Lab Results) with an "AI generated" pill. */
 function aiInsightCard(bodyText) {
-  return `<div style="background:linear-gradient(135deg, var(--orange-lightest), var(--lavender-lightest));border-radius:16px;padding:16px;">
+  return `<div style="background:
+      radial-gradient(circle at 52% 6%, rgba(255,144,89,0.55), transparent 42%),
+      radial-gradient(circle at 12% 92%, rgba(151,120,255,0.45), transparent 48%),
+      radial-gradient(circle at 90% 60%, rgba(232,146,255,0.45), transparent 48%),
+      #f3f1fa;border-radius:16px;padding:16px;">
     <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;">
       <span class="title" style="color:var(--lavender-darkest);">What's going on?</span>
-      <div style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:24px;background:linear-gradient(135deg, #8C24E7, #FF643B);flex-shrink:0;">
-        <img src="svg/ai-gradient.svg" width="14" height="14" alt="" style="filter:brightness(0) invert(1);">
-        <span class="text bold" style="color:var(--white);font-size:12px;">AI generated</span>
-      </div>
+      <img src="svg/hp-ai-label.svg" width="125" height="26" alt="AI generated" style="flex-shrink:0;">
     </div>
     <div class="text regular" style="color:var(--app-text);line-height:1.5;margin-bottom:10px;">${esc(bodyText)}</div>
     <div class="text small" style="color:var(--gray-dark);">AI can make mistakes. Check with your doctor.</div>
@@ -479,7 +480,7 @@ window.openQrModal = function () {
       cornersSquareOptions: { color: '#0a3922', type: 'extra-rounded' },
       cornersDotOptions: { color: '#0a3922', type: 'dot' },
       backgroundOptions: { color: '#ffffff' },
-      image: 'svg/logo-healthpass.svg?v=5',
+      image: 'svg/logo-healthpass.svg?v=6',
       imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
     }).append(container);
   } catch (e) {
