@@ -65,8 +65,10 @@
     height: 65px;
     z-index: 3;
     opacity: 0;
-    animation: hp-cloud-anim 2.0s forwards;
+    animation: hp-cloud-anim-a 2.0s forwards;
 }
+/* ?variant=b on the URL swaps in the alternate wobble (see body class set in index.html) */
+body.hp-variant-b .hp-cloud-icon { animation-name: hp-cloud-anim-b; }
 
 /*
  * Positions taken directly from Figma frame 1521:21844 (412×917 phone).
@@ -84,21 +86,27 @@
 .hp-ci-8 { top:-127px; left: 55px; --ex:-70px; --ey:-20px; --cx:  83px; --cy: 221px; --rot: 18deg; --lr:  8deg; animation-delay:0.35s; }
 .hp-ci-9 { top:-105px; left:146px; --ex: 30px; --ey: 30px; --cx:  -8px; --cy: 199px; --rot:-14deg; --lr: -7deg; animation-delay:0.40s; }
 
-@keyframes hp-cloud-anim {
+/* Variant A — no wobble at all. The bounce-in easing on entry does all the
+   "landing" work; the icon just holds still until it collapses into the folder. */
+@keyframes hp-cloud-anim-a {
     0%  { opacity: 0; transform: translate(var(--ex), var(--ey)) scale(0.3) rotate(var(--rot)); animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1); }
-    15% { opacity: 1; transform: translate(0, 0) scale(1) rotate(var(--lr)); animation-timing-function: linear; }
-    19% { transform: rotate(calc(var(--lr) - 7deg)); animation-timing-function: linear; }
-    23% { transform: rotate(calc(var(--lr) + 7deg)); animation-timing-function: linear; }
-    27% { transform: rotate(calc(var(--lr) - 7deg)); animation-timing-function: linear; }
-    31% { transform: rotate(calc(var(--lr) + 7deg)); animation-timing-function: linear; }
-    35% { transform: rotate(calc(var(--lr) - 7deg)); animation-timing-function: linear; }
-    39% { transform: rotate(calc(var(--lr) + 7deg)); animation-timing-function: linear; }
-    43% { transform: rotate(calc(var(--lr) - 7deg)); animation-timing-function: linear; }
-    47% { transform: rotate(calc(var(--lr) + 7deg)); animation-timing-function: linear; }
-    51% { transform: rotate(calc(var(--lr) - 7deg)); animation-timing-function: linear; }
-    55% { transform: rotate(calc(var(--lr) + 7deg)); animation-timing-function: linear; }
-    59% { transform: rotate(calc(var(--lr) - 7deg)); animation-timing-function: linear; }
-    63% { transform: rotate(var(--lr)); animation-timing-function: ease-in; }
+    15% { opacity: 1; transform: translate(0, 0) scale(1) rotate(var(--lr)); animation-timing-function: cubic-bezier(0.4, 0, 1, 1); }
+    69% { opacity: 1; transform: translate(0, 0) rotate(var(--lr)); animation-timing-function: cubic-bezier(0.4, 0, 1, 1); }
+    80% { opacity: 1; transform: translate(var(--cx), var(--cy)) rotate(var(--lr)); animation-timing-function: linear; }
+    87% { opacity: 0; transform: translate(var(--cx), var(--cy)) rotate(var(--lr)); }
+    100% { opacity: 0; transform: translate(var(--cx), var(--cy)) rotate(var(--lr)); }
+}
+
+/* Variant B — a real decaying wobble (3 swings, shrinking amplitude, easing
+   out each time) instead of 12 identical linear snaps — reads as settling
+   rather than shaking. */
+@keyframes hp-cloud-anim-b {
+    0%  { opacity: 0; transform: translate(var(--ex), var(--ey)) scale(0.3) rotate(var(--rot)); animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1); }
+    15% { opacity: 1; transform: translate(0, 0) scale(1) rotate(var(--lr)); animation-timing-function: ease-out; }
+    24% { transform: rotate(calc(var(--lr) - 7deg)); animation-timing-function: ease-out; }
+    33% { transform: rotate(calc(var(--lr) + 4deg)); animation-timing-function: ease-out; }
+    42% { transform: rotate(calc(var(--lr) - 2deg)); animation-timing-function: ease-out; }
+    50% { transform: rotate(var(--lr)); animation-timing-function: cubic-bezier(0.4, 0, 1, 1); }
     69% { opacity: 1; transform: translate(0, 0) rotate(var(--lr)); animation-timing-function: cubic-bezier(0.4, 0, 1, 1); }
     80% { opacity: 1; transform: translate(var(--cx), var(--cy)) rotate(var(--lr)); animation-timing-function: linear; }
     87% { opacity: 0; transform: translate(var(--cx), var(--cy)) rotate(var(--lr)); }
