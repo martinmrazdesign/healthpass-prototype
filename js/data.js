@@ -87,11 +87,37 @@ const IMMUNIZATIONS = [
 
 const VISITS = [
   { id: 'v-1', title: 'Annual Checkup', provider: 'Dr. Amina Okoye', location: 'Springfield Family Clinic', date: 'Jun 30, 2026',
-    summary: 'Routine annual physical. Patient reports feeling well overall. Vitals stable and within normal limits. Discussed seasonal allergy management. No new concerns raised. Follow-up in 12 months unless symptoms arise.' },
+    aiSummary: 'Your annual physical came back normal. Vitals are stable and within a healthy range. Keep up your current routine — no follow-up needed for a year.',
+    soap: {
+      reported: 'No specific complaints. Here for a routine annual physical.',
+      examination: 'Temp 98.4°F, heart rate 68 bpm, blood pressure 118/76 mmHg, oxygen saturation 98%. Heart and lungs clear. No abnormal findings.',
+      diagnosis: 'Healthy adult, routine exam — no acute findings.',
+      recommendation: 'Continue current diet and exercise routine. Discussed seasonal allergy management. Follow-up in 12 months unless symptoms arise.',
+    },
+    documents: [] },
   { id: 'v-2', title: 'Urgent Care — Sprained Ankle', provider: 'Dr. Wei Zhang', location: 'Springfield Urgent Care', date: 'Apr 2, 2026',
-    summary: 'Patient presented with right ankle pain after a fall. X-ray negative for fracture. Diagnosed as grade 1 lateral ankle sprain. Recommended RICE protocol, ibuprofen for pain, and follow-up if symptoms persist beyond 2 weeks.' },
+    aiSummary: 'You have a grade 1 ankle sprain from a fall. The X-ray shows no fracture. Rest, ice, and ibuprofen should help. Follow up if it hasn’t improved within 2 weeks.',
+    soap: {
+      reported: 'Right ankle pain and swelling after a fall earlier today. Difficulty bearing weight.',
+      examination: 'Right ankle: mild swelling and tenderness over the lateral ligaments, no bony tenderness. Range of motion limited by pain. X-ray negative for fracture.',
+      diagnosis: 'Grade 1 lateral ankle sprain.',
+      recommendation: 'RICE protocol (rest, ice, compression, elevation). Ibuprofen 400mg as needed for pain. Follow up if symptoms persist beyond 2 weeks.',
+    },
+    documents: [
+      { kind: 'Prescription', description: 'Ibuprofen for ankle sprain', date: 'Apr 2, 2026' },
+      { kind: 'Sick note', description: 'Urgent care visit — ankle sprain', date: 'Apr 2, 2026' },
+    ] },
   { id: 'v-3', title: 'Allergy Consultation', provider: 'Dr. Priya Nair', location: 'Springfield Family Clinic', date: 'Mar 2, 2026',
-    summary: 'Consultation for seasonal allergy symptoms. Prescribed Loratadine 10mg daily during allergy season. Discussed environmental triggers and avoidance strategies.' },
+    aiSummary: 'Seasonal allergy symptoms confirmed. You’ve started a daily antihistamine and discussed avoiding triggers — nothing here needs urgent attention.',
+    soap: {
+      reported: 'Sneezing, itchy eyes, and nasal congestion during spring. Symptoms recur seasonally.',
+      examination: 'Nasal mucosa mildly swollen. Eyes mildly red, no discharge. Lungs clear.',
+      diagnosis: 'Seasonal allergic rhinitis.',
+      recommendation: 'Start Loratadine 10mg daily during allergy season. Discussed environmental triggers and avoidance strategies.',
+    },
+    documents: [
+      { kind: 'Prescription', description: 'Loratadine for seasonal allergies', date: 'Mar 2, 2026' },
+    ] },
 ];
 
 const DOCUMENTS = [

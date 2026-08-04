@@ -163,7 +163,7 @@ function listPage({ category, title, backUrl, rows }) {
     </div>`;
 }
 
-function detailPage({ category, title, badgeHtml, subtitleLeft, subtitleRight, chartHtml, backUrl, cards }) {
+function detailPage({ category, title, badgeHtml, subtitleLeft, subtitleRight, chartHtml, backUrl, cards, extraSections = [] }) {
   const c = CATEGORIES[category];
   const extraRows = [];
   if (badgeHtml) extraRows.push(badgeHtml);
@@ -188,8 +188,33 @@ function detailPage({ category, title, badgeHtml, subtitleLeft, subtitleRight, c
           </div>
         </div>
         ${sectionBox(allCards)}
+        ${extraSections.filter((rows) => rows.length).map((rows) => `<div style="margin-top:20px;">${sectionBox(rows)}</div>`).join('')}
       </div>
     </div>`;
+}
+
+/* Matches Figma's "What's going on?" AI-insight card on the Visit detail
+   page — a gradient-tinted nested card (distinct from the plainer "AI
+   Summary" block used on Lab Results) with an "AI generated" pill. */
+function aiInsightCard(bodyText) {
+  return `<div style="background:linear-gradient(135deg, var(--orange-lightest), var(--lavender-lightest));border-radius:16px;padding:16px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;">
+      <span class="title" style="color:var(--lavender-darkest);">What's going on?</span>
+      <div style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:24px;background:linear-gradient(135deg, #8C24E7, #FF643B);flex-shrink:0;">
+        <img src="svg/ai-gradient.svg" width="14" height="14" alt="" style="filter:brightness(0) invert(1);">
+        <span class="text bold" style="color:var(--white);font-size:12px;">AI generated</span>
+      </div>
+    </div>
+    <div class="text regular" style="color:var(--app-text);line-height:1.5;margin-bottom:10px;">${esc(bodyText)}</div>
+    <div class="text small" style="color:var(--gray-dark);">AI can make mistakes. Check with your doctor.</div>
+  </div>`;
+}
+
+function soapRow(label, value) {
+  return `<div>
+    <div class="title" style="color:var(--app-text);margin-bottom:6px;">${esc(label)}</div>
+    <div class="text regular" style="color:var(--gray-dark);line-height:1.5;">${esc(value)}</div>
+  </div>`;
 }
 
 function infoRow(label, value) {
@@ -261,7 +286,6 @@ function renderHome() {
           </div>
           <div id="family-panel-backdrop" onclick="closeFamilyPanel()" style="display:none;position:fixed;inset:0;background:rgba(10,57,34,0.08);backdrop-filter:blur(4px);z-index:100;opacity:0;"></div>
           <div id="family-panel" style="display:none;position:fixed;bottom:0;left:0;right:0;background:var(--app-base);border-radius:24px 24px 0 0;z-index:101;padding:32px;max-height:85vh;overflow-y:auto;box-sizing:border-box;transform:translateY(100%);transition:transform 0.3s ease;">
-            <div style="width:36px;height:4px;border-radius:2px;background:var(--gray-light);margin:0 auto 20px;"></div>
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
               <div class="header" style="color:var(--app-text);">Select profile</div>
               ${iconButton({ size: 'M', style: 'Secondary', onclick: 'closeFamilyPanel()', iconHtml: closeIcon('var(--app-text)') })}
@@ -287,7 +311,6 @@ function renderHome() {
 
       <div id="qr-backdrop" onclick="closeQrModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);backdrop-filter:blur(4px);z-index:149;opacity:0;"></div>
       <div id="qr-modal" style="display:none;position:fixed;left:0;right:0;bottom:0;max-width:412px;margin:0 auto;background:var(--app-base);border-radius:24px 24px 0 0;z-index:150;padding:32px;box-sizing:border-box;max-height:75vh;overflow-y:auto;transform:translateY(100%);transition:transform 0.3s ease;">
-        <div style="width:36px;height:4px;border-radius:2px;background:var(--gray-light);margin:0 auto 20px;"></div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
           <div class="header" style="color:var(--app-text);">${esc(PATIENT.name)}</div>
           ${iconButton({ size: 'M', style: 'Secondary', onclick: 'closeQrModal()', iconHtml: closeIcon('var(--app-text)') })}
@@ -443,7 +466,7 @@ window.openQrModal = function () {
       cornersSquareOptions: { color: '#0a3922', type: 'extra-rounded' },
       cornersDotOptions: { color: '#0a3922', type: 'dot' },
       backgroundOptions: { color: '#ffffff' },
-      image: 'svg/logo-healthpass.svg?v=3',
+      image: 'svg/logo-healthpass.svg?v=4',
       imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
     }).append(container);
   } catch (e) {
@@ -639,17 +662,20 @@ function renderVisitsList() {
 function renderVisitsDetail(id) {
   const v = VISITS.find((x) => x.id === id);
   if (!v) return renderVisitsList();
-  const cards = [`
-    ${infoRow('Provider', v.provider)}
-    ${infoRow('Location', v.location)}
-    ${infoRow('Date', v.date)}
-  `, `
-    <div class="text small" style="color:var(--gray-dark);text-transform:uppercase;margin-bottom:6px;">Visit summary</div>
-    <div class="text regular" style="color:var(--app-text);line-height:1.5;">${esc(v.summary)}</div>
-  `];
+  const cards = [
+    aiInsightCard(v.aiSummary),
+    soapRow('What you reported', v.soap.reported),
+    soapRow('Examination', v.soap.examination),
+    soapRow('Diagnosis', v.soap.diagnosis),
+    soapRow('Recommendation', v.soap.recommendation),
+  ];
+  const documentRows = v.documents.map((d) => `
+    <a href="#/documents" style="text-decoration:none;color:inherit;display:block;">
+      ${cardRow({ title: d.kind, subtitle: d.description, date: d.date, trailing: chevronButton() })}
+    </a>`);
   return detailPage({
     category: 'visits', title: v.title, badgeHtml: '', subtitleLeft: v.provider, subtitleRight: v.date,
-    chartHtml: '', backUrl: '#/visits', cards,
+    chartHtml: '', backUrl: '#/visits', cards, extraSections: [documentRows],
   });
 }
 
