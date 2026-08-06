@@ -186,7 +186,7 @@ const LAB_FLAG_KIND = {
 function statusBadge(kind) {
   const s = STATUS_LABELS[kind] || STATUS_LABELS.done;
   return `<div style="background:${s.bg};display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:8px;flex-shrink:0;">
-    <img src="${s.icon}" style="height:16px;width:auto;display:block;" alt="">
+    <img src="${s.icon}" width="16" height="16" style="display:block;" alt="">
     <span class="text bold" style="color:${s.color};">${esc(s.text)}</span>
   </div>`;
 }
@@ -542,7 +542,7 @@ window.openQrModal = function (title, data, icon) {
       cornersSquareOptions: { color: '#000000', type: 'extra-rounded' },
       cornersDotOptions: { color: '#000000', type: 'dot' },
       backgroundOptions: { color: '#ffffff' },
-      image: icon || 'svg/logo-healthpass.svg?v=32',
+      image: icon || 'svg/logo-healthpass.svg?v=33',
       imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
     }).append(container);
   } catch (e) {
