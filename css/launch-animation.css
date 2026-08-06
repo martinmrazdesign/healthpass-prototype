@@ -25,13 +25,15 @@
 
 /*
  * Fixed positioning = always relative to the VIEWPORT, regardless of scroll,
- * parent offsets, or document structure. This guarantees the folder lands
- * exactly 50px from the viewport bottom on every browser.
- * left: calc(50% - 170px) centers the 340px box without a transform.
+ * parent offsets, or document structure. top:50% + translateY(-50%) centers
+ * the folder vertically on every screen size instead of anchoring to the
+ * bottom edge.
+ * left: calc(50% - 170px) centers the 340px box horizontally without a transform.
  */
 .hp-splash-inner {
     position: fixed;
-    bottom: 50px;
+    top: 50%;
+    transform: translateY(-50%);
     left: calc(50% - 170px);
     width: 340px;
     height: 200px;
