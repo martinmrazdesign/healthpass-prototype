@@ -20,7 +20,7 @@ const FAMILY_MEMBERS = [
 
 const RECENTS = [
   { category: 'visit', label: 'Visit summary', title: 'Otorhinolaringology', date: 'Aug 3, 2026', detailUrl: '#/visits/v-1' },
-  { category: 'prescription', label: 'Prescription', title: 'By Maria Silva at Turn Clinic', date: 'Aug 4, 2026', detailUrl: '#/documents/doc-7' },
+  { category: 'prescription', label: 'Prescription', title: 'Otorhinolaringology', date: 'Aug 4, 2026', detailUrl: '#/documents/doc-7' },
   { category: 'allergy', label: 'Allergy', title: 'Penicillin', date: 'Aug 2, 2026', detailUrl: '#/allergies' },
   { category: 'labresult', label: 'Test result', title: 'Comprehensive Metabolic Panel', date: 'Aug 5, 2026', detailUrl: '#/labresults/lr-1' },
   { category: 'sicknote', label: 'Sick note', title: 'Urgent care visit (ankle sprain)', date: 'Aug 1, 2026', detailUrl: '#/documents/doc-4' },
