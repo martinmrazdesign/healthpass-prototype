@@ -538,7 +538,7 @@ window.openQrModal = function (title, data, icon) {
       cornersSquareOptions: { color: '#000000', type: 'extra-rounded' },
       cornersDotOptions: { color: '#000000', type: 'dot' },
       backgroundOptions: { color: '#ffffff' },
-      image: icon || 'svg/logo-healthpass.svg?v=37',
+      image: icon || 'svg/logo-healthpass.svg?v=38',
       imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
     }).append(container);
   } catch (e) {
@@ -595,26 +595,36 @@ function renderVitalsDetail(id) {
 }
 
 function renderPrescriptionList() {
-  /* Surfaces the 2 most recent prescription documents at the top (same row
-     style as the Documents list), with the ongoing-regimen Medications list
-     as its own section below — mirrors the Visit detail page's two-section
-     layout (visit info + its documents). Prescriptions live only here, not
-     as their own top-level Your Health row. */
+  /* Surfaces the 2 most recent prescription documents at the top of the SAME
+     list as the ongoing-regimen Medications — not a separate section. Their
+     tap target still goes to the Documents detail page; the "date" slot is
+     replaced with a "Ready to pick-up" badge instead. Medications below are
+     informational only (no chevron, not tappable) since there's no further
+     detail to drill into for something you're already taking. */
+  const readyBadge = `<div style="background:var(--yellow-lightest);display:inline-flex;align-items:center;padding:2px 8px;border-radius:8px;width:fit-content;">
+    <span class="text bold" style="color:var(--yellow-dark);">Ready to pick-up</span>
+  </div>`;
   const rxRows = DOCUMENTS.filter((d) => d.kind === 'Prescription').slice(0, 2).map((d) => `
     <a href="#/documents/${d.id}" style="text-decoration:none;color:inherit;display:block;">
-      ${cardRow({ title: d.kind, subtitle: d.relatedVisit, date: d.date, trailing: chevronButton() })}
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;">
+          <div class="title" style="color:var(--app-text);">${esc(d.kind)}</div>
+          <div class="text bold" style="color:var(--gray-darkest);">${esc(d.relatedVisit)}</div>
+          ${readyBadge}
+        </div>
+        ${chevronButton()}
+      </div>
     </a>`);
   const medRows = MEDICATIONS.map((m) => `
-    <a href="#/prescription/${m.id}" style="text-decoration:none;color:inherit;display:block;">
+    <div>
       ${cardRow({
         title: m.name,
         subtitle: m.dosage,
         subtitleColor: 'var(--gray-dark)',
         subtitleBold: false,
-        trailing: chevronButton(),
       })}
-    </a>`);
-  return listPage({ category: 'prescription', title: 'Medications', rows: rxRows, extraSections: [medRows] });
+    </div>`);
+  return listPage({ category: 'prescription', title: 'Medications', rows: [...rxRows, ...medRows] });
 }
 
 function renderPrescriptionDetail(id) {
