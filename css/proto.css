@@ -60,8 +60,11 @@ button:active { filter: brightness(0.93); }
    color instead of a generic dim: set --tap-bg inline (e.g. c.lightest) and
    add this class. Wins over the plain `button:active` rule above on
    specificity (0,2,0) vs (0,1,1), and resets the filter so the two don't
-   stack. Works on <a> too since it's not scoped to buttons. */
-.hp-tap-color:active { background-color: var(--tap-bg, transparent); filter: none; }
+   stack. Works on <a> too since it's not scoped to buttons.
+   :active covers mouse; .hp-tap-active is set by a touchstart/touchend
+   listener in app.js — :active alone is not reliably triggered by touch on
+   non-form elements (like our <a> back button) across mobile browsers. */
+.hp-tap-color:active, .hp-tap-color.hp-tap-active { background-color: var(--tap-bg, transparent); filter: none; }
 
 #hp-app { min-height: 100vh; max-width: 412px; margin: 0 auto; }
 
