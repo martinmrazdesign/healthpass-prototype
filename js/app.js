@@ -552,7 +552,7 @@ window.openQrModal = function (title, data, icon) {
       cornersSquareOptions: { color: '#000000', type: 'extra-rounded' },
       cornersDotOptions: { color: '#000000', type: 'dot' },
       backgroundOptions: { color: '#ffffff' },
-      image: icon || 'svg/logo-healthpass.svg?v=42',
+      image: icon || 'svg/logo-healthpass.svg?v=43',
       imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
     }).append(container);
   } catch (e) {
@@ -658,21 +658,21 @@ function vitalsChart(v, c) {
   const tipCx = Math.min(Math.max(lastCx, tipW / 2 + 2), W - tipW / 2 - 2);
 
   const pills = !isBP ? '' : `<div style="display:flex;gap:8px;justify-content:center;margin-bottom:14px;">
-    ${seriesDefs.map((s) => `<button type="button" class="hp-vchart-pill" data-series="${s.key}" data-active="true" style="border:none;cursor:pointer;padding:6px 14px;border-radius:20px;background:${s.color};font:inherit;">
-      <span class="text bold" style="color:#fff;">${esc(s.label)}</span>
+    ${seriesDefs.map((s) => `<button type="button" class="hp-vchart-pill" data-series="${s.key}" data-active="true" style="cursor:pointer;padding:5px 14px;border-radius:20px;background:transparent;border:1.5px solid ${s.color};font:inherit;">
+      <span class="text bold" style="color:${s.color};">${esc(s.label)}</span>
     </button>`).join('')}
   </div>`;
 
   return `<div class="hp-vchart-wrap">
     ${pills}
     <svg viewBox="0 0 ${W} ${H}" style="width:100%;display:block;overflow:visible;">
-      ${[yMax, (yMax + yMin) / 2, yMin].map((gy) => `<text x="${padL - 8}" y="${yAt(gy) + 4}" text-anchor="end" font-size="10" fill="var(--gray-dark)">${Math.round(gy)}</text>`).join('')}
-      ${v.readings.map((r, i) => `<text x="${xAt(i)}" y="${H - 4}" text-anchor="middle" font-size="10" fill="var(--gray-dark)">${esc(shortMonthDay(r.date))}</text>`).join('')}
+      ${[yMax, (yMax + yMin) / 2, yMin].map((gy) => `<text x="${padL - 8}" y="${yAt(gy) + 4}" text-anchor="end" font-size="10" fill="${c.accent}" fill-opacity="0.55">${Math.round(gy)}</text>`).join('')}
+      ${v.readings.map((r, i) => `<text x="${xAt(i)}" y="${H - 4}" text-anchor="middle" font-size="10" fill="${c.accent}" fill-opacity="0.55">${esc(shortMonthDay(r.date))}</text>`).join('')}
       <line class="hp-vchart-guide" x1="${lastCx}" y1="${padT}" x2="${lastCx}" y2="${H - padB}" stroke="${c.accent}" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"></line>
       ${seriesHtml}
       <g class="hp-vchart-tooltip" transform="translate(${tipCx}, ${Math.max(lastCy - 34, 2)})">
-        <rect x="${-tipW / 2}" width="${tipW}" height="22" rx="8" fill="${c.accent}"></rect>
-        <text x="0" y="15" text-anchor="middle" font-size="11" font-weight="700" fill="#fff" class="hp-vchart-tooltip-text">${esc(lastLabel)}</text>
+        <rect x="${-tipW / 2}" width="${tipW}" height="22" rx="8" fill="${c.surface}"></rect>
+        <text x="0" y="15" text-anchor="middle" font-size="11" font-weight="700" fill="${c.accent}" class="hp-vchart-tooltip-text">${esc(lastLabel)}</text>
       </g>
     </svg>
   </div>`;
