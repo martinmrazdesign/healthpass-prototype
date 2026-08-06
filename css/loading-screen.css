@@ -34,9 +34,10 @@
 
 /* Spinner overlay: sized/positioned as a percentage of the icon so it lines
    up with where it sits in the Figma "-sinner" reference regardless of the
-   icon's final rendered size. Rotation is CSS on the <img> itself — the
-   spinner glyph is a symmetric radial dial, so a plain rotate reads
-   correctly without needing to touch the underlying SVG. */
+   icon's final rendered size. iOS-style: the 12 bars never move/rotate —
+   only each bar's own opacity animates, staggered by a negative delay so
+   they're already mid-cycle at different points on load, which reads as a
+   dim "chase" travelling around the ring. */
 .hp-loading-spinner {
     position: absolute;
     width: 31.25%;
@@ -44,11 +45,15 @@
     left: 50%;
     top: 73.7%;
     transform: translate(-50%, -50%);
-    animation: hp-loading-spin 1s linear infinite;
 }
 
-@keyframes hp-loading-spin {
-    to { transform: translate(-50%, -50%) rotate(360deg); }
+.hp-spinner-bar {
+    animation: hp-spinner-fade 1s linear infinite;
+}
+
+@keyframes hp-spinner-fade {
+    0%   { opacity: 1; }
+    100% { opacity: 0.15; }
 }
 
 .hp-loading-text {

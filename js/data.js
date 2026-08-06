@@ -26,17 +26,54 @@ const RECENTS = [
   { category: 'sicknote', label: 'Sick note', title: 'Urgent care visit (ankle sprain)', date: 'Aug 1, 2026', detailUrl: '#/documents/doc-4' },
 ];
 
+/* readings are oldest -> newest (chart reads left to right). Each reading
+   carries its own range flag (same vocabulary as lab results: Normal, Low,
+   High, Slightly Low, Slightly High) so the history list below the chart can
+   show a real status pill per entry, not just a single current-status badge.
+   Blood Pressure is the one two-series vital (systolic + diastolic); every
+   other vital is a single value. Top-level value/status/date mirror the
+   latest reading, for the Your Health list row which doesn't show the chart. */
 const VITALS = [
-  { id: 'bp', name: 'Blood Pressure', value: '118/76 mmHg', status: 'Normal', badgeVariant: 'default', date: 'Jul 20, 2026',
-    history: [ ['Jan', '124/80'], ['Mar', '121/79'], ['May', '119/77'], ['Jul', '118/76'] ] },
-  { id: 'hr', name: 'Heart Rate', value: '68 bpm', status: 'Normal', badgeVariant: 'default', date: 'Jul 20, 2026',
-    history: [ ['Jan', '72'], ['Mar', '70'], ['May', '69'], ['Jul', '68'] ] },
-  { id: 'temp', name: 'Temperature', value: '98.4 °F', status: 'Normal', badgeVariant: 'default', date: 'Jul 20, 2026',
-    history: [ ['Jan', '98.6'], ['Mar', '98.5'], ['May', '98.5'], ['Jul', '98.4'] ] },
-  { id: 'weight', name: 'Weight', value: '64 kg', status: 'Stable', badgeVariant: 'secondary', date: 'Jul 20, 2026',
-    history: [ ['Jan', '65'], ['Mar', '64.6'], ['May', '64.3'], ['Jul', '64'] ] },
-  { id: 'spo2', name: 'Oxygen Saturation', value: '98%', status: 'Normal', badgeVariant: 'default', date: 'Jul 20, 2026',
-    history: [ ['Jan', '97'], ['Mar', '98'], ['May', '98'], ['Jul', '98'] ] },
+  { id: 'bp', name: 'Blood Pressure', value: '120/80 mmHg', status: 'Normal', badgeVariant: 'default', date: 'Jul 15, 2026', unit: 'mmHg',
+    readings: [
+      { date: 'Jan 10, 2026', systolic: 124, diastolic: 80, flag: 'Slightly Low' },
+      { date: 'Feb 12, 2026', systolic: 120, diastolic: 75, flag: 'Normal' },
+      { date: 'Mar 12, 2026', systolic: 125, diastolic: 80, flag: 'Slightly High' },
+      { date: 'Apr 14, 2026', systolic: 135, diastolic: 90, flag: 'High' },
+      { date: 'Jul 15, 2026', systolic: 120, diastolic: 80, flag: 'Normal' },
+    ] },
+  { id: 'hr', name: 'Heart Rate', value: '68 bpm', status: 'Normal', badgeVariant: 'default', date: 'Jul 20, 2026', unit: 'bpm',
+    readings: [
+      { date: 'Jan 12, 2026', value: 72, flag: 'Normal' },
+      { date: 'Mar 5, 2026', value: 70, flag: 'Normal' },
+      { date: 'May 8, 2026', value: 74, flag: 'Slightly High' },
+      { date: 'Jun 20, 2026', value: 69, flag: 'Normal' },
+      { date: 'Jul 20, 2026', value: 68, flag: 'Normal' },
+    ] },
+  { id: 'temp', name: 'Temperature', value: '98.4 °F', status: 'Normal', badgeVariant: 'default', date: 'Jul 20, 2026', unit: '°F',
+    readings: [
+      { date: 'Jan 12, 2026', value: 98.6, flag: 'Normal' },
+      { date: 'Mar 5, 2026', value: 99.1, flag: 'Slightly High' },
+      { date: 'May 8, 2026', value: 98.5, flag: 'Normal' },
+      { date: 'Jun 20, 2026', value: 97.9, flag: 'Slightly Low' },
+      { date: 'Jul 20, 2026', value: 98.4, flag: 'Normal' },
+    ] },
+  { id: 'weight', name: 'Weight', value: '64 kg', status: 'Stable', badgeVariant: 'secondary', date: 'Jul 20, 2026', unit: 'kg',
+    readings: [
+      { date: 'Jan 12, 2026', value: 65, flag: 'Normal' },
+      { date: 'Mar 5, 2026', value: 64.6, flag: 'Normal' },
+      { date: 'May 8, 2026', value: 64.3, flag: 'Normal' },
+      { date: 'Jun 20, 2026', value: 64.1, flag: 'Normal' },
+      { date: 'Jul 20, 2026', value: 64, flag: 'Normal' },
+    ] },
+  { id: 'spo2', name: 'Oxygen Saturation', value: '98%', status: 'Normal', badgeVariant: 'default', date: 'Jul 20, 2026', unit: '%',
+    readings: [
+      { date: 'Jan 12, 2026', value: 97, flag: 'Normal' },
+      { date: 'Mar 5, 2026', value: 98, flag: 'Normal' },
+      { date: 'May 8, 2026', value: 95, flag: 'Slightly Low' },
+      { date: 'Jun 20, 2026', value: 98, flag: 'Normal' },
+      { date: 'Jul 20, 2026', value: 98, flag: 'Normal' },
+    ] },
 ];
 
 const MEDICATIONS = [

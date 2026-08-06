@@ -181,8 +181,9 @@ const STATUS_LABELS = {
   mediumRisk: { text: 'Medium risk',        bg: 'var(--yellow-lightest)', color: 'var(--yellow-dark)', icon: 'svg/hp-status-risk-medium.svg' },
 };
 
-/* Maps a lab observation's plain-English flag to a STATUS_LABELS key. */
-const LAB_FLAG_KIND = {
+/* Maps a plain-English range flag (lab observations, vitals readings) to a
+   STATUS_LABELS key. */
+const RANGE_FLAG_KIND = {
   Normal: 'within',
   Low: 'below',
   High: 'above',
@@ -243,7 +244,7 @@ function listPage({ category, title, rows, extraSections = [] }) {
     </div>`;
 }
 
-function detailPage({ category, title, badgeHtml, subtitleLeft, subtitleRight, chartHtml, cards, extraSections = [], qrIcon, qrUrl }) {
+function detailPage({ category, title, badgeHtml, subtitleLeft, subtitleRight, chartHtml, cards, extraSections = [], qrIcon, qrUrl, insetCard = false }) {
   const c = CATEGORIES[category];
   const extraRows = [];
   if (badgeHtml) extraRows.push(badgeHtml);
@@ -274,8 +275,8 @@ function detailPage({ category, title, badgeHtml, subtitleLeft, subtitleRight, c
             ${subtitleRight ? `<div class="text bold" style="color:${c.accent};">${esc(subtitleRight)}</div>` : ''}
           </div>
         </div>
-        ${sectionBox(allCards)}
-        ${extraSections.filter((rows) => rows.length).map((rows) => `<div style="margin-top:1px;">${sectionBox(rows)}</div>`).join('')}
+        <div style="${insetCard ? 'margin:0 14px;' : ''}">${sectionBox(allCards)}</div>
+        ${extraSections.filter((rows) => rows.length).map((rows) => `<div style="margin-top:1px;${insetCard ? 'margin-left:14px;margin-right:14px;' : ''}">${sectionBox(rows)}</div>`).join('')}
       </div>
     </div>`;
 }
@@ -551,7 +552,7 @@ window.openQrModal = function (title, data, icon) {
       cornersSquareOptions: { color: '#000000', type: 'extra-rounded' },
       cornersDotOptions: { color: '#000000', type: 'dot' },
       backgroundOptions: { color: '#ffffff' },
-      image: icon || 'svg/logo-healthpass.svg?v=39',
+      image: icon || 'svg/logo-healthpass.svg?v=40',
       imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
     }).append(container);
   } catch (e) {
@@ -585,25 +586,165 @@ function renderVitalsList() {
   return listPage({ category: 'vitals', title: 'Vitals', rows });
 }
 
+/* Trims the year off a "Jan 10, 2026" date for compact axis labels. */
+function shortMonthDay(dateStr) {
+  return dateStr.replace(/,\s*\d{4}$/, '');
+}
+
+function formatReading(v, r) {
+  if (v.id === 'bp') return `${r.systolic}/${r.diastolic} ${v.unit}`;
+  return v.unit === '%' ? `${r.value}${v.unit}` : `${r.value} ${v.unit}`;
+}
+
+/* Catmull-Rom -> cubic Bezier smoothing through every point (not an
+   approximation that skips points) — gives the natural curve Figma shows
+   instead of straight polyline segments. */
+function smoothPath(pts) {
+  if (pts.length < 2) return '';
+  let d = `M${pts[0].x},${pts[0].y}`;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i === 0 ? 0 : i - 1];
+    const p1 = pts[i];
+    const p2 = pts[i + 1];
+    const p3 = pts[i + 2 < pts.length ? i + 2 : i + 1];
+    const cp1x = p1.x + (p2.x - p0.x) / 6;
+    const cp1y = p1.y + (p2.y - p0.y) / 6;
+    const cp2x = p2.x - (p3.x - p1.x) / 6;
+    const cp2y = p2.y - (p3.y - p1.y) / 6;
+    d += ` C${cp1x},${cp1y} ${cp2x},${cp2y} ${p2.x},${p2.y}`;
+  }
+  return d;
+}
+
+/* Interactive line chart for a vital's reading history — tap any point (or
+   its pill, for Blood Pressure's two series) to move the tooltip + guide
+   line there. Rendered as plain SVG with data-* attributes; the actual tap
+   handling lives in the delegated listeners below (vitalsChart itself just
+   produces markup, same shape as every other render* function in this file). */
+function vitalsChart(v, c) {
+  const isBP = v.id === 'bp';
+  const n = v.readings.length;
+  const W = 320, H = 170;
+  const padL = 32, padR = 8, padT = 32, padB = 22;
+  const plotW = W - padL - padR, plotH = H - padT - padB;
+
+  const allValues = isBP ? v.readings.flatMap((r) => [r.systolic, r.diastolic]) : v.readings.map((r) => r.value);
+  const rawMin = Math.min(...allValues), rawMax = Math.max(...allValues);
+  const pad = (rawMax - rawMin) * 0.3 || rawMax * 0.1 || 1;
+  const yMin = rawMin - pad, yMax = rawMax + pad;
+
+  const xAt = (i) => padL + (n === 1 ? plotW / 2 : (i / (n - 1)) * plotW);
+  const yAt = (val) => padT + plotH - ((val - yMin) / (yMax - yMin)) * plotH;
+
+  const seriesDefs = isBP
+    ? [{ key: 'systolic', label: 'Systolic', color: 'var(--red-dark)' }, { key: 'diastolic', label: 'Diastolic', color: 'var(--gray-darkest)' }]
+    : [{ key: 'value', label: v.name, color: c.accent }];
+
+  const seriesHtml = seriesDefs.map((s) => {
+    const pts = v.readings.map((r, i) => ({ x: xAt(i), y: yAt(r[s.key]), i, val: r[s.key], date: shortMonthDay(r.date) }));
+    const pathD = smoothPath(pts);
+    return `<g class="hp-vchart-series" data-series="${s.key}">
+      <path d="${pathD}" fill="none" stroke="${s.color}" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"></path>
+      ${pts.map((p) => `<circle cx="${p.x}" cy="${p.y}" r="${p.i === n - 1 ? 6.5 : 5.5}" fill="var(--app-surface)" stroke="${s.color}" stroke-width="2.75" class="hp-vchart-pt" data-i="${p.i}" data-r="${p.i === n - 1 ? 6.5 : 5.5}"></circle>`).join('')}
+      ${pts.map((p) => `<circle cx="${p.x}" cy="${p.y}" r="14" fill="transparent" class="hp-vchart-hit" data-i="${p.i}" data-series="${s.key}" data-val="${p.val}" data-date="${esc(p.date)}"></circle>`).join('')}
+    </g>`;
+  }).join('');
+
+  const lastIdx = n - 1;
+  const lastR = v.readings[lastIdx];
+  const lastLabel = `${shortMonthDay(lastR.date)}: ${isBP ? `${lastR.systolic}/${lastR.diastolic}` : lastR.value}`;
+  const lastCx = xAt(lastIdx), lastCy = yAt(isBP ? lastR.systolic : lastR.value);
+  const tipW = Math.max(50, lastLabel.length * 6.2 + 20);
+  const tipCx = Math.min(Math.max(lastCx, tipW / 2 + 2), W - tipW / 2 - 2);
+
+  const pills = !isBP ? '' : `<div style="display:flex;gap:8px;justify-content:center;margin-bottom:14px;">
+    ${seriesDefs.map((s) => `<button type="button" class="hp-vchart-pill" data-series="${s.key}" data-active="true" style="border:none;cursor:pointer;padding:6px 14px;border-radius:20px;background:${s.color};font:inherit;">
+      <span class="text bold" style="color:#fff;">${esc(s.label)}</span>
+    </button>`).join('')}
+  </div>`;
+
+  return `<div class="hp-vchart-wrap">
+    ${pills}
+    <svg viewBox="0 0 ${W} ${H}" style="width:100%;display:block;overflow:visible;">
+      ${[yMax, (yMax + yMin) / 2, yMin].map((gy) => `<text x="${padL - 8}" y="${yAt(gy) + 4}" text-anchor="end" font-size="10" fill="var(--gray-dark)">${Math.round(gy)}</text>`).join('')}
+      ${v.readings.map((r, i) => `<text x="${xAt(i)}" y="${H - 4}" text-anchor="middle" font-size="10" fill="var(--gray-dark)">${esc(shortMonthDay(r.date))}</text>`).join('')}
+      <line class="hp-vchart-guide" x1="${lastCx}" y1="${padT}" x2="${lastCx}" y2="${H - padB}" stroke="${c.accent}" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"></line>
+      ${seriesHtml}
+      <g class="hp-vchart-tooltip" transform="translate(${tipCx}, ${Math.max(lastCy - 34, 2)})">
+        <rect x="${-tipW / 2}" width="${tipW}" height="22" rx="8" fill="${c.accent}"></rect>
+        <text x="0" y="15" text-anchor="middle" font-size="11" font-weight="700" fill="#fff" class="hp-vchart-tooltip-text">${esc(lastLabel)}</text>
+      </g>
+    </svg>
+  </div>`;
+}
+
+/* Delegated (not per-render) so it works no matter how many times the Vitals
+   detail page has been re-rendered by the router. */
+document.addEventListener('click', (e) => {
+  const hit = e.target.closest('.hp-vchart-hit');
+  if (hit) {
+    const svg = hit.closest('svg');
+    const i = hit.getAttribute('data-i');
+    const cx = hit.getAttribute('cx'), cy = hit.getAttribute('cy');
+    const sameIndexHits = svg.querySelectorAll(`.hp-vchart-hit[data-i="${i}"]`);
+    const group = svg.querySelector('.hp-vchart-tooltip');
+    const rectEl = group.querySelector('rect');
+    const textEl = group.querySelector('.hp-vchart-tooltip-text');
+    const dateLabel = hit.dataset.date;
+    let valuesLabel;
+    if (sameIndexHits.length > 1) {
+      const parts = {};
+      sameIndexHits.forEach((h) => { parts[h.dataset.series] = h.dataset.val; });
+      valuesLabel = `${parts.systolic}/${parts.diastolic}`;
+    } else {
+      valuesLabel = hit.dataset.val;
+    }
+    textEl.textContent = `${dateLabel}: ${valuesLabel}`;
+    const bw = textEl.getBBox().width;
+    const w = bw + 20;
+    rectEl.setAttribute('width', w);
+    rectEl.setAttribute('x', -w / 2);
+    const vb = svg.viewBox.baseVal;
+    const clampedCx = Math.min(Math.max(Number(cx), w / 2 + 2), vb.width - w / 2 - 2);
+    group.setAttribute('transform', `translate(${clampedCx}, ${Math.max(Number(cy) - 34, 2)})`);
+
+    const guide = svg.querySelector('.hp-vchart-guide');
+    if (guide) { guide.setAttribute('x1', cx); guide.setAttribute('x2', cx); }
+
+    svg.querySelectorAll('.hp-vchart-pt').forEach((p) => {
+      p.setAttribute('r', p.dataset.i === i ? Number(p.dataset.r) + 1.5 : p.dataset.r);
+    });
+    return;
+  }
+  const pill = e.target.closest('.hp-vchart-pill');
+  if (pill) {
+    const series = pill.getAttribute('data-series');
+    const nextActive = pill.getAttribute('data-active') !== 'true';
+    pill.setAttribute('data-active', String(nextActive));
+    pill.style.opacity = nextActive ? '1' : '0.4';
+    const svg = pill.closest('.hp-vchart-wrap').querySelector('svg');
+    const group = svg.querySelector(`.hp-vchart-series[data-series="${series}"]`);
+    if (group) group.style.display = nextActive ? '' : 'none';
+  }
+});
+
 function renderVitalsDetail(id) {
   const v = VITALS.find((x) => x.id === id);
   if (!v) return renderVitalsList();
-  const max = Math.max(...v.history.map(([, val]) => parseFloat(val)));
-  const chart = `<div class="hp-bar-chart">
-    ${v.history.map(([label, val]) => {
-      const h = Math.max(12, Math.round((parseFloat(val) / max) * 80));
-      return `<div class="hp-bar-col"><div class="hp-bar" style="height:${h}px;background:var(--vitals-accent);"></div><div class="hp-bar-label">${esc(label)}</div></div>`;
-    }).join('')}
-  </div>`;
-  const cards = [`
-    ${infoRow('Latest value', v.value)}
-    ${infoRow('Status', v.status)}
-    ${infoRow('Recorded', v.date)}
-  `];
+  const c = CATEGORIES.vitals;
+  const chart = vitalsChart(v, c);
+  const historyRows = [...v.readings].reverse().map((r) => `
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <div class="header" style="font-size:24px;line-height:1;color:var(--app-text);">${esc(formatReading(v, r))}</div>
+        <div class="text regular" style="color:var(--gray-dark);">${esc(r.date)}</div>
+      </div>
+      ${statusBadge(RANGE_FLAG_KIND[r.flag] || 'within')}
+    </div>`);
   return detailPage({
-    category: 'vitals', title: v.name, badgeHtml: statusBadge(v.status === 'Normal' ? 'within' : 'done'),
-    subtitleLeft: 'Trend (last 4 readings)', subtitleRight: '', chartHtml: chart,
-    cards,
+    category: 'vitals', title: v.name, badgeHtml: '',
+    subtitleLeft: v.date, subtitleRight: '', chartHtml: chart,
+    cards: historyRows, insetCard: true,
   });
 }
 
@@ -685,7 +826,7 @@ function renderLabResultsDetail(id) {
         <div class="text regular" style="color:var(--gray-dark);">${esc(o.name)}</div>
         <div class="title" style="color:var(--app-text);">${esc(o.value)}</div>
       </div>
-      ${statusBadge(LAB_FLAG_KIND[o.flag] || 'within')}
+      ${statusBadge(RANGE_FLAG_KIND[o.flag] || 'within')}
     </div>`).join('');
   const cards = [{ content: obsRows, padding: '0' }];
   return detailPage({
