@@ -63,8 +63,11 @@ button:active { filter: brightness(0.93); }
    stack. Works on <a> too since it's not scoped to buttons.
    :active covers mouse; .hp-tap-active is set by a touchstart/touchend
    listener in app.js — :active alone is not reliably triggered by touch on
-   non-form elements (like our <a> back button) across mobile browsers. */
-.hp-tap-color:active, .hp-tap-color.hp-tap-active { background-color: var(--tap-bg, transparent); filter: none; }
+   non-form elements (like our <a> back button) across mobile browsers.
+   !important is required here: iconButton() (e.g. the QR button) sets its
+   resting background as an inline style, and inline styles always beat a
+   class selector on specificity regardless of :active/.hp-tap-active. */
+.hp-tap-color:active, .hp-tap-color.hp-tap-active { background-color: var(--tap-bg, transparent) !important; filter: none; }
 
 #hp-app { min-height: 100vh; max-width: 412px; margin: 0 auto; }
 
