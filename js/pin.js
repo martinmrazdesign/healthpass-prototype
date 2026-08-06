@@ -11,6 +11,7 @@
 
   function updateDots() {
     document.querySelectorAll('.hp-pin-dot').forEach((dot, i) => {
+      dot.classList.remove('hp-pin-dot--scan-gray', 'hp-pin-dot--scan-black');
       dot.classList.toggle('hp-pin-dot--filled', i < pin.length);
     });
   }

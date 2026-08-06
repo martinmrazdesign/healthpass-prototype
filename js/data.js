@@ -19,11 +19,11 @@ const FAMILY_MEMBERS = [
 ];
 
 const RECENTS = [
-  { category: 'visit', label: 'New visit', title: 'Otorhinolaringology', date: "6 Feb '26, 10:00", detailUrl: '#/visits/v-1' },
-  { category: 'prescription', label: 'New prescription', title: 'By Maria Silva at Turn Clinic', date: "6 Feb '26", detailUrl: '#/prescription/rx-1' },
-  { category: 'allergy', label: 'New allergy', title: 'Penicillin', date: 'Jan 2018', detailUrl: '#/allergies' },
-  { category: 'labresult', label: 'New test results', title: 'Comprehensive Metabolic Panel', date: 'Jul 12, 2026', detailUrl: '#/labresults/lr-1' },
-  { category: 'sicknote', label: 'New sick note', title: 'Urgent care visit — ankle sprain', date: 'Apr 2, 2026', detailUrl: '#/documents' },
+  { category: 'visit', label: 'Visit summary', title: 'Otorhinolaringology', date: 'Aug 3, 2026', detailUrl: '#/visits/v-1' },
+  { category: 'prescription', label: 'Prescription', title: 'By Maria Silva at Turn Clinic', date: 'Aug 4, 2026', detailUrl: '#/documents/doc-1' },
+  { category: 'allergy', label: 'Allergy', title: 'Penicillin', date: 'Aug 2, 2026', detailUrl: '#/allergies' },
+  { category: 'labresult', label: 'Test result', title: 'Comprehensive Metabolic Panel', date: 'Aug 5, 2026', detailUrl: '#/labresults/lr-1' },
+  { category: 'sicknote', label: 'Sick note', title: 'Urgent care visit (ankle sprain)', date: 'Aug 1, 2026', detailUrl: '#/documents/doc-4' },
 ];
 
 const VITALS = [
@@ -104,7 +104,7 @@ const VISITS = [
     },
     documents: [
       { kind: 'Prescription', description: 'Ibuprofen for ankle sprain', date: 'Apr 2, 2026' },
-      { kind: 'Sick note', description: 'Urgent care visit — ankle sprain', date: 'Apr 2, 2026' },
+      { kind: 'Sick note', description: 'Urgent care visit (ankle sprain)', date: 'Apr 2, 2026' },
     ] },
   { id: 'v-3', title: 'Allergy Consultation', provider: 'Dr. Priya Nair', location: 'Springfield Family Clinic', date: 'Mar 2, 2026',
     aiSummary: 'Seasonal allergy symptoms confirmed. You’ve started a daily antihistamine and discussed avoiding triggers — nothing here needs urgent attention.',

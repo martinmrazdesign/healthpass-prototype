@@ -25,14 +25,15 @@
 
 /*
  * Fixed positioning = always relative to the VIEWPORT, regardless of scroll,
- * parent offsets, or document structure. top:58% + translateY(-50%) sits the
- * folder a bit below dead-center — the peek cards rest near the top of this
- * box, and at a true 50% center they crowded the screen's top edge.
+ * parent offsets, or document structure. top:72% + translateY(-50%) sits the
+ * folder well below dead-center — the cloud icons fly in from off-screen
+ * above, so pushing the folder down also shortens their travel distance
+ * (fine — still reads as the same animation, just a touch quicker).
  * left: calc(50% - 170px) centers the 340px box horizontally without a transform.
  */
 .hp-splash-inner {
     position: fixed;
-    top: 58%;
+    top: 72%;
     transform: translateY(-50%);
     left: calc(50% - 170px);
     width: 340px;
