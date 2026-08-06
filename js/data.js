@@ -19,11 +19,11 @@ const FAMILY_MEMBERS = [
 ];
 
 const RECENTS = [
-  { category: 'visit', label: 'Upcoming visit', title: 'Otorhinolaringology', date: "6 Feb '26, 10:00", detailUrl: '#/visits/v-1' },
-  { category: 'prescription', label: 'New prescription', title: 'By Maria Silva at Turn Health', date: "6 Feb '26", detailUrl: '#/prescription/rx-1' },
-  { category: 'vaccination', label: 'Vaccination', title: 'COVID-19 Vaccine', date: "6 Feb '26", detailUrl: '#/immunizations' },
-  { category: 'visit', label: 'Past visit', title: 'Annual Checkup', date: "30 Jun '26", detailUrl: '#/visits/v-2' },
-  { category: 'prescription', label: 'New prescription', title: 'By Amina Okoye at Turn Health', date: "18 Jul '26", detailUrl: '#/prescription/rx-2' },
+  { category: 'visit', label: 'Visit', title: 'Otorhinolaringology', date: "6 Feb '26, 10:00", detailUrl: '#/visits/v-1' },
+  { category: 'prescription', label: 'Prescription', title: 'By Maria Silva at Turn Health', date: "6 Feb '26", detailUrl: '#/prescription/rx-1' },
+  { category: 'allergy', label: 'Allergy', title: 'Penicillin', date: 'Jan 2018', detailUrl: '#/allergies' },
+  { category: 'labresult', label: 'Test result', title: 'Comprehensive Metabolic Panel', date: 'Jul 12, 2026', detailUrl: '#/labresults/lr-1' },
+  { category: 'sicknote', label: 'Sick note', title: 'Urgent care visit — ankle sprain', date: 'Apr 2, 2026', detailUrl: '#/documents' },
 ];
 
 const VITALS = [

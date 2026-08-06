@@ -39,7 +39,9 @@ function docIcon(kind) {
 const ACTIVITY_META = {
   visit:        { surface: 'var(--lavender-light)', accent: 'var(--lavender-darkest)', icon: 'svg/hp-visits-dark.svg',       wave: 'svg/figma-wave-visit.svg' },
   prescription: { surface: 'var(--yellow-light)',    accent: 'var(--yellow-darkest)',   icon: 'svg/hp-medications-dark.svg',  wave: 'svg/figma-wave-prescription.svg' },
-  vaccination:  { surface: 'var(--orange-light)',    accent: 'var(--orange-darkest)',   icon: 'svg/hp-vaccinations-dark.svg', wave: 'svg/figma-wave-vaccination.svg' },
+  allergy:      { surface: 'var(--green-light)',     accent: 'var(--green-darkest)',    icon: 'svg/hp-allergies-dark.svg',    wave: 'svg/figma-wave-allergy.svg' },
+  labresult:    { surface: 'var(--blue-light)',      accent: 'var(--blue-darkest)',     icon: 'svg/hp-lab-results-dark.svg',  wave: 'svg/figma-wave-labresult.svg' },
+  sicknote:     { surface: 'var(--pink-light)',       accent: 'var(--pink-darkest)',    icon: 'svg/hp-doc-sicknote.svg',      wave: 'svg/figma-wave-sicknote.svg' },
 };
 
 function esc(str) {
@@ -484,7 +486,7 @@ window.openQrModal = function (title, data, icon) {
       cornersSquareOptions: { color: '#000000', type: 'extra-rounded' },
       cornersDotOptions: { color: '#000000', type: 'dot' },
       backgroundOptions: { color: '#ffffff' },
-      image: icon || 'svg/logo-healthpass.svg?v=17',
+      image: icon || 'svg/logo-healthpass.svg?v=18',
       imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
     }).append(container);
   } catch (e) {
