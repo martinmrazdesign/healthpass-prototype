@@ -25,16 +25,16 @@
   <div id="qrcode"></div>
   <div class="url">https://martinmrazdesign.github.io/healthpass-prototype/</div>
 
-  <script src="js/qr-code-styling-1.6.0-rc.1.js?v=16"></script>
+  <script src="js/qr-code-styling-1.6.0-rc.1.js?v=17"></script>
   <script>
     new QRCodeStyling({
       width: 280, height: 280, type: 'svg',
       data: 'https://martinmrazdesign.github.io/healthpass-prototype/?skip=1',
-      dotsOptions: { color: '#0a3922', type: 'rounded' },
-      cornersSquareOptions: { color: '#0a3922', type: 'extra-rounded' },
-      cornersDotOptions: { color: '#0a3922', type: 'dot' },
+      dotsOptions: { color: '#000000', type: 'rounded' },
+      cornersSquareOptions: { color: '#000000', type: 'extra-rounded' },
+      cornersDotOptions: { color: '#000000', type: 'dot' },
       backgroundOptions: { color: '#ffffff' },
-      image: 'svg/logo-healthpass.svg?v=16',
+      image: 'svg/logo-healthpass.svg?v=17',
       imageOptions: { crossOrigin: 'anonymous', margin: 8, imageSize: 0.4, hideBackgroundDots: true },
     }).append(document.getElementById('qrcode'));
   </script>

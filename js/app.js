@@ -158,14 +158,14 @@ function cardRow({ icon, iconSize = 48, title, titleColor = 'var(--app-text)', s
 /* Page shells                                                             */
 /* ---------------------------------------------------------------------- */
 
-function listPage({ category, title, backUrl, rows }) {
+function listPage({ category, title, rows }) {
   const c = CATEGORIES[category];
 
   return `
     <div style="min-height:100vh;padding-bottom:40px;">
       <div class="hp-section-content">
         <div style="position:relative;">
-          <a href="${backUrl}" style="position:absolute;left:0;top:0;z-index:10;width:64px;height:64px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;text-decoration:none;">
+          <a href="#/home" onclick="goBack();return false;" style="position:absolute;left:0;top:0;z-index:10;width:64px;height:64px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;text-decoration:none;">
             ${backArrow(c.accent)}
           </a>
           <img src="${c.iconDark}" width="80" height="80" alt="" style="position:absolute;right:16px;top:16px;z-index:10;">
@@ -181,7 +181,7 @@ function listPage({ category, title, backUrl, rows }) {
     </div>`;
 }
 
-function detailPage({ category, title, badgeHtml, subtitleLeft, subtitleRight, chartHtml, backUrl, cards, extraSections = [] }) {
+function detailPage({ category, title, badgeHtml, subtitleLeft, subtitleRight, chartHtml, cards, extraSections = [] }) {
   const c = CATEGORIES[category];
   const extraRows = [];
   if (badgeHtml) extraRows.push(badgeHtml);
@@ -197,7 +197,7 @@ function detailPage({ category, title, badgeHtml, subtitleLeft, subtitleRight, c
     <div style="min-height:100vh;padding-bottom:40px;">
       <div class="hp-section-content">
         <div style="position:relative;">
-          <a href="${backUrl}" style="position:absolute;left:0;top:0;z-index:10;width:64px;height:64px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;text-decoration:none;">
+          <a href="#/home" onclick="goBack();return false;" style="position:absolute;left:0;top:0;z-index:10;width:64px;height:64px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;text-decoration:none;">
             ${backArrow(c.accent)}
           </a>
           <button onclick="openQrModal('${esc(title)}', '${esc(shareUrl)}', '${c.icon}')" style="position:absolute;right:16px;top:16px;z-index:10;width:40px;height:40px;border-radius:32px;background:${c.lightest};border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;">
@@ -473,14 +473,18 @@ window.openQrModal = function (title, data, icon) {
   const container = document.getElementById('qrcode-modal');
   container.innerHTML = '';
   try {
+    // Size to the card's actual available width instead of a fixed px value —
+    // on narrower phones (e.g. 390px-wide screens) a hardcoded 316px QR was
+    // wider than the card's content box, so it overflowed unevenly on one side.
+    const qrSize = container.clientWidth || 316;
     new QRCodeStyling({
-      width: 316, height: 316, type: 'svg',
+      width: qrSize, height: qrSize, type: 'svg',
       data: data || 'https://wa.me/15550100000?text=healthpass-demo-share-3225',
-      dotsOptions: { color: '#0a3922', type: 'rounded' },
-      cornersSquareOptions: { color: '#0a3922', type: 'extra-rounded' },
-      cornersDotOptions: { color: '#0a3922', type: 'dot' },
+      dotsOptions: { color: '#000000', type: 'rounded' },
+      cornersSquareOptions: { color: '#000000', type: 'extra-rounded' },
+      cornersDotOptions: { color: '#000000', type: 'dot' },
       backgroundOptions: { color: '#ffffff' },
-      image: icon || 'svg/logo-healthpass.svg?v=16',
+      image: icon || 'svg/logo-healthpass.svg?v=17',
       imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
     }).append(container);
   } catch (e) {
@@ -512,7 +516,7 @@ function renderVitalsList() {
         </div>
       </div>
     </a>`);
-  return listPage({ category: 'vitals', title: 'Vitals', backUrl: '#/home', rows });
+  return listPage({ category: 'vitals', title: 'Vitals', rows });
 }
 
 function renderVitalsDetail(id) {
@@ -533,7 +537,7 @@ function renderVitalsDetail(id) {
   return detailPage({
     category: 'vitals', title: v.name, badgeHtml: statusBadge(v.status === 'Normal' ? 'within' : 'done'),
     subtitleLeft: 'Trend (last 4 readings)', subtitleRight: '', chartHtml: chart,
-    backUrl: '#/vitals', cards,
+    cards,
   });
 }
 
@@ -547,7 +551,7 @@ function renderPrescriptionList() {
         trailing: chevronButton(),
       })}
     </a>`);
-  return listPage({ category: 'prescription', title: 'Medications', backUrl: '#/home', rows });
+  return listPage({ category: 'prescription', title: 'Medications', rows });
 }
 
 function renderPrescriptionDetail(id) {
@@ -565,7 +569,7 @@ function renderPrescriptionDetail(id) {
   return detailPage({
     category: 'prescription', title: m.name, badgeHtml: statusBadge(m.status === 'Active' ? 'inProgress' : 'done'),
     subtitleLeft: 'Prescribed', subtitleRight: m.authoredDate, chartHtml: '',
-    backUrl: '#/prescription', cards,
+    cards,
   });
 }
 
@@ -580,7 +584,7 @@ function renderLabResultsList() {
       ${inProgress ? statusBadge('inProgress') : chevronButton()}
     </a>`;
   });
-  return listPage({ category: 'labresults', title: 'Test Results', backUrl: '#/home', rows });
+  return listPage({ category: 'labresults', title: 'Test Results', rows });
 }
 
 function renderLabResultsDetail(id) {
@@ -605,7 +609,7 @@ function renderLabResultsDetail(id) {
   return detailPage({
     category: 'labresults', title: r.name, badgeHtml: statusBadge(r.status === 'Final' ? 'done' : 'inProgress'),
     subtitleLeft: r.category, subtitleRight: r.reportDate, chartHtml: '',
-    backUrl: '#/labresults', cards,
+    cards,
   });
 }
 
@@ -615,7 +619,7 @@ function renderAllergiesList() {
     subtitle: a.type,
     trailing: statusBadge(a.criticality === 'High' ? 'highRisk' : 'mediumRisk'),
   }));
-  return listPage({ category: 'allergies', title: 'Allergies', backUrl: '#/home', rows });
+  return listPage({ category: 'allergies', title: 'Allergies', rows });
 }
 
 function renderImmunizationsList() {
@@ -626,7 +630,7 @@ function renderImmunizationsList() {
         <div class="text regular" style="color:var(--gray-dark);">${esc(v.date)}</div>
       </div>
     </div>`);
-  return listPage({ category: 'immunizations', title: 'Vaccinations', backUrl: '#/home', rows });
+  return listPage({ category: 'immunizations', title: 'Vaccinations', rows });
 }
 
 function dateBadgeParts(dateStr) {
@@ -655,7 +659,7 @@ function renderVisitsList() {
       ${chevronButton()}
     </a>`;
   });
-  return listPage({ category: 'visits', title: 'Visits', backUrl: '#/home', rows });
+  return listPage({ category: 'visits', title: 'Visits', rows });
 }
 
 function renderVisitsDetail(id) {
@@ -674,7 +678,7 @@ function renderVisitsDetail(id) {
     </a>`);
   return detailPage({
     category: 'visits', title: v.title, badgeHtml: '', subtitleLeft: v.provider, subtitleRight: v.date,
-    chartHtml: '', backUrl: '#/visits', cards, extraSections: [documentRows],
+    chartHtml: '', cards, extraSections: [documentRows],
   });
 }
 
@@ -688,7 +692,7 @@ function renderAbout() {
   `];
   return detailPage({
     category: 'about', title: PATIENT.name, badgeHtml: '', subtitleLeft: 'Patient profile', subtitleRight: '',
-    chartHtml: '', backUrl: '#/home', cards,
+    chartHtml: '', cards,
   });
 }
 
@@ -700,22 +704,51 @@ function renderDocuments() {
     date: d.date,
     trailing: chevronButton(),
   }));
-  return listPage({ category: 'documents', title: 'Documents', backUrl: '#/home', rows });
+  return listPage({ category: 'documents', title: 'Documents', rows });
 }
 
 /* ---------------------------------------------------------------------- */
 /* Router                                                                  */
 /* ---------------------------------------------------------------------- */
 
+/* Real "go to whatever screen I actually came from" back navigation — a
+   plain array of the hashes visited this session (not the depth guess
+   navDirection() uses for slide-transition direction). A deep link (QR
+   scan) or a Recents card that jumps straight from home to a detail page
+   leaves nothing "under" the current page, so goBack() falls back to home
+   instead of guessing a category list the user never actually visited. */
+let hpNavStack = [];
+let hpSuppressPush = false;
+
+function trackNavStack(hash) {
+  if (hpSuppressPush) { hpSuppressPush = false; return; }
+  if (hpNavStack[hpNavStack.length - 1] !== hash) hpNavStack.push(hash);
+}
+
+window.goBack = function () {
+  if (hpNavStack.length > 1) {
+    hpNavStack.pop();
+    hpSuppressPush = true;
+    location.hash = '#/' + hpNavStack[hpNavStack.length - 1];
+  } else {
+    hpSuppressPush = true;
+    hpNavStack = ['home'];
+    location.hash = '#/home';
+  }
+};
+
 function route() {
   const hash = (location.hash || '#/home').replace(/^#\/?/, '');
   const [section, id] = hash.split('/');
 
   if (section === 'logout') {
+    hpNavStack = [];
     sessionStorage.removeItem('hp_unlocked');
     window.showPinScreen();
     return;
   }
+
+  trackNavStack(hash);
 
   let html;
   switch (section) {
