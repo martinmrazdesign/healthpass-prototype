@@ -25,14 +25,14 @@
 
 /*
  * Fixed positioning = always relative to the VIEWPORT, regardless of scroll,
- * parent offsets, or document structure. top:50% + translateY(-50%) centers
- * the folder vertically on every screen size instead of anchoring to the
- * bottom edge.
+ * parent offsets, or document structure. top:58% + translateY(-50%) sits the
+ * folder a bit below dead-center — the peek cards rest near the top of this
+ * box, and at a true 50% center they crowded the screen's top edge.
  * left: calc(50% - 170px) centers the 340px box horizontally without a transform.
  */
 .hp-splash-inner {
     position: fixed;
-    top: 50%;
+    top: 58%;
     transform: translateY(-50%);
     left: calc(50% - 170px);
     width: 340px;
