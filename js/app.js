@@ -268,17 +268,15 @@ function detailPage({ category, title, badgeHtml, subtitleLeft, subtitleRight, c
           <button onclick="openQrModal('${esc(title)}', '${esc(shareUrl)}', '${qrIcon || c.icon}')" class="hp-tap-color" style="--tap-bg:${c.surface};position:absolute;right:16px;top:16px;z-index:10;width:40px;height:40px;border-radius:32px;background:${c.lightest};border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;">
             ${shareIcon(c.accent)}
           </button>
-          <div style="${insetCard ? 'margin:0 -16px;' : ''}">
-            ${waveTop(c.surface)}
-            <div style="background:${c.surface};border-radius:0 0 20px 20px;height:146px;box-sizing:border-box;padding:24px;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;margin-top:-1px;">
-              <div class="header" style="color:${c.accent};">${esc(title)}</div>
-              ${subtitleLeft ? `<div class="text bold" style="color:${c.accent};">${esc(subtitleLeft)}</div>` : ''}
-              ${subtitleRight ? `<div class="text bold" style="color:${c.accent};">${esc(subtitleRight)}</div>` : ''}
-            </div>
+          ${waveTop(c.surface)}
+          <div style="background:${c.surface};border-radius:0 0 20px 20px;height:146px;box-sizing:border-box;padding:24px;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;margin-top:-1px;">
+            <div class="header" style="color:${c.accent};">${esc(title)}</div>
+            ${subtitleLeft ? `<div class="text bold" style="color:${c.accent};">${esc(subtitleLeft)}</div>` : ''}
+            ${subtitleRight ? `<div class="text bold" style="color:${c.accent};">${esc(subtitleRight)}</div>` : ''}
           </div>
         </div>
-        ${sectionBox(allCards)}
-        ${extraSections.filter((rows) => rows.length).map((rows) => `<div style="margin-top:1px;">${sectionBox(rows)}</div>`).join('')}
+        <div style="${insetCard ? 'margin:0 8px;' : ''}">${sectionBox(allCards)}</div>
+        ${extraSections.filter((rows) => rows.length).map((rows) => `<div style="margin-top:1px;${insetCard ? 'margin-left:8px;margin-right:8px;' : ''}">${sectionBox(rows)}</div>`).join('')}
       </div>
     </div>`;
 }
@@ -554,7 +552,7 @@ window.openQrModal = function (title, data, icon) {
       cornersSquareOptions: { color: '#000000', type: 'extra-rounded' },
       cornersDotOptions: { color: '#000000', type: 'dot' },
       backgroundOptions: { color: '#ffffff' },
-      image: icon || 'svg/logo-healthpass.svg?v=41',
+      image: icon || 'svg/logo-healthpass.svg?v=42',
       imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
     }).append(container);
   } catch (e) {
@@ -738,7 +736,7 @@ function renderVitalsDetail(id) {
   const historyRows = [...v.readings].reverse().map((r) => `
     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
       <div style="display:flex;flex-direction:column;gap:4px;">
-        <div class="header" style="font-size:24px;line-height:1;color:var(--app-text);">${esc(formatReading(v, r))}</div>
+        <div class="header" style="font-size:24px;line-height:1;color:var(--app-text);white-space:nowrap;">${esc(formatReading(v, r))}</div>
         <div class="text regular" style="color:var(--gray-dark);">${esc(r.date)}</div>
       </div>
       ${statusBadge(RANGE_FLAG_KIND[r.flag] || 'within')}
