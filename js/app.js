@@ -542,7 +542,7 @@ window.openQrModal = function (title, data, icon) {
       cornersSquareOptions: { color: '#000000', type: 'extra-rounded' },
       cornersDotOptions: { color: '#000000', type: 'dot' },
       backgroundOptions: { color: '#ffffff' },
-      image: icon || 'svg/logo-healthpass.svg?v=30',
+      image: icon || 'svg/logo-healthpass.svg?v=31',
       imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
     }).append(container);
   } catch (e) {
@@ -658,17 +658,10 @@ function renderLabResultsDetail(id) {
       </div>
       ${statusBadge(LAB_FLAG_KIND[o.flag] || 'within')}
     </div>`).join('');
-  const cards = [
-    `<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-      <img src="svg/ai-gradient.svg" width="20" height="20" alt="">
-      <span class="text bold" style="color:var(--app-text);">AI Summary</span>
-    </div>
-    <div class="text regular" style="color:var(--gray-dark);">${esc(r.aiSummary)}</div>`,
-    obsRows,
-  ];
+  const cards = [obsRows];
   return detailPage({
-    category: 'labresults', title: r.name, badgeHtml: statusBadge(r.status === 'Final' ? 'done' : 'inProgress'),
-    subtitleLeft: r.category, subtitleRight: r.reportDate, chartHtml: '',
+    category: 'labresults', title: r.name, badgeHtml: '',
+    subtitleLeft: '', subtitleRight: r.reportDate, chartHtml: '',
     cards,
   });
 }
