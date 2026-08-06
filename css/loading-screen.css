@@ -92,7 +92,7 @@
 
 .hp-loading-text-dots span {
     opacity: 0;
-    animation: hp-loading-dot-fade 1.2s steps(1, end) infinite;
+    animation: hp-loading-dot-fade 1.35s ease-in-out infinite;
 }
 .hp-loading-text-dots span:nth-child(1) { animation-delay: 0s; }
 .hp-loading-text-dots span:nth-child(2) { animation-delay: 0.3s; }
@@ -100,8 +100,8 @@
 
 @keyframes hp-loading-dot-fade {
     0%   { opacity: 0; }
-    8%   { opacity: 1; }
-    75%  { opacity: 1; }
-    83%  { opacity: 0; }
+    25%  { opacity: 1; }
+    70%  { opacity: 1; }
+    95%  { opacity: 0; }
     100% { opacity: 0; }
 }
