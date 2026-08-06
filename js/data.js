@@ -120,7 +120,14 @@ const VISITS = [
 ];
 
 const DOCUMENTS = [
-  { name: 'Prescription — Amoxicillin.pdf', date: 'Jul 18, 2026', kind: 'Prescription' },
-  { name: 'Sick Note — Apr 2026.pdf', date: 'Apr 2, 2026', kind: 'Sick note' },
-  { name: 'Lab Report — Metabolic Panel.pdf', date: 'Jul 12, 2026', kind: 'Lab report' },
+  { id: 'doc-1', kind: 'Visit summary', relatedVisit: 'Annual Checkup', provider: 'Dr. Amina Okoye at Turn Clinic', date: 'Jun 30, 2026',
+    message: 'Hey Amara, here’s a summary of your annual checkup. Everything looked healthy — no follow-up needed for a year.' },
+  { id: 'doc-2', kind: 'Lab report', relatedVisit: 'Urgent Care (Sprained Ankle)', provider: 'Dr. Wei Zhang at Turn Clinic', date: 'Apr 2, 2026',
+    message: 'Hey Amara, here’s your X-ray report from urgent care. No fracture was found — just a grade 1 ankle sprain.' },
+  { id: 'doc-3', kind: 'Prescription', relatedVisit: 'Urgent Care (Sprained Ankle)', provider: 'Dr. Wei Zhang at Turn Clinic', date: 'Apr 2, 2026',
+    message: 'Hey Amara, this is your prescription. Please pick up this medicine as soon as possible and you should be fine in a few days.' },
+  { id: 'doc-4', kind: 'Referral', relatedVisit: 'Allergy Consultation', provider: 'Dr. Priya Nair at Turn Clinic', date: 'Mar 2, 2026',
+    message: 'Hey Amara, you’ve been referred to a specialist for further allergy testing. Please book an appointment at your convenience.' },
+  { id: 'doc-5', kind: 'Sick note', relatedVisit: 'Urgent Care (Sprained Ankle)', provider: 'Dr. Wei Zhang at Turn Clinic', date: 'Apr 2, 2026',
+    message: 'Hey Amara, here’s your sick note for work covering your recovery time after the ankle sprain.' },
 ];

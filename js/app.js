@@ -41,7 +41,7 @@ const ACTIVITY_META = {
   prescription: { surface: 'var(--yellow-light)',    accent: 'var(--yellow-darkest)',   icon: 'svg/hp-medications-dark.svg',  wave: 'svg/figma-wave-prescription.svg' },
   allergy:      { surface: 'var(--green-light)',     accent: 'var(--green-darkest)',    icon: 'svg/hp-allergies-dark.svg',    wave: 'svg/figma-wave-allergy.svg' },
   labresult:    { surface: 'var(--blue-light)',      accent: 'var(--blue-darkest)',     icon: 'svg/hp-lab-results-dark.svg',  wave: 'svg/figma-wave-labresult.svg' },
-  sicknote:     { surface: 'var(--pink-light)',       accent: 'var(--pink-darkest)',    icon: 'svg/hp-doc-sicknote.svg',      wave: 'svg/figma-wave-sicknote.svg' },
+  sicknote:     { surface: 'var(--gray-light)',       accent: 'var(--gray-darkest)',    icon: 'svg/hp-doc-sicknote.svg',      wave: 'svg/figma-wave-sicknote-gray.svg' },
 };
 
 function esc(str) {
@@ -67,6 +67,19 @@ function backArrow(color) {
 function shareIcon(color) {
   return `<svg width="22" height="22" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path fill-rule="evenodd" clip-rule="evenodd" d="M5.7587 4.31291e-07L8 9.08128e-07C8.55229 9.08128e-07 9 0.447716 9 1C9 1.55229 8.55229 2 8 2H5.8C4.94342 2 4.36113 2.00078 3.91104 2.03755C3.47262 2.07337 3.24842 2.1383 3.09202 2.21799C2.7157 2.40973 2.40973 2.7157 2.21799 3.09202C2.1383 3.24842 2.07337 3.47262 2.03755 3.91104C2.00078 4.36113 2 4.94342 2 5.8V14.2C2 15.0566 2.00078 15.6389 2.03755 16.089C2.07337 16.5274 2.1383 16.7516 2.21799 16.908C2.40973 17.2843 2.7157 17.5903 3.09202 17.782C3.24842 17.8617 3.47262 17.9266 3.91104 17.9624C4.36113 17.9992 4.94342 18 5.8 18H14.2C15.0566 18 15.6389 17.9992 16.089 17.9624C16.5274 17.9266 16.7516 17.8617 16.908 17.782C17.2843 17.5903 17.5903 17.2843 17.782 16.908C17.8617 16.7516 17.9266 16.5274 17.9624 16.089C17.9992 15.6389 18 15.0566 18 14.2V12C18 11.4477 18.4477 11 19 11C19.5523 11 20 11.4477 20 12V14.2413C20 15.0463 20 15.7106 19.9558 16.2518C19.9099 16.8139 19.8113 17.3306 19.564 17.816C19.1805 18.5686 18.5686 19.1805 17.816 19.564C17.3306 19.8113 16.8139 19.9099 16.2518 19.9558C15.7106 20 15.0463 20 14.2413 20H5.75868C4.95372 20 4.28936 20 3.74817 19.9558C3.18608 19.9099 2.66937 19.8113 2.18404 19.564C1.43139 19.1805 0.819468 18.5686 0.435975 17.816C0.188684 17.3306 0.0901197 16.8139 0.0441945 16.2518C-2.28137e-05 15.7106 -1.23241e-05 15.0463 4.31291e-07 14.2413V5.7587C-1.23241e-05 4.95373 -2.28137e-05 4.28937 0.0441945 3.74817C0.0901197 3.18608 0.188684 2.66937 0.435975 2.18404C0.819468 1.43139 1.43139 0.819468 2.18404 0.435975C2.66937 0.188684 3.18608 0.0901197 3.74817 0.0441945C4.28937 -2.28137e-05 4.95373 -1.23241e-05 5.7587 4.31291e-07ZM15.2929 0.292894C15.6834 -0.0976302 16.3166 -0.0976302 16.7071 0.292894L19.7071 3.29289C20.0976 3.68342 20.0976 4.31658 19.7071 4.70711L16.7071 7.70711C16.3166 8.09763 15.6834 8.09763 15.2929 7.70711C14.9024 7.31658 14.9024 6.68342 15.2929 6.29289L16.5858 5H15.8C14.9434 5 14.3611 5.00078 13.911 5.03755C13.4726 5.07337 13.2484 5.1383 13.092 5.21799C12.7157 5.40973 12.4097 5.7157 12.218 6.09202C12.1383 6.24842 12.0734 6.47262 12.0376 6.91104C12.0008 7.36113 12 7.94342 12 8.8V10C12 10.5523 11.5523 11 11 11C10.4477 11 10 10.5523 10 10V8.75873C9.99999 7.95374 9.99998 7.28938 10.0442 6.74818C10.0901 6.18608 10.1887 5.66937 10.436 5.18404C10.8195 4.43139 11.4314 3.81947 12.184 3.43597C12.6694 3.18868 13.1861 3.09012 13.7482 3.04419C14.2894 2.99998 14.9537 2.99999 15.7587 3L16.5858 3L15.2929 1.70711C14.9024 1.31658 14.9024 0.683418 15.2929 0.292894Z" fill="${color}"/>
+  </svg>`;
+}
+
+function eyeIcon(color) {
+  return `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" stroke="${color}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="12" cy="12" r="3" stroke="${color}" stroke-width="1.8"/>
+  </svg>`;
+}
+
+function downloadIcon(color) {
+  return `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 3v12m0 0-4-4m4 4 4-4M4 19h16" stroke="${color}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
   </svg>`;
 }
 
@@ -501,7 +514,7 @@ window.openQrModal = function (title, data, icon) {
       cornersSquareOptions: { color: '#000000', type: 'extra-rounded' },
       cornersDotOptions: { color: '#000000', type: 'dot' },
       backgroundOptions: { color: '#ffffff' },
-      image: icon || 'svg/logo-healthpass.svg?v=22',
+      image: icon || 'svg/logo-healthpass.svg?v=23',
       imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
     }).append(container);
   } catch (e) {
@@ -714,14 +727,35 @@ function renderAbout() {
 }
 
 function renderDocuments() {
-  const rows = DOCUMENTS.map((d) => cardRow({
-    icon: CATEGORIES.documents.icon,
-    title: d.name,
-    subtitle: d.kind,
-    date: d.date,
-    trailing: chevronButton(),
-  }));
+  const rows = DOCUMENTS.map((d) => `
+    <a href="#/documents/${d.id}" style="text-decoration:none;color:inherit;display:block;">
+      ${cardRow({ icon: docIcon(d.kind), title: d.kind, subtitle: d.relatedVisit, trailing: chevronButton() })}
+    </a>`);
   return listPage({ category: 'documents', title: 'Documents', rows });
+}
+
+/* Prescription documents use the yellow "prescription" category scheme since
+   prescriptions are also real in-app navigation (Medications); every other
+   document kind uses the plain gray "documents" scheme. */
+function renderDocumentDetail(id) {
+  const d = DOCUMENTS.find((x) => x.id === id);
+  if (!d) return renderDocuments();
+  const category = d.kind === 'Prescription' ? 'prescription' : 'documents';
+  const actionRow = (label, iconHtml) => `<div style="display:flex;align-items:center;justify-content:space-between;">
+    <span class="title" style="color:var(--app-text);">${esc(label)}</span>
+    ${iconHtml}
+  </div>`;
+  const kindLower = d.kind.toLowerCase();
+  const cards = [
+    `<div class="text regular" style="color:var(--app-text);line-height:1.5;">${esc(d.message)}</div>`,
+    actionRow(`View ${kindLower}`, eyeIcon('var(--gray-dark)')),
+    actionRow(`Download ${kindLower}`, downloadIcon('var(--gray-dark)')),
+    actionRow(`Share ${kindLower}`, shareIcon('var(--gray-dark)')),
+  ];
+  return detailPage({
+    category, title: d.kind, badgeHtml: '', subtitleLeft: d.provider, subtitleRight: d.date,
+    chartHtml: '', cards,
+  });
 }
 
 /* ---------------------------------------------------------------------- */
@@ -776,7 +810,7 @@ function route() {
     case 'immunizations':  html = renderImmunizationsList(); break;
     case 'visits':         html = id ? renderVisitsDetail(id) : renderVisitsList(); break;
     case 'about':          html = renderAbout(); break;
-    case 'documents':      html = renderDocuments(); break;
+    case 'documents':      html = id ? renderDocumentDetail(id) : renderDocuments(); break;
     case 'home':
     default:               html = renderHome();
   }
