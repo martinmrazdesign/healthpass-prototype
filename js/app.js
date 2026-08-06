@@ -193,7 +193,7 @@ function statusBadge(kind) {
 
 /* icon + [title / subtitle? / date?] + trailing? — the shape shared by the
    Prescription / Sick Note / Allergy / Vitals card variants. */
-function cardRow({ icon, iconSize = 48, iconFramed = false, title, titleColor = 'var(--app-text)', subtitle, date, trailing }) {
+function cardRow({ icon, iconSize = 48, iconFramed = false, title, titleColor = 'var(--app-text)', subtitle, subtitleColor = 'var(--gray-darkest)', subtitleBold = true, date, trailing }) {
   const iconHtml = !icon ? '' : iconFramed
     ? `<div style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><img src="${icon}" width="24" height="24" alt=""></div>`
     : `<img src="${icon}" width="${iconSize}" height="${iconSize}" alt="" style="flex-shrink:0;">`;
@@ -201,7 +201,7 @@ function cardRow({ icon, iconSize = 48, iconFramed = false, title, titleColor = 
     ${iconHtml}
     <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;">
       <div class="title" style="color:${titleColor};">${esc(title)}</div>
-      ${subtitle ? `<div class="text bold" style="color:var(--gray-darkest);">${esc(subtitle)}</div>` : ''}
+      ${subtitle ? `<div class="text ${subtitleBold ? 'bold' : 'regular'}" style="color:${subtitleColor};">${esc(subtitle)}</div>` : ''}
       ${date ? `<div class="text regular" style="color:var(--gray-dark);">${esc(date)}</div>` : ''}
     </div>
     ${trailing || ''}
@@ -212,7 +212,7 @@ function cardRow({ icon, iconSize = 48, iconFramed = false, title, titleColor = 
 /* Page shells                                                             */
 /* ---------------------------------------------------------------------- */
 
-function listPage({ category, title, rows }) {
+function listPage({ category, title, rows, extraSections = [] }) {
   const c = CATEGORIES[category];
 
   return `
@@ -231,6 +231,7 @@ function listPage({ category, title, rows }) {
         <div>
           ${sectionBox(rows)}
         </div>
+        ${extraSections.filter((s) => s.length).map((s) => `<div style="margin-top:1px;">${sectionBox(s)}</div>`).join('')}
       </div>
     </div>`;
 }
@@ -542,7 +543,7 @@ window.openQrModal = function (title, data, icon) {
       cornersSquareOptions: { color: '#000000', type: 'extra-rounded' },
       cornersDotOptions: { color: '#000000', type: 'dot' },
       backgroundOptions: { color: '#ffffff' },
-      image: icon || 'svg/logo-healthpass.svg?v=34',
+      image: icon || 'svg/logo-healthpass.svg?v=35',
       imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
     }).append(container);
   } catch (e) {
@@ -599,16 +600,25 @@ function renderVitalsDetail(id) {
 }
 
 function renderPrescriptionList() {
-  const rows = MEDICATIONS.map((m) => `
+  /* Surfaces the 2 most recent prescription documents at the top (same row
+     style as the Documents/Prescriptions lists), with the ongoing-regimen
+     Medications list as its own section below — mirrors the Visit detail
+     page's two-section layout (visit info + its documents). */
+  const rxRows = DOCUMENTS.filter((d) => d.kind === 'Prescription').slice(0, 2).map((d) => `
+    <a href="#/documents/${d.id}" style="text-decoration:none;color:inherit;display:block;">
+      ${cardRow({ icon: docIcon(d.kind), title: d.provider, subtitle: d.relatedVisit, date: d.date, trailing: chevronButton() })}
+    </a>`);
+  const medRows = MEDICATIONS.map((m) => `
     <a href="#/prescription/${m.id}" style="text-decoration:none;color:inherit;display:block;">
       ${cardRow({
         title: m.name,
         subtitle: m.dosage,
-        date: m.authoredDate,
+        subtitleColor: 'var(--gray-dark)',
+        subtitleBold: false,
         trailing: chevronButton(),
       })}
     </a>`);
-  return listPage({ category: 'prescription', title: 'Medications', rows });
+  return listPage({ category: 'prescription', title: 'Medications', rows: rxRows, extraSections: [medRows] });
 }
 
 function renderPrescriptionDetail(id) {
@@ -650,15 +660,15 @@ function renderLabResultsList() {
 function renderLabResultsDetail(id) {
   const r = LAB_RESULTS.find((x) => x.id === id);
   if (!r) return renderLabResultsList();
-  const obsRows = r.observations.map((o) => `
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(0,0,0,0.06);">
+  const obsRows = r.observations.map((o, i) => `
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:20px;${i < r.observations.length - 1 ? 'border-bottom:1px solid rgba(0,0,0,0.06);' : ''}">
       <div>
         <div class="text regular" style="color:var(--gray-dark);">${esc(o.name)}</div>
         <div class="title" style="color:var(--app-text);">${esc(o.value)}</div>
       </div>
       ${statusBadge(LAB_FLAG_KIND[o.flag] || 'within')}
     </div>`).join('');
-  const cards = [obsRows];
+  const cards = [{ content: obsRows, padding: '0' }];
   return detailPage({
     category: 'labresults', title: r.name, badgeHtml: '',
     subtitleLeft: '', subtitleRight: r.reportDate, chartHtml: '',
