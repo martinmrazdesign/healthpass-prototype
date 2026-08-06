@@ -50,7 +50,7 @@ function docIcon(kind) {
    Your Health row icons above — matches the Figma "Activity" component variants. */
 const ACTIVITY_META = {
   visit:        { surface: 'var(--lavender-light)', accent: 'var(--lavender-darkest)', icon: 'svg/hp-visits-dark.svg',       wave: 'svg/figma-wave-visit.svg' },
-  prescription: { surface: 'var(--yellow-light)',    accent: 'var(--yellow-darkest)',   icon: 'svg/hp-medications-dark.svg',  wave: 'svg/figma-wave-prescription.svg' },
+  prescription: { surface: 'var(--yellow-light)',    accent: 'var(--yellow-darkest)',   icon: 'svg/hp-doc-prescription.svg',  wave: 'svg/figma-wave-prescription.svg' },
   allergy:      { surface: 'var(--green-light)',     accent: 'var(--green-darkest)',    icon: 'svg/hp-allergies-dark.svg',    wave: 'svg/figma-wave-allergy.svg' },
   labresult:    { surface: 'var(--blue-light)',      accent: 'var(--blue-darkest)',     icon: 'svg/hp-lab-results-dark.svg',  wave: 'svg/figma-wave-labresult.svg' },
   sicknote:     { surface: 'var(--gray-light)',       accent: 'var(--gray-darkest)',    icon: 'svg/hp-doc-sicknote.svg',      wave: 'svg/figma-wave-sicknote-gray.svg' },
@@ -222,7 +222,7 @@ function listPage({ category, title, rows }) {
     </div>`;
 }
 
-function detailPage({ category, title, badgeHtml, subtitleLeft, subtitleRight, chartHtml, cards, extraSections = [] }) {
+function detailPage({ category, title, badgeHtml, subtitleLeft, subtitleRight, chartHtml, cards, extraSections = [], qrIcon }) {
   const c = CATEGORIES[category];
   const extraRows = [];
   if (badgeHtml) extraRows.push(badgeHtml);
@@ -241,7 +241,7 @@ function detailPage({ category, title, badgeHtml, subtitleLeft, subtitleRight, c
           <a href="#/home" onclick="goBack();return false;" class="hp-tap-color" style="--tap-bg:${c.lightest};position:absolute;left:0;top:0;z-index:10;width:64px;height:64px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;text-decoration:none;">
             ${backArrow(c.accent)}
           </a>
-          <button onclick="openQrModal('${esc(title)}', '${esc(shareUrl)}', '${c.icon}')" class="hp-tap-color" style="--tap-bg:${c.surface};position:absolute;right:16px;top:16px;z-index:10;width:40px;height:40px;border-radius:32px;background:${c.lightest};border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+          <button onclick="openQrModal('${esc(title)}', '${esc(shareUrl)}', '${qrIcon || c.icon}')" class="hp-tap-color" style="--tap-bg:${c.surface};position:absolute;right:16px;top:16px;z-index:10;width:40px;height:40px;border-radius:32px;background:${c.lightest};border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;">
             ${shareIcon(c.accent)}
           </button>
           ${waveTop(c.surface)}
@@ -528,7 +528,7 @@ window.openQrModal = function (title, data, icon) {
       cornersSquareOptions: { color: '#000000', type: 'extra-rounded' },
       cornersDotOptions: { color: '#000000', type: 'dot' },
       backgroundOptions: { color: '#ffffff' },
-      image: icon || 'svg/logo-healthpass.svg?v=26',
+      image: icon || 'svg/logo-healthpass.svg?v=27',
       imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
     }).append(container);
   } catch (e) {
@@ -768,7 +768,7 @@ function renderDocumentDetail(id) {
   ];
   return detailPage({
     category, title: d.kind, badgeHtml: '', subtitleLeft: d.provider, subtitleRight: d.date,
-    chartHtml: '', cards,
+    chartHtml: '', cards, qrIcon: docIcon(d.kind),
   });
 }
 
