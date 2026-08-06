@@ -83,9 +83,19 @@ function waveTop(headerColor) {
 /* floating cards.                                                          */
 /* ---------------------------------------------------------------------- */
 
+/* Rows are normally a plain HTML string (20px padding all round, divider
+   after). Pass { content, padding, noDivider } instead to override either —
+   e.g. the visit AI-insight card sits closer to the box edges and has no
+   divider under it. */
 function sectionBox(rows) {
   const rowsHtml = rows.length
-    ? rows.map((r, i) => `<div style="padding:20px;">${r}</div>${i < rows.length - 1 ? '<div class="hp-divider"></div>' : ''}`).join('')
+    ? rows.map((r, i) => {
+        const isCustom = typeof r === 'object' && r !== null;
+        const content = isCustom ? r.content : r;
+        const padding = isCustom && r.padding ? r.padding : '20px';
+        const wantsDivider = i < rows.length - 1 && !(isCustom && r.noDivider);
+        return `<div style="padding:${padding};">${content}</div>${wantsDivider ? '<div class="hp-divider"></div>' : ''}`;
+      }).join('')
     : `<div style="padding:20px;color:var(--gray-dark);text-align:center;">Nothing here yet.</div>`;
   return `<div style="background:var(--app-surface);border-radius:24px;overflow:hidden;">
     <div style="display:flex;flex-direction:column;">${rowsHtml}</div>
@@ -220,19 +230,22 @@ function detailPage({ category, title, badgeHtml, subtitleLeft, subtitleRight, c
 
 /* Matches Figma's "What's going on?" AI-insight card on the Visit detail
    page — a gradient-tinted nested card (distinct from the plainer "AI
-   Summary" block used on Lab Results) with an "AI generated" pill. */
+   Summary" block used on Lab Results) with an "AI generated" pill. The
+   gradient drifts slowly via .hp-ai-card-bg's `transform` (see proto.css) —
+   transform-only animation stays on the compositor thread, so it doesn't
+   trigger layout/paint on every frame the way animating background-position
+   directly would. */
 function aiInsightCard(bodyText) {
-  return `<div style="background:
-      radial-gradient(circle at 52% 6%, rgba(255,144,89,0.55), transparent 42%),
-      radial-gradient(circle at 12% 92%, rgba(151,120,255,0.45), transparent 48%),
-      radial-gradient(circle at 90% 60%, rgba(232,146,255,0.45), transparent 48%),
-      #f3f1fa;border-radius:16px;padding:16px;">
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;">
-      <span class="title" style="color:var(--lavender-darkest);">What's going on?</span>
-      <img src="svg/hp-ai-label.svg" width="125" height="26" alt="AI generated" style="flex-shrink:0;">
+  return `<div style="position:relative;overflow:hidden;border-radius:16px;background:#f3f1fa;">
+    <div class="hp-ai-card-bg"></div>
+    <div style="position:relative;z-index:1;padding:16px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;">
+        <span class="title" style="color:var(--lavender-darkest);">What's going on?</span>
+        <img src="svg/hp-ai-label.svg" width="125" height="26" alt="AI generated" style="flex-shrink:0;">
+      </div>
+      <div class="text regular" style="color:var(--app-text);line-height:1.5;margin-bottom:10px;">${esc(bodyText)}</div>
+      <div class="text small" style="color:var(--gray-dark);">AI can make mistakes. Check with your doctor.</div>
     </div>
-    <div class="text regular" style="color:var(--app-text);line-height:1.5;margin-bottom:10px;">${esc(bodyText)}</div>
-    <div class="text small" style="color:var(--gray-dark);">AI can make mistakes. Check with your doctor.</div>
   </div>`;
 }
 
@@ -486,7 +499,7 @@ window.openQrModal = function (title, data, icon) {
       cornersSquareOptions: { color: '#000000', type: 'extra-rounded' },
       cornersDotOptions: { color: '#000000', type: 'dot' },
       backgroundOptions: { color: '#ffffff' },
-      image: icon || 'svg/logo-healthpass.svg?v=19',
+      image: icon || 'svg/logo-healthpass.svg?v=20',
       imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
     }).append(container);
   } catch (e) {
@@ -668,7 +681,7 @@ function renderVisitsDetail(id) {
   const v = VISITS.find((x) => x.id === id);
   if (!v) return renderVisitsList();
   const cards = [
-    aiInsightCard(v.aiSummary),
+    { content: aiInsightCard(v.aiSummary), padding: '8px 8px 12px', noDivider: true },
     soapRow('What you reported', v.soap.reported),
     soapRow('Examination', v.soap.examination),
     soapRow('Diagnosis', v.soap.diagnosis),
