@@ -275,7 +275,7 @@ function renderHome() {
       <div style="background:var(--app-surface);border-radius:24px;overflow:hidden;width:100%;height:172px;position:relative;">
         <div style="background:${m.surface};height:41px;position:relative;border-radius:16px 16px 0 0;display:flex;align-items:center;">
           <span class="text bold" style="padding-left:14px;color:${m.accent};">${esc(item.label)}</span>
-          <img src="${m.icon}" width="40" height="40" alt="" style="position:absolute;right:8px;top:8px;">
+          <img src="${m.icon}" width="40" height="40" alt="" style="position:absolute;right:8px;top:8px;z-index:2;">
         </div>
         <img src="${m.wave}" alt="" style="position:absolute;left:0;top:41px;width:100%;height:45px;display:block;">
         <div style="position:absolute;left:0;top:41px;right:0;bottom:0;padding:16px;box-sizing:border-box;display:flex;flex-direction:column;align-items:flex-start;">
@@ -486,7 +486,7 @@ window.openQrModal = function (title, data, icon) {
       cornersSquareOptions: { color: '#000000', type: 'extra-rounded' },
       cornersDotOptions: { color: '#000000', type: 'dot' },
       backgroundOptions: { color: '#ffffff' },
-      image: icon || 'svg/logo-healthpass.svg?v=18',
+      image: icon || 'svg/logo-healthpass.svg?v=19',
       imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
     }).append(container);
   } catch (e) {
