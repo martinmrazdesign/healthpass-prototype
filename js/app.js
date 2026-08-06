@@ -34,6 +34,10 @@ const CATEGORIES = {
   documents:     { label: 'Documents',     accent: 'var(--gray-darkest)',         surface: 'var(--gray-light)',            lightest: 'var(--gray-lightest)',      icon: 'svg/hp-documents-light.svg',     iconDark: 'svg/hp-documents-dark.svg' },
   about:         { label: 'About me',      accent: 'var(--green-dark)',          surface: 'var(--white)',                 lightest: 'var(--about-base)',         icon: 'svg/hp-about-light.svg',         iconDark: 'svg/hp-about-dark.svg' },
 };
+/* "Prescriptions" (the document list, route #/prescriptions) reuses the same
+   yellow scheme as "Medications" (category key "prescription") — alias it so
+   route()'s body-tint lookup (keyed by the URL section) finds it too. */
+CATEGORIES.prescriptions = CATEGORIES.prescription;
 
 /* Per-kind document icons (Figma "Icon=<kind>, Background=Light" export set).
    Falls back to the generic document icon for any kind not in this list. */
@@ -168,6 +172,15 @@ const STATUS_LABELS = {
   aBitAbove:  { text: 'A bit above range',  bg: 'var(--yellow-lightest)', color: 'var(--yellow-dark)', icon: 'svg/hp-status-abitabove.svg' },
   highRisk:   { text: 'High risk',          bg: 'var(--red-lightest)',    color: 'var(--red-dark)',    icon: 'svg/hp-status-risk-high.svg' },
   mediumRisk: { text: 'Medium risk',        bg: 'var(--yellow-lightest)', color: 'var(--yellow-dark)', icon: 'svg/hp-status-risk-medium.svg' },
+};
+
+/* Maps a lab observation's plain-English flag to a STATUS_LABELS key. */
+const LAB_FLAG_KIND = {
+  Normal: 'within',
+  Low: 'below',
+  High: 'above',
+  'Slightly Low': 'aBitBelow',
+  'Slightly High': 'aBitAbove',
 };
 
 function statusBadge(kind) {
@@ -394,6 +407,7 @@ function renderHome() {
           ${healthRow('#/labresults', CATEGORIES.labresults.icon, 'Test Results', 8)}
           ${healthRow('#/vitals', CATEGORIES.vitals.icon, 'Vitals', 0)}
           ${healthRow('#/prescription', CATEGORIES.prescription.icon, 'Medications', 0)}
+          ${healthRow('#/prescriptions', 'svg/hp-doc-prescription.svg', 'Prescriptions', 0)}
           ${healthRow('#/immunizations', CATEGORIES.immunizations.icon, 'Vaccinations', 0)}
           ${healthRow('#/visits', CATEGORIES.visits.icon, 'Visits', 2)}
           ${healthRow('#/documents', CATEGORIES.documents.icon, 'Documents', 8)}
@@ -528,7 +542,7 @@ window.openQrModal = function (title, data, icon) {
       cornersSquareOptions: { color: '#000000', type: 'extra-rounded' },
       cornersDotOptions: { color: '#000000', type: 'dot' },
       backgroundOptions: { color: '#ffffff' },
-      image: icon || 'svg/logo-healthpass.svg?v=29',
+      image: icon || 'svg/logo-healthpass.svg?v=30',
       imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
     }).append(container);
   } catch (e) {
@@ -551,14 +565,13 @@ window.closeQrModal = function () {
 
 function renderVitalsList() {
   const rows = VITALS.map((v) => `
-    <a href="#/vitals/${v.id}" style="text-decoration:none;color:inherit;display:block;">
-      <div style="display:flex;align-items:center;gap:12px;">
-        <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;">
-          <div class="text regular" style="color:var(--gray-darkest);">${esc(v.name)}</div>
-          <div class="header" style="font-size:24px;line-height:1;color:var(--app-text);">${esc(v.value)}</div>
-          <div class="text regular" style="color:var(--gray-dark);">${esc(v.date)}</div>
-        </div>
+    <a href="#/vitals/${v.id}" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px;">
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;">
+        <div class="text regular" style="color:var(--gray-darkest);">${esc(v.name)}</div>
+        <div class="header" style="font-size:24px;line-height:1;color:var(--app-text);">${esc(v.value)}</div>
+        <div class="text regular" style="color:var(--gray-dark);">${esc(v.date)}</div>
       </div>
+      ${chevronButton()}
     </a>`);
   return listPage({ category: 'vitals', title: 'Vitals', rows });
 }
@@ -620,13 +633,16 @@ function renderPrescriptionDetail(id) {
 function renderLabResultsList() {
   const rows = LAB_RESULTS.map((r) => {
     const inProgress = r.status !== 'Final';
-    return `
-    <a href="#/labresults/${r.id}" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px;">
-      <div style="flex:1;min-width:0;">
-        <div class="title" style="color:var(--app-text);">${esc(r.name)}</div>
-      </div>
-      ${inProgress ? statusBadge('inProgress') : chevronButton()}
-    </a>`;
+    const row = cardRow({
+      title: r.name,
+      date: r.reportDate,
+      trailing: inProgress ? statusBadge('inProgress') : chevronButton(),
+    });
+    /* In-progress results have no detail worth showing (no observations
+       yet) — render as a plain row instead of a link so it's not clickable. */
+    return inProgress
+      ? `<div style="color:inherit;">${row}</div>`
+      : `<a href="#/labresults/${r.id}" style="text-decoration:none;color:inherit;display:block;">${row}</a>`;
   });
   return listPage({ category: 'labresults', title: 'Test Results', rows });
 }
@@ -635,12 +651,12 @@ function renderLabResultsDetail(id) {
   const r = LAB_RESULTS.find((x) => x.id === id);
   if (!r) return renderLabResultsList();
   const obsRows = r.observations.map((o) => `
-    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(0,0,0,0.06);">
-      <span class="text regular" style="color:var(--app-text);">${esc(o.name)}</span>
-      <div style="text-align:right;">
-        <div class="text bold" style="color:var(--app-text);">${esc(o.value)}</div>
-        <div class="text small" style="color:var(--gray-dark);">ref: ${esc(o.range)}</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(0,0,0,0.06);">
+      <div>
+        <div class="text regular" style="color:var(--gray-dark);">${esc(o.name)}</div>
+        <div class="title" style="color:var(--app-text);">${esc(o.value)}</div>
       </div>
+      ${statusBadge(LAB_FLAG_KIND[o.flag] || 'within')}
     </div>`).join('');
   const cards = [
     `<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
@@ -694,7 +710,7 @@ function renderVisitsList() {
       </div>
     </div>`;
     return `
-    <a href="#/visits/${v.id}" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px;">
+    <a href="#/visits/${v.id}" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:16px;">
       ${dateBadge}
       <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;">
         <div class="title" style="color:var(--app-text);">${esc(v.title)}</div>
@@ -718,7 +734,7 @@ function renderVisitsDetail(id) {
   ];
   const documentRows = v.documents.map((d) => `
     <a href="#/documents" style="text-decoration:none;color:inherit;display:block;">
-      ${cardRow({ icon: docIcon(d.kind), iconFramed: true, title: d.kind, date: d.date, trailing: chevronButton() })}
+      ${cardRow({ icon: docIcon(d.kind), title: d.kind, date: d.date, trailing: chevronButton() })}
     </a>`);
   return detailPage({
     category: 'visits', title: v.title, badgeHtml: '', subtitleLeft: `${v.provider} at Turn Clinic`, subtitleRight: v.date,
@@ -743,9 +759,20 @@ function renderAbout() {
 function renderDocuments() {
   const rows = DOCUMENTS.map((d) => `
     <a href="#/documents/${d.id}" style="text-decoration:none;color:inherit;display:block;">
-      ${cardRow({ icon: docIcon(d.kind), iconFramed: true, title: d.kind, subtitle: d.relatedVisit, date: d.date, trailing: chevronButton() })}
+      ${cardRow({ icon: docIcon(d.kind), title: d.kind, subtitle: d.relatedVisit, date: d.date, trailing: chevronButton() })}
     </a>`);
   return listPage({ category: 'documents', title: 'Documents', rows });
+}
+
+/* Actual prescription slips (documents), distinct from the ongoing-regimen
+   entries under Medications — reuses the Documents detail page/route since
+   these ARE Document records, just pre-filtered to kind === 'Prescription'. */
+function renderPrescriptionDocsList() {
+  const rows = DOCUMENTS.filter((d) => d.kind === 'Prescription').map((d) => `
+    <a href="#/documents/${d.id}" style="text-decoration:none;color:inherit;display:block;">
+      ${cardRow({ icon: docIcon(d.kind), title: d.provider, subtitle: d.relatedVisit, date: d.date, trailing: chevronButton() })}
+    </a>`);
+  return listPage({ category: 'prescription', title: 'Prescriptions', rows });
 }
 
 /* Prescription documents use the yellow "prescription" category scheme since
@@ -819,6 +846,7 @@ function route() {
   switch (section) {
     case 'vitals':        html = id ? renderVitalsDetail(id) : renderVitalsList(); break;
     case 'prescription':  html = id ? renderPrescriptionDetail(id) : renderPrescriptionList(); break;
+    case 'prescriptions':  html = renderPrescriptionDocsList(); break;
     case 'labresults':     html = id ? renderLabResultsDetail(id) : renderLabResultsList(); break;
     case 'allergies':      html = renderAllergiesList(); break;
     case 'immunizations':  html = renderImmunizationsList(); break;

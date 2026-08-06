@@ -20,7 +20,7 @@ const FAMILY_MEMBERS = [
 
 const RECENTS = [
   { category: 'visit', label: 'Visit summary', title: 'Otorhinolaringology', date: 'Aug 3, 2026', detailUrl: '#/visits/v-1' },
-  { category: 'prescription', label: 'Prescription', title: 'By Maria Silva at Turn Clinic', date: 'Aug 4, 2026', detailUrl: '#/documents/doc-1' },
+  { category: 'prescription', label: 'Prescription', title: 'By Maria Silva at Turn Clinic', date: 'Aug 4, 2026', detailUrl: '#/documents/doc-7' },
   { category: 'allergy', label: 'Allergy', title: 'Penicillin', date: 'Aug 2, 2026', detailUrl: '#/allergies' },
   { category: 'labresult', label: 'Test result', title: 'Comprehensive Metabolic Panel', date: 'Aug 5, 2026', detailUrl: '#/labresults/lr-1' },
   { category: 'sicknote', label: 'Sick note', title: 'Urgent care visit (ankle sprain)', date: 'Aug 1, 2026', detailUrl: '#/documents/doc-4' },
@@ -120,6 +120,10 @@ const VISITS = [
 ];
 
 const DOCUMENTS = [
+  { id: 'doc-7', kind: 'Prescription', relatedVisit: 'Otorhinolaringology', provider: 'Dr. Maria Silva at Turn Clinic', date: 'Aug 4, 2026',
+    message: 'Hey Amara, this is your prescription. Please pick up this medicine as soon as possible and you should be fine in a few days.' },
+  { id: 'doc-8', kind: 'Prescription', relatedVisit: 'Annual Checkup', provider: 'Dr. Amina Okoye at Turn Clinic', date: 'Jul 30, 2026',
+    message: 'Hey Amara, this is your prescription. Please pick up this medicine as soon as possible and you should be fine in a few days.' },
   { id: 'doc-1', kind: 'Prescription', relatedVisit: 'Otorhinolaringology', provider: 'Dr. Amina Okoye at Turn Clinic', date: 'Feb 6, 2026',
     message: 'Hey Amara, this is your prescription. Please pick up this medicine as soon as possible and you should be fine in a few days.' },
   { id: 'doc-2', kind: 'Prescription', relatedVisit: 'Urgent Care (Sprained Ankle)', provider: 'Dr. Wei Zhang at Turn Clinic', date: 'Apr 2, 2026',
