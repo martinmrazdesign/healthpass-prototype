@@ -58,7 +58,7 @@
     setTimeout(() => {
       startScanning(() => {
         if (pin.join('') === DEMO_PIN) {
-          window.hpUnlock();
+          window.hpUnlock(true);
         } else {
           pin = [];
           showError();

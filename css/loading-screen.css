@@ -1,0 +1,107 @@
+/*
+ * loading-screen.css — "loading your data" screen shown after a correct PIN,
+ * before the real app appears. Everything here is cosmetic (this is a static
+ * prototype, nothing actually loads) but it sells the moment as real work
+ * happening rather than a hard cut from PIN to home.
+ *
+ * Matches Figma node 171:4508 for the icon+"Loading..." layout; the sweeping
+ * shimmer on "Loading" and the one-by-one dot fade on the "..." are our own
+ * addition on top of that static frame.
+ */
+
+.hp-loading-screen {
+    position: fixed;
+    inset: 0;
+    background-color: var(--app-base);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 15;
+}
+
+.hp-loading-icon {
+    position: relative;
+    width: 128px;
+    height: 149px;
+}
+
+.hp-loading-icon-base {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* Spinner overlay: sized/positioned as a percentage of the icon so it lines
+   up with where it sits in the Figma "-sinner" reference regardless of the
+   icon's final rendered size. Rotation is CSS on the <img> itself — the
+   spinner glyph is a symmetric radial dial, so a plain rotate reads
+   correctly without needing to touch the underlying SVG. */
+.hp-loading-spinner {
+    position: absolute;
+    width: 31.25%;
+    aspect-ratio: 1 / 1;
+    left: 50%;
+    top: 73.7%;
+    transform: translate(-50%, -50%);
+    animation: hp-loading-spin 1s linear infinite;
+}
+
+@keyframes hp-loading-spin {
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.hp-loading-text {
+    margin-top: 80px;
+    display: flex;
+}
+
+.hp-loading-text-word {
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 20px;
+    letter-spacing: -0.02em;
+    background: linear-gradient(90deg,
+        var(--gray-dark) 0%, var(--gray-dark) 42%,
+        var(--app-text) 50%,
+        var(--gray-dark) 58%, var(--gray-dark) 100%);
+    background-size: 240% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: hp-loading-shimmer 1.8s linear infinite;
+}
+
+@keyframes hp-loading-shimmer {
+    0%   { background-position: 120% 0; }
+    100% { background-position: -120% 0; }
+}
+
+/* All 3 dots are always laid out (fixed width, no reflow/jump as they
+   cycle) — only their opacity animates, staggered, so they appear to
+   light up one at a time left-to-right, then all fade out together
+   right before the loop restarts. */
+.hp-loading-text-dots {
+    display: inline-flex;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 20px;
+    letter-spacing: -0.02em;
+    color: var(--gray-dark);
+}
+
+.hp-loading-text-dots span {
+    opacity: 0;
+    animation: hp-loading-dot-fade 1.2s steps(1, end) infinite;
+}
+.hp-loading-text-dots span:nth-child(1) { animation-delay: 0s; }
+.hp-loading-text-dots span:nth-child(2) { animation-delay: 0.3s; }
+.hp-loading-text-dots span:nth-child(3) { animation-delay: 0.6s; }
+
+@keyframes hp-loading-dot-fade {
+    0%   { opacity: 0; }
+    8%   { opacity: 1; }
+    75%  { opacity: 1; }
+    83%  { opacity: 0; }
+    100% { opacity: 0; }
+}
