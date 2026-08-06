@@ -42,6 +42,17 @@ const DOCUMENT_ICONS = {
   'Referral':     'svg/hp-doc-referral.svg',
   'Sick note':    'svg/hp-doc-sicknote.svg',
 };
+/* One representative sample PDF per document kind — content doesn't map to
+   any specific document's mock data, it's just a real, realistic-looking
+   file to view/download/share instead of nothing. */
+const DOCUMENT_PDFS = {
+  'Prescription': 'pdfs/prescription.pdf',
+  'Referral':     'pdfs/referral.pdf',
+  'Sick note':    'pdfs/sick-note.pdf',
+};
+function docPdf(kind) {
+  return DOCUMENT_PDFS[kind] || '';
+}
 function docIcon(kind) {
   return DOCUMENT_ICONS[kind] || 'svg/hp-doc-generic.svg';
 }
@@ -232,7 +243,7 @@ function listPage({ category, title, rows, extraSections = [] }) {
     </div>`;
 }
 
-function detailPage({ category, title, badgeHtml, subtitleLeft, subtitleRight, chartHtml, cards, extraSections = [], qrIcon }) {
+function detailPage({ category, title, badgeHtml, subtitleLeft, subtitleRight, chartHtml, cards, extraSections = [], qrIcon, qrUrl }) {
   const c = CATEGORIES[category];
   const extraRows = [];
   if (badgeHtml) extraRows.push(badgeHtml);
@@ -241,8 +252,10 @@ function detailPage({ category, title, badgeHtml, subtitleLeft, subtitleRight, c
 
   /* location.hash is already the current detail route at render time (route()
      sets it before calling this), so this is a real deep link back to this
-     exact record — scanning it lands here, not just on the app in general. */
-  const shareUrl = `${location.origin}${location.pathname}?skip=1${location.hash}`;
+     exact record — scanning it lands here, not just on the app in general.
+     qrUrl overrides this (e.g. document detail pages point straight at the
+     PDF, so scanning shows the actual document instead of the app). */
+  const shareUrl = qrUrl || `${location.origin}${location.pathname}?skip=1${location.hash}`;
 
   return `
     <div style="min-height:100vh;padding-bottom:40px;">
@@ -538,7 +551,7 @@ window.openQrModal = function (title, data, icon) {
       cornersSquareOptions: { color: '#000000', type: 'extra-rounded' },
       cornersDotOptions: { color: '#000000', type: 'dot' },
       backgroundOptions: { color: '#ffffff' },
-      image: icon || 'svg/logo-healthpass.svg?v=38',
+      image: icon || 'svg/logo-healthpass.svg?v=39',
       imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
     }).append(container);
   } catch (e) {
@@ -773,9 +786,6 @@ function renderDocuments() {
   return listPage({ category: 'documents', title: 'Documents', rows });
 }
 
-/* Actual prescription slips (documents), distinct from the ongoing-regimen
-   entries under Medications — reuses the Documents detail page/route since
-   these ARE Document records, just pre-filtered to kind === 'Prescription'. */
 /* Prescription documents use the yellow "prescription" category scheme since
    prescriptions are also real in-app navigation (Medications); every other
    document kind uses the plain gray "documents" scheme. */
@@ -783,20 +793,22 @@ function renderDocumentDetail(id) {
   const d = DOCUMENTS.find((x) => x.id === id);
   if (!d) return renderDocuments();
   const category = d.kind === 'Prescription' ? 'prescription' : 'documents';
-  const actionRow = (label, iconHtml) => `<div style="display:flex;align-items:center;justify-content:space-between;">
+  const pdf = docPdf(d.kind);
+  const pdfUrl = `${location.origin}${location.pathname}${pdf}`;
+  const actionRow = (label, iconHtml, href, extraAttrs = '') => `<a href="${esc(href)}" ${extraAttrs} style="text-decoration:none;color:inherit;display:flex;align-items:center;justify-content:space-between;">
     <span class="title" style="color:var(--app-text);">${esc(label)}</span>
     ${iconHtml}
-  </div>`;
+  </a>`;
   const kindLower = d.kind.toLowerCase();
   const cards = [
     `<div class="text regular" style="color:var(--app-text);line-height:1.5;">${esc(d.message)}</div>`,
-    actionRow(`View ${kindLower}`, eyeIcon('var(--gray-dark)')),
-    actionRow(`Download ${kindLower}`, downloadIcon('var(--gray-dark)')),
-    actionRow(`Share ${kindLower}`, shareIcon('var(--gray-dark)')),
+    actionRow(`View ${kindLower}`, eyeIcon('var(--gray-dark)'), pdf, 'target="_blank" rel="noopener"'),
+    actionRow(`Download ${kindLower}`, downloadIcon('var(--gray-dark)'), pdf, `download="${esc(d.kind)}.pdf"`),
+    actionRow(`Share ${kindLower}`, shareIcon('var(--gray-dark)'), '#', `onclick="event.preventDefault();openQrModal('${esc(d.kind)}', '${esc(pdfUrl)}', '${docIcon(d.kind)}');"`),
   ];
   return detailPage({
     category, title: d.kind, badgeHtml: '', subtitleLeft: d.provider, subtitleRight: d.date,
-    chartHtml: '', cards, qrIcon: docIcon(d.kind),
+    chartHtml: '', cards, qrIcon: docIcon(d.kind), qrUrl: pdfUrl,
   });
 }
 
