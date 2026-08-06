@@ -499,7 +499,7 @@ window.openQrModal = function (title, data, icon) {
       cornersSquareOptions: { color: '#000000', type: 'extra-rounded' },
       cornersDotOptions: { color: '#000000', type: 'dot' },
       backgroundOptions: { color: '#ffffff' },
-      image: icon || 'svg/logo-healthpass.svg?v=20',
+      image: icon || 'svg/logo-healthpass.svg?v=21',
       imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
     }).append(container);
   } catch (e) {
@@ -576,7 +576,7 @@ function renderPrescriptionDetail(id) {
     ${infoRow('Form', m.form)}
     ${infoRow('Quantity', m.quantity)}
     ${infoRow('Refills remaining', m.refills)}
-    ${infoRow('Prescriber', m.prescriber)}
+    ${infoRow('Prescriber', `${m.prescriber} at Turn Clinic`)}
   `, `
     <div class="text small" style="color:var(--gray-dark);text-transform:uppercase;margin-bottom:6px;">Instructions</div>
     <div class="text regular" style="color:var(--app-text);">${esc(m.dosage)}</div>
@@ -669,7 +669,7 @@ function renderVisitsList() {
       ${dateBadge}
       <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;">
         <div class="title" style="color:var(--app-text);">${esc(v.title)}</div>
-        <div class="text regular" style="color:var(--gray-darkest);">${esc(v.provider)} at ${esc(v.location)}</div>
+        <div class="text regular" style="color:var(--gray-darkest);">${esc(v.provider)} at Turn Clinic</div>
       </div>
       ${chevronButton()}
     </a>`;
@@ -692,7 +692,7 @@ function renderVisitsDetail(id) {
       ${cardRow({ icon: docIcon(d.kind), title: d.kind, trailing: chevronButton() })}
     </a>`);
   return detailPage({
-    category: 'visits', title: v.title, badgeHtml: '', subtitleLeft: v.provider, subtitleRight: v.date,
+    category: 'visits', title: v.title, badgeHtml: '', subtitleLeft: `${v.provider} at Turn Clinic`, subtitleRight: v.date,
     chartHtml: '', cards, extraSections: [documentRows],
   });
 }

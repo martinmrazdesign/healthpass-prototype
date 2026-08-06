@@ -1,6 +1,6 @@
 /* HealthPass prototype — entirely fake, hardcoded data. No network calls anywhere. */
 
-const DEMO_PIN = '1234';
+const DEMO_PIN = '3225';
 
 const PATIENT = {
   name: 'Amara Okonkwo',
@@ -20,7 +20,7 @@ const FAMILY_MEMBERS = [
 
 const RECENTS = [
   { category: 'visit', label: 'New visit', title: 'Otorhinolaringology', date: "6 Feb '26, 10:00", detailUrl: '#/visits/v-1' },
-  { category: 'prescription', label: 'New prescription', title: 'By Maria Silva at Turn Health', date: "6 Feb '26", detailUrl: '#/prescription/rx-1' },
+  { category: 'prescription', label: 'New prescription', title: 'By Maria Silva at Turn Clinic', date: "6 Feb '26", detailUrl: '#/prescription/rx-1' },
   { category: 'allergy', label: 'New allergy', title: 'Penicillin', date: 'Jan 2018', detailUrl: '#/allergies' },
   { category: 'labresult', label: 'New test results', title: 'Comprehensive Metabolic Panel', date: 'Jul 12, 2026', detailUrl: '#/labresults/lr-1' },
   { category: 'sicknote', label: 'New sick note', title: 'Urgent care visit — ankle sprain', date: 'Apr 2, 2026', detailUrl: '#/documents' },
@@ -94,7 +94,7 @@ const VISITS = [
       recommendation: 'Continue current diet and exercise routine. Discussed seasonal allergy management. Follow-up in 12 months unless symptoms arise.',
     },
     documents: [] },
-  { id: 'v-2', title: 'Urgent Care — Sprained Ankle', provider: 'Dr. Wei Zhang', location: 'Springfield Urgent Care', date: 'Apr 2, 2026',
+  { id: 'v-2', title: 'Urgent Care (Sprained Ankle)', provider: 'Dr. Wei Zhang', location: 'Springfield Urgent Care', date: 'Apr 2, 2026',
     aiSummary: 'You have a grade 1 ankle sprain from a fall. The X-ray shows no fracture. Rest, ice, and ibuprofen should help. Follow up if it hasn’t improved within 2 weeks.',
     soap: {
       reported: 'Right ankle pain and swelling after a fall earlier today. Difficulty bearing weight.',
