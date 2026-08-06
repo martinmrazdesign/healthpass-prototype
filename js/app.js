@@ -34,10 +34,6 @@ const CATEGORIES = {
   documents:     { label: 'Documents',     accent: 'var(--gray-darkest)',         surface: 'var(--gray-light)',            lightest: 'var(--gray-lightest)',      icon: 'svg/hp-documents-light.svg',     iconDark: 'svg/hp-documents-dark.svg' },
   about:         { label: 'About me',      accent: 'var(--green-dark)',          surface: 'var(--white)',                 lightest: 'var(--about-base)',         icon: 'svg/hp-about-light.svg',         iconDark: 'svg/hp-about-dark.svg' },
 };
-/* "Prescriptions" (the document list, route #/prescriptions) reuses the same
-   yellow scheme as "Medications" (category key "prescription") — alias it so
-   route()'s body-tint lookup (keyed by the URL section) finds it too. */
-CATEGORIES.prescriptions = CATEGORIES.prescription;
 
 /* Per-kind document icons (Figma "Icon=<kind>, Background=Light" export set).
    Falls back to the generic document icon for any kind not in this list. */
@@ -408,7 +404,6 @@ function renderHome() {
           ${healthRow('#/labresults', CATEGORIES.labresults.icon, 'Test Results', 8)}
           ${healthRow('#/vitals', CATEGORIES.vitals.icon, 'Vitals', 0)}
           ${healthRow('#/prescription', CATEGORIES.prescription.icon, 'Medications', 0)}
-          ${healthRow('#/prescriptions', 'svg/hp-doc-prescription.svg', 'Prescriptions', 0)}
           ${healthRow('#/immunizations', CATEGORIES.immunizations.icon, 'Vaccinations', 0)}
           ${healthRow('#/visits', CATEGORIES.visits.icon, 'Visits', 2)}
           ${healthRow('#/documents', CATEGORIES.documents.icon, 'Documents', 8)}
@@ -543,7 +538,7 @@ window.openQrModal = function (title, data, icon) {
       cornersSquareOptions: { color: '#000000', type: 'extra-rounded' },
       cornersDotOptions: { color: '#000000', type: 'dot' },
       backgroundOptions: { color: '#ffffff' },
-      image: icon || 'svg/logo-healthpass.svg?v=35',
+      image: icon || 'svg/logo-healthpass.svg?v=36',
       imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
     }).append(container);
   } catch (e) {
@@ -601,12 +596,13 @@ function renderVitalsDetail(id) {
 
 function renderPrescriptionList() {
   /* Surfaces the 2 most recent prescription documents at the top (same row
-     style as the Documents/Prescriptions lists), with the ongoing-regimen
-     Medications list as its own section below — mirrors the Visit detail
-     page's two-section layout (visit info + its documents). */
+     style as the Documents list), with the ongoing-regimen Medications list
+     as its own section below — mirrors the Visit detail page's two-section
+     layout (visit info + its documents). Prescriptions live only here, not
+     as their own top-level Your Health row. */
   const rxRows = DOCUMENTS.filter((d) => d.kind === 'Prescription').slice(0, 2).map((d) => `
     <a href="#/documents/${d.id}" style="text-decoration:none;color:inherit;display:block;">
-      ${cardRow({ icon: docIcon(d.kind), title: d.provider, subtitle: d.relatedVisit, date: d.date, trailing: chevronButton() })}
+      ${cardRow({ title: d.kind, subtitle: d.relatedVisit, date: d.date, trailing: chevronButton() })}
     </a>`);
   const medRows = MEDICATIONS.map((m) => `
     <a href="#/prescription/${m.id}" style="text-decoration:none;color:inherit;display:block;">
@@ -770,14 +766,6 @@ function renderDocuments() {
 /* Actual prescription slips (documents), distinct from the ongoing-regimen
    entries under Medications — reuses the Documents detail page/route since
    these ARE Document records, just pre-filtered to kind === 'Prescription'. */
-function renderPrescriptionDocsList() {
-  const rows = DOCUMENTS.filter((d) => d.kind === 'Prescription').map((d) => `
-    <a href="#/documents/${d.id}" style="text-decoration:none;color:inherit;display:block;">
-      ${cardRow({ icon: docIcon(d.kind), title: d.provider, subtitle: d.relatedVisit, date: d.date, trailing: chevronButton() })}
-    </a>`);
-  return listPage({ category: 'prescription', title: 'Prescriptions', rows });
-}
-
 /* Prescription documents use the yellow "prescription" category scheme since
    prescriptions are also real in-app navigation (Medications); every other
    document kind uses the plain gray "documents" scheme. */
@@ -849,7 +837,6 @@ function route() {
   switch (section) {
     case 'vitals':        html = id ? renderVitalsDetail(id) : renderVitalsList(); break;
     case 'prescription':  html = id ? renderPrescriptionDetail(id) : renderPrescriptionList(); break;
-    case 'prescriptions':  html = renderPrescriptionDocsList(); break;
     case 'labresults':     html = id ? renderLabResultsDetail(id) : renderLabResultsList(); break;
     case 'allergies':      html = renderAllergiesList(); break;
     case 'immunizations':  html = renderImmunizationsList(); break;
