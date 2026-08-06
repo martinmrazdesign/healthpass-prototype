@@ -50,13 +50,18 @@ button {
     -webkit-tap-highlight-color: transparent;
 }
 
-/* Replaces the disabled native tap flash with an intentional one. Links get
-   a flat gray fill — their rounding comes for free from the row/card's own
-   overflow:hidden, so this only needs a color, not its own border-radius.
-   Buttons already carry their own shape/color, so a brightness dip reads as
-   "pressed" without fighting whatever background they already have. */
-a:active { background-color: var(--gray-lightest); }
+/* Cards/rows get no tap indication at all — only icon buttons (back arrow,
+   share, QR) do, and those use .hp-tap-color below instead of this generic
+   dim, so a plain button keeping this rule is one that opted out of a
+   bespoke color (close buttons, chevron dropdown, keypad keys). */
 button:active { filter: brightness(0.93); }
+
+/* Icon buttons that want their tap state to match the page's own category
+   color instead of a generic dim: set --tap-bg inline (e.g. c.lightest) and
+   add this class. Wins over the plain `button:active` rule above on
+   specificity (0,2,0) vs (0,1,1), and resets the filter so the two don't
+   stack. Works on <a> too since it's not scoped to buttons. */
+.hp-tap-color:active { background-color: var(--tap-bg, transparent); filter: none; }
 
 #hp-app { min-height: 100vh; max-width: 412px; margin: 0 auto; }
 

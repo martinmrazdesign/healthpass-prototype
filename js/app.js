@@ -52,7 +52,7 @@ function esc(str) {
    side, so placing this flush at left:0/top:0 reproduces Figma's spacing
    with no extra offset math needed. */
 function backArrow(color) {
-  return `<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  return `<svg width="66" height="66" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g clip-path="url(#hp-back-arrow-clip)">
       <path fill-rule="evenodd" clip-rule="evenodd" d="M32.943 21.7238C33.4637 22.2445 33.4637 23.0888 32.943 23.6095L25.8858 30.6666H41.3335C42.0699 30.6666 42.6668 31.2636 42.6668 32C42.6668 32.7364 42.0699 33.3333 41.3335 33.3333H25.8858L32.943 40.3905C33.4637 40.9112 33.4637 41.7554 32.943 42.2761C32.4223 42.7968 31.5781 42.7968 31.0574 42.2761L21.724 32.9428C21.2033 32.4221 21.2033 31.5779 21.724 31.0572L31.0574 21.7238C31.5781 21.2031 32.4223 21.2031 32.943 21.7238Z" fill="${color}"/>
     </g>
@@ -65,7 +65,7 @@ function backArrow(color) {
 }
 
 function shareIcon(color) {
-  return `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+  return `<svg width="22" height="22" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path fill-rule="evenodd" clip-rule="evenodd" d="M5.7587 4.31291e-07L8 9.08128e-07C8.55229 9.08128e-07 9 0.447716 9 1C9 1.55229 8.55229 2 8 2H5.8C4.94342 2 4.36113 2.00078 3.91104 2.03755C3.47262 2.07337 3.24842 2.1383 3.09202 2.21799C2.7157 2.40973 2.40973 2.7157 2.21799 3.09202C2.1383 3.24842 2.07337 3.47262 2.03755 3.91104C2.00078 4.36113 2 4.94342 2 5.8V14.2C2 15.0566 2.00078 15.6389 2.03755 16.089C2.07337 16.5274 2.1383 16.7516 2.21799 16.908C2.40973 17.2843 2.7157 17.5903 3.09202 17.782C3.24842 17.8617 3.47262 17.9266 3.91104 17.9624C4.36113 17.9992 4.94342 18 5.8 18H14.2C15.0566 18 15.6389 17.9992 16.089 17.9624C16.5274 17.9266 16.7516 17.8617 16.908 17.782C17.2843 17.5903 17.5903 17.2843 17.782 16.908C17.8617 16.7516 17.9266 16.5274 17.9624 16.089C17.9992 15.6389 18 15.0566 18 14.2V12C18 11.4477 18.4477 11 19 11C19.5523 11 20 11.4477 20 12V14.2413C20 15.0463 20 15.7106 19.9558 16.2518C19.9099 16.8139 19.8113 17.3306 19.564 17.816C19.1805 18.5686 18.5686 19.1805 17.816 19.564C17.3306 19.8113 16.8139 19.9099 16.2518 19.9558C15.7106 20 15.0463 20 14.2413 20H5.75868C4.95372 20 4.28936 20 3.74817 19.9558C3.18608 19.9099 2.66937 19.8113 2.18404 19.564C1.43139 19.1805 0.819468 18.5686 0.435975 17.816C0.188684 17.3306 0.0901197 16.8139 0.0441945 16.2518C-2.28137e-05 15.7106 -1.23241e-05 15.0463 4.31291e-07 14.2413V5.7587C-1.23241e-05 4.95373 -2.28137e-05 4.28937 0.0441945 3.74817C0.0901197 3.18608 0.188684 2.66937 0.435975 2.18404C0.819468 1.43139 1.43139 0.819468 2.18404 0.435975C2.66937 0.188684 3.18608 0.0901197 3.74817 0.0441945C4.28937 -2.28137e-05 4.95373 -1.23241e-05 5.7587 4.31291e-07ZM15.2929 0.292894C15.6834 -0.0976302 16.3166 -0.0976302 16.7071 0.292894L19.7071 3.29289C20.0976 3.68342 20.0976 4.31658 19.7071 4.70711L16.7071 7.70711C16.3166 8.09763 15.6834 8.09763 15.2929 7.70711C14.9024 7.31658 14.9024 6.68342 15.2929 6.29289L16.5858 5H15.8C14.9434 5 14.3611 5.00078 13.911 5.03755C13.4726 5.07337 13.2484 5.1383 13.092 5.21799C12.7157 5.40973 12.4097 5.7157 12.218 6.09202C12.1383 6.24842 12.0734 6.47262 12.0376 6.91104C12.0008 7.36113 12 7.94342 12 8.8V10C12 10.5523 11.5523 11 11 11C10.4477 11 10 10.5523 10 10V8.75873C9.99999 7.95374 9.99998 7.28938 10.0442 6.74818C10.0901 6.18608 10.1887 5.66937 10.436 5.18404C10.8195 4.43139 11.4314 3.81947 12.184 3.43597C12.6694 3.18868 13.1861 3.09012 13.7482 3.04419C14.2894 2.99998 14.9537 2.99999 15.7587 3L16.5858 3L15.2929 1.70711C14.9024 1.31658 14.9024 0.683418 15.2929 0.292894Z" fill="${color}"/>
   </svg>`;
 }
@@ -120,10 +120,12 @@ function closeIcon(color, size = 24) {
    styles (Primary: green-light bg, Secondary: white bg, Ghost: transparent). */
 const BUTTON_ICON_SIZE = { S: 32, M: 40, L: 48 };
 
-function iconButton({ size = 'M', style = 'Secondary', iconHtml, onclick = '', extra = '' }) {
+function iconButton({ size = 'M', style = 'Secondary', iconHtml, onclick = '', extra = '', activeBg = '' }) {
   const px = BUTTON_ICON_SIZE[size];
   const bg = style === 'Primary' ? 'var(--green-light)' : style === 'Secondary' ? 'var(--app-surface)' : 'transparent';
-  return `<button ${onclick ? `onclick="${onclick}"` : ''} style="width:${px}px;height:${px}px;border-radius:999px;background:${bg};border:none;cursor:pointer;padding:4px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;flex-shrink:0;${extra}">
+  const tapClass = activeBg ? ' hp-tap-color' : '';
+  const tapVar = activeBg ? `--tap-bg:${activeBg};` : '';
+  return `<button ${onclick ? `onclick="${onclick}"` : ''} class="${tapClass}" style="${tapVar}width:${px}px;height:${px}px;border-radius:999px;background:${bg};border:none;cursor:pointer;padding:4px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;flex-shrink:0;${extra}">
     ${iconHtml}
   </button>`;
 }
@@ -177,7 +179,7 @@ function listPage({ category, title, rows }) {
     <div style="min-height:100vh;padding-bottom:40px;">
       <div class="hp-section-content">
         <div style="position:relative;">
-          <a href="#/home" onclick="goBack();return false;" style="position:absolute;left:0;top:0;z-index:10;width:64px;height:64px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;text-decoration:none;">
+          <a href="#/home" onclick="goBack();return false;" class="hp-tap-color" style="--tap-bg:${c.lightest};position:absolute;left:0;top:0;z-index:10;width:64px;height:64px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;text-decoration:none;">
             ${backArrow(c.accent)}
           </a>
           <img src="${c.iconDark}" width="80" height="80" alt="" style="position:absolute;right:16px;top:16px;z-index:10;">
@@ -209,10 +211,10 @@ function detailPage({ category, title, badgeHtml, subtitleLeft, subtitleRight, c
     <div style="min-height:100vh;padding-bottom:40px;">
       <div class="hp-section-content">
         <div style="position:relative;">
-          <a href="#/home" onclick="goBack();return false;" style="position:absolute;left:0;top:0;z-index:10;width:64px;height:64px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;text-decoration:none;">
+          <a href="#/home" onclick="goBack();return false;" class="hp-tap-color" style="--tap-bg:${c.lightest};position:absolute;left:0;top:0;z-index:10;width:64px;height:64px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;text-decoration:none;">
             ${backArrow(c.accent)}
           </a>
-          <button onclick="openQrModal('${esc(title)}', '${esc(shareUrl)}', '${c.icon}')" style="position:absolute;right:16px;top:16px;z-index:10;width:40px;height:40px;border-radius:32px;background:${c.lightest};border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+          <button onclick="openQrModal('${esc(title)}', '${esc(shareUrl)}', '${c.icon}')" class="hp-tap-color" style="--tap-bg:${c.surface};position:absolute;right:16px;top:16px;z-index:10;width:40px;height:40px;border-radius:32px;background:${c.lightest};border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;">
             ${shareIcon(c.accent)}
           </button>
           ${waveTop(c.surface)}
@@ -270,7 +272,7 @@ function infoRow(label, value) {
 function renderHome() {
   const hasFamily = FAMILY_MEMBERS.length > 1;
   const familyItems = FAMILY_MEMBERS.filter((m) => !m.isMain).map((m, i, arr) => `
-    <a href="#/home" onclick="closeFamilyPanel();return false;" style="display:flex;align-items:center;justify-content:space-between;background:var(--app-surface);height:100px;padding:24px;border-radius:${i === arr.length - 1 ? '4px 4px 24px 24px' : '4px'};text-decoration:none;overflow:hidden;">
+    <a href="#/home" onclick="closeFamilyPanel();return false;" style="display:flex;align-items:center;justify-content:space-between;background:var(--app-surface);padding:16px 24px;border-radius:${i === arr.length - 1 ? '4px 4px 24px 24px' : '4px'};text-decoration:none;overflow:hidden;">
       <div style="display:flex;flex-direction:column;gap:6px;">
         <div class="title" style="color:var(--app-text);">${esc(m.name)}</div>
         <div style="display:flex;gap:4px;">
@@ -330,7 +332,7 @@ function renderHome() {
               ${iconButton({ size: 'M', style: 'Secondary', onclick: 'closeFamilyPanel()', iconHtml: closeIcon('var(--app-text)') })}
             </div>
             <div style="display:flex;flex-direction:column;gap:2px;">
-              <a href="#/home" onclick="closeFamilyPanel();return false;" style="display:flex;align-items:center;justify-content:space-between;background:var(--app-surface);height:100px;padding:24px;border-radius:24px 24px 4px 4px;text-decoration:none;overflow:hidden;">
+              <a href="#/home" onclick="closeFamilyPanel();return false;" style="display:flex;align-items:center;justify-content:space-between;background:var(--app-surface);padding:16px 24px;border-radius:24px 24px 4px 4px;text-decoration:none;overflow:hidden;">
                 <div style="display:flex;flex-direction:column;gap:6px;">
                   <div class="title" style="color:var(--app-text);">${esc(FAMILY_MEMBERS[0].name)}</div>
                   <div style="display:flex;gap:4px;">
@@ -345,7 +347,7 @@ function renderHome() {
             </div>
           </div>
         </div>
-        ${iconButton({ size: 'L', style: 'Primary', onclick: 'openQrModal()', iconHtml: '<img src="svg/figma-icon-qr.svg" width="24" height="24" alt="">' })}
+        ${iconButton({ size: 'L', style: 'Primary', onclick: 'openQrModal()', iconHtml: '<img src="svg/figma-icon-qr.svg" width="26" height="26" alt="">', activeBg: 'var(--green-base)' })}
       </div>
 
       <div style="display:flex;align-items:center;gap:8px;padding:32px 16px 12px;">
@@ -499,7 +501,7 @@ window.openQrModal = function (title, data, icon) {
       cornersSquareOptions: { color: '#000000', type: 'extra-rounded' },
       cornersDotOptions: { color: '#000000', type: 'dot' },
       backgroundOptions: { color: '#ffffff' },
-      image: icon || 'svg/logo-healthpass.svg?v=21',
+      image: icon || 'svg/logo-healthpass.svg?v=22',
       imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
     }).append(container);
   } catch (e) {
