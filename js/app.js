@@ -244,7 +244,7 @@ function listPage({ category, title, rows, extraSections = [] }) {
     </div>`;
 }
 
-function detailPage({ category, title, badgeHtml, subtitleLeft, subtitleRight, chartHtml, cards, extraSections = [], qrIcon, qrUrl, insetCard = false }) {
+function detailPage({ category, title, badgeHtml, subtitleLeft, subtitleRight, chartHtml, cards, extraSections = [], qrIcon, qrUrl }) {
   const c = CATEGORIES[category];
   const extraRows = [];
   if (badgeHtml) extraRows.push(badgeHtml);
@@ -275,8 +275,8 @@ function detailPage({ category, title, badgeHtml, subtitleLeft, subtitleRight, c
             ${subtitleRight ? `<div class="text bold" style="color:${c.accent};">${esc(subtitleRight)}</div>` : ''}
           </div>
         </div>
-        <div style="${insetCard ? 'margin:0 8px;' : ''}">${sectionBox(allCards)}</div>
-        ${extraSections.filter((rows) => rows.length).map((rows) => `<div style="margin-top:1px;${insetCard ? 'margin-left:8px;margin-right:8px;' : ''}">${sectionBox(rows)}</div>`).join('')}
+        ${sectionBox(allCards)}
+        ${extraSections.filter((rows) => rows.length).map((rows) => `<div style="margin-top:1px;">${sectionBox(rows)}</div>`).join('')}
       </div>
     </div>`;
 }
@@ -552,7 +552,7 @@ window.openQrModal = function (title, data, icon) {
       cornersSquareOptions: { color: '#000000', type: 'extra-rounded' },
       cornersDotOptions: { color: '#000000', type: 'dot' },
       backgroundOptions: { color: '#ffffff' },
-      image: icon || 'svg/logo-healthpass.svg?v=43',
+      image: icon || 'svg/logo-healthpass.svg?v=44',
       imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
     }).append(container);
   } catch (e) {
@@ -663,7 +663,11 @@ function vitalsChart(v, c) {
     </button>`).join('')}
   </div>`;
 
-  return `<div class="hp-vchart-wrap">
+  /* Chart sits in its own red-lightest panel nested inside the white card
+     (not on the card's plain white) — matches the Figma reference exactly:
+     white outer card, peach inner panel around just the chart, reading list
+     below on plain white. */
+  return `<div class="hp-vchart-wrap" style="background:${c.lightest};border-radius:20px;padding:16px 12px;">
     ${pills}
     <svg viewBox="0 0 ${W} ${H}" style="width:100%;display:block;overflow:visible;">
       ${[yMax, (yMax + yMin) / 2, yMin].map((gy) => `<text x="${padL - 8}" y="${yAt(gy) + 4}" text-anchor="end" font-size="10" fill="${c.accent}" fill-opacity="0.55">${Math.round(gy)}</text>`).join('')}
@@ -743,8 +747,8 @@ function renderVitalsDetail(id) {
     </div>`);
   return detailPage({
     category: 'vitals', title: v.name, badgeHtml: '',
-    subtitleLeft: v.date, subtitleRight: '', chartHtml: chart,
-    cards: historyRows, insetCard: true,
+    subtitleLeft: v.date, subtitleRight: '', chartHtml: { content: chart, padding: '8px 8px 12px' },
+    cards: historyRows,
   });
 }
 
