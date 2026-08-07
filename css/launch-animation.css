@@ -25,15 +25,16 @@
 
 /*
  * Fixed positioning = always relative to the VIEWPORT, regardless of scroll,
- * parent offsets, or document structure. top:72% + translateY(-50%) sits the
- * folder well below dead-center — the cloud icons fly in from off-screen
- * above, so pushing the folder down also shortens their travel distance
- * (fine — still reads as the same animation, just a touch quicker).
+ * parent offsets, or document structure. top:calc(72% - 100px) sits the
+ * folder well below dead-center but shifted up 100px from where it was —
+ * every cloud icon's fly-in/collapse offsets (--ex/--ey/--cx/--cy below) are
+ * relative to THIS container, so moving it moves the whole animation with
+ * it automatically, no per-icon recalculation needed.
  * left: calc(50% - 170px) centers the 340px box horizontally without a transform.
  */
 .hp-splash-inner {
     position: fixed;
-    top: 72%;
+    top: calc(72% - 100px);
     transform: translateY(-50%);
     left: calc(50% - 170px);
     width: 340px;

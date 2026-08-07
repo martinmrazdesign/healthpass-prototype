@@ -4,9 +4,9 @@
  * prototype, nothing actually loads) but it sells the moment as real work
  * happening rather than a hard cut from PIN to home.
  *
- * Matches Figma node 171:4508 for the icon+"Loading..." layout; the sweeping
- * shimmer on "Loading" and the one-by-one dot fade on the "..." are our own
- * addition on top of that static frame.
+ * Matches Figma node 171:4508 for the icon+"Loading..." layout; the
+ * one-by-one dot fade on the "..." is our own addition on top of that
+ * static frame.
  */
 
 .hp-loading-screen {
@@ -67,20 +67,7 @@
     font-weight: 500;
     line-height: 20px;
     letter-spacing: -0.02em;
-    background: linear-gradient(90deg,
-        var(--gray-dark) 0%, var(--gray-dark) 42%,
-        var(--app-text) 50%,
-        var(--gray-dark) 58%, var(--gray-dark) 100%);
-    background-size: 240% 100%;
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    animation: hp-loading-shimmer 1.8s linear infinite;
-}
-
-@keyframes hp-loading-shimmer {
-    0%   { background-position: 120% 0; }
-    100% { background-position: -120% 0; }
+    color: var(--gray-dark);
 }
 
 /* All 3 dots are always laid out (fixed width, no reflow/jump as they

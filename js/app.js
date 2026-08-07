@@ -224,7 +224,7 @@ function listPage({ category, title, rows, extraSections = [] }) {
   const c = CATEGORIES[category];
 
   return `
-    <div style="min-height:100vh;padding-bottom:40px;">
+    <div style="min-height:100vh;padding-bottom:40px;box-sizing:border-box;">
       <div class="hp-section-content">
         <div style="position:relative;">
           <a href="#/home" onclick="goBack();return false;" class="hp-tap-color" style="--tap-bg:${c.lightest};position:absolute;left:0;top:0;z-index:10;width:64px;height:64px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;text-decoration:none;">
@@ -259,7 +259,7 @@ function detailPage({ category, title, badgeHtml, subtitleLeft, subtitleRight, c
   const shareUrl = qrUrl || `${location.origin}${location.pathname}?skip=1${location.hash}`;
 
   return `
-    <div style="min-height:100vh;padding-bottom:40px;">
+    <div style="min-height:100vh;padding-bottom:40px;box-sizing:border-box;">
       <div class="hp-section-content">
         <div style="position:relative;">
           <a href="#/home" onclick="goBack();return false;" class="hp-tap-color" style="--tap-bg:${c.lightest};position:absolute;left:0;top:0;z-index:10;width:64px;height:64px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;text-decoration:none;">
@@ -368,7 +368,7 @@ function renderHome() {
     ${isLast ? '' : '<div class="hp-divider"></div>'}`;
 
   return `
-    <div style="min-height:100vh;padding-bottom:32px;">
+    <div style="min-height:100vh;padding-bottom:32px;box-sizing:border-box;">
 
       <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 16px 0 16px;">
         <div style="position:relative;">
@@ -533,13 +533,36 @@ function loadQrLib() {
   if (_qrLibPromise) return _qrLibPromise;
   _qrLibPromise = new Promise((resolve, reject) => {
     const s = document.createElement('script');
-    s.src = 'js/qr-code-styling-1.6.0-rc.1.js?v=48';
+    s.src = 'js/qr-code-styling-1.6.0-rc.1.js?v=49';
     s.onload = resolve;
     s.onerror = () => { _qrLibPromise = null; reject(new Error('qr lib failed to load')); };
     document.head.appendChild(s);
   });
   return _qrLibPromise;
 }
+
+/* Plain <a download> is unreliable for PDFs on mobile — many browsers (esp.
+   iOS/Android Safari and Chrome-on-Android's inline viewer) open natively
+   renderable types like PDF in-place regardless of the download attribute.
+   Fetching as a Blob and clicking a blob: URL forces an actual save in far
+   more browsers. (iOS Safari still won't force a download — WebKit has no
+   concept of one — but it'll fall back to opening the PDF there, same as
+   View, rather than silently doing nothing.) */
+window.forceDownload = function (url, filename) {
+  fetch(url)
+    .then((res) => res.blob())
+    .then((blob) => {
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+    })
+    .catch(() => { window.open(url, '_blank'); });
+};
 
 window.openQrModal = function (title, data, icon) {
   const modal = document.getElementById('qr-modal');
@@ -572,7 +595,7 @@ window.openQrModal = function (title, data, icon) {
         cornersSquareOptions: { color: '#000000', type: 'extra-rounded' },
         cornersDotOptions: { color: '#000000', type: 'dot' },
         backgroundOptions: { color: '#ffffff' },
-        image: icon || 'svg/logo-healthpass.svg?v=48',
+        image: icon || 'svg/logo-healthpass.svg?v=49',
         imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
       }).append(container);
     } catch (e) {
@@ -963,7 +986,7 @@ function renderDocumentDetail(id) {
   const cards = [
     `<div class="text regular" style="color:var(--app-text);line-height:1.5;">${esc(d.message)}</div>`,
     actionRow(`View ${kindLower}`, eyeIcon('var(--gray-dark)'), pdf, 'target="_blank" rel="noopener"'),
-    actionRow(`Download ${kindLower}`, downloadIcon('var(--gray-dark)'), pdf, `download="${esc(d.kind)}.pdf"`),
+    actionRow(`Download ${kindLower}`, downloadIcon('var(--gray-dark)'), '#', `onclick="event.preventDefault();forceDownload('${esc(pdf)}', '${esc(d.kind)}.pdf');"`),
     actionRow(`Share ${kindLower}`, shareIcon('var(--gray-dark)'), '#', `onclick="event.preventDefault();openQrModal('${esc(d.kind)}', '${esc(pdfUrl)}', '${docIcon(d.kind)}');"`),
   ];
   return detailPage({
