@@ -75,20 +75,23 @@
 }
 
 /*
- * Positions taken directly from Figma frame 1521:21844 (412×917 phone).
+ * Positions taken directly from Figma frame 1521:21844 (412×917 phone), then
+ * every top shifted down 70px (and --cy reduced by the same 70px so they
+ * still land in the same folder spot) — on some real phones the icons'
+ * landed position was getting clipped under the notch/status bar.
  * --ex/--ey : enter offset (from off-screen relative to each icon's final pos)
  * --cx/--cy : collapse offset to folder center
  * --rot     : initial rotation, --lr: landing rotation
  */
-.hp-ci-1 { top:-317px; left: 30px; --ex:-80px; --ey:-40px; --cx: 108px; --cy: 411px; --rot:-18deg; --lr: -5deg; animation-delay:0.00s; }
-.hp-ci-2 { top:-354px; left:213px; --ex: 80px; --ey:-20px; --cx: -75px; --cy: 448px; --rot: 22deg; --lr:  7deg; animation-delay:0.05s; }
-.hp-ci-3 { top:-258px; left:239px; --ex:100px; --ey:-50px; --cx:-101px; --cy: 352px; --rot:-12deg; --lr: -4deg; animation-delay:0.10s; }
-.hp-ci-4 { top:-194px; left:136px; --ex:-20px; --ey:-60px; --cx:   2px; --cy: 288px; --rot: 15deg; --lr:  6deg; animation-delay:0.15s; }
-.hp-ci-5 { top:-164px; left:215px; --ex: 80px; --ey:-40px; --cx: -77px; --cy: 258px; --rot:-20deg; --lr: -6deg; animation-delay:0.20s; }
-.hp-ci-6 { top:-217px; left: 41px; --ex:-90px; --ey:-40px; --cx:  97px; --cy: 311px; --rot: 10deg; --lr:  4deg; animation-delay:0.25s; }
-.hp-ci-7 { top:-290px; left:138px; --ex:  0px; --ey:-40px; --cx:   0px; --cy: 384px; --rot:-25deg; --lr: -3deg; animation-delay:0.30s; }
-.hp-ci-8 { top:-127px; left: 55px; --ex:-70px; --ey:-20px; --cx:  83px; --cy: 221px; --rot: 18deg; --lr:  8deg; animation-delay:0.35s; }
-.hp-ci-9 { top:-105px; left:146px; --ex: 30px; --ey: 30px; --cx:  -8px; --cy: 199px; --rot:-14deg; --lr: -7deg; animation-delay:0.40s; }
+.hp-ci-1 { top:-247px; left: 30px; --ex:-80px; --ey:-40px; --cx: 108px; --cy: 341px; --rot:-18deg; --lr: -5deg; animation-delay:0.00s; }
+.hp-ci-2 { top:-284px; left:213px; --ex: 80px; --ey:-20px; --cx: -75px; --cy: 378px; --rot: 22deg; --lr:  7deg; animation-delay:0.05s; }
+.hp-ci-3 { top:-188px; left:239px; --ex:100px; --ey:-50px; --cx:-101px; --cy: 282px; --rot:-12deg; --lr: -4deg; animation-delay:0.10s; }
+.hp-ci-4 { top:-124px; left:136px; --ex:-20px; --ey:-60px; --cx:   2px; --cy: 218px; --rot: 15deg; --lr:  6deg; animation-delay:0.15s; }
+.hp-ci-5 { top: -94px; left:215px; --ex: 80px; --ey:-40px; --cx: -77px; --cy: 188px; --rot:-20deg; --lr: -6deg; animation-delay:0.20s; }
+.hp-ci-6 { top:-147px; left: 41px; --ex:-90px; --ey:-40px; --cx:  97px; --cy: 241px; --rot: 10deg; --lr:  4deg; animation-delay:0.25s; }
+.hp-ci-7 { top:-220px; left:138px; --ex:  0px; --ey:-40px; --cx:   0px; --cy: 314px; --rot:-25deg; --lr: -3deg; animation-delay:0.30s; }
+.hp-ci-8 { top: -57px; left: 55px; --ex:-70px; --ey:-20px; --cx:  83px; --cy: 151px; --rot: 18deg; --lr:  8deg; animation-delay:0.35s; }
+.hp-ci-9 { top: -35px; left:146px; --ex: 30px; --ey: 30px; --cx:  -8px; --cy: 129px; --rot:-14deg; --lr: -7deg; animation-delay:0.40s; }
 
 /* A real decaying wobble (3 swings, shrinking amplitude, easing out each
    time) instead of the original's 12 identical linear snaps — reads as

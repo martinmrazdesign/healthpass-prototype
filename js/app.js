@@ -533,7 +533,7 @@ function loadQrLib() {
   if (_qrLibPromise) return _qrLibPromise;
   _qrLibPromise = new Promise((resolve, reject) => {
     const s = document.createElement('script');
-    s.src = 'js/qr-code-styling-1.6.0-rc.1.js?v=49';
+    s.src = 'js/qr-code-styling-1.6.0-rc.1.js?v=50';
     s.onload = resolve;
     s.onerror = () => { _qrLibPromise = null; reject(new Error('qr lib failed to load')); };
     document.head.appendChild(s);
@@ -595,7 +595,7 @@ window.openQrModal = function (title, data, icon) {
         cornersSquareOptions: { color: '#000000', type: 'extra-rounded' },
         cornersDotOptions: { color: '#000000', type: 'dot' },
         backgroundOptions: { color: '#ffffff' },
-        image: icon || 'svg/logo-healthpass.svg?v=49',
+        image: icon || 'svg/logo-healthpass.svg?v=50',
         imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
       }).append(container);
     } catch (e) {
@@ -774,7 +774,9 @@ function renderVitalsDetail(id) {
   const v = VITALS.find((x) => x.id === id);
   if (!v) return renderVitalsList();
   const c = CATEGORIES.vitals;
-  const chart = vitalsChart(v, c);
+  // Chart temporarily disabled (not deleted) — vitalsChart()/smoothPath()
+  // below are unused for now but left in place to re-enable later:
+  // chartHtml: { content: vitalsChart(v, c), padding: '8px 8px 12px', noDivider: true }
   const historyRows = [...v.readings].reverse().map((r) => `
     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
       <div style="display:flex;flex-direction:column;gap:4px;">
@@ -785,7 +787,7 @@ function renderVitalsDetail(id) {
     </div>`);
   return detailPage({
     category: 'vitals', title: v.name, badgeHtml: '',
-    subtitleLeft: v.date, subtitleRight: '', chartHtml: { content: chart, padding: '8px 8px 12px', noDivider: true },
+    subtitleLeft: v.date, subtitleRight: '',
     cards: historyRows,
   });
 }
