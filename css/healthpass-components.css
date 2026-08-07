@@ -25,7 +25,7 @@
     --allergies-base:  var(--green-lightest);   --allergies-surface:  var(--green-light);   --allergies-accent:  var(--green-darkest);
     --vaccinations-base: var(--orange-lightest); --vaccinations-surface: var(--orange-light); --vaccinations-accent: var(--orange-darkest);
     --procedures-base: var(--pink-lightest);    --procedures-surface: var(--pink-light);    --procedures-accent: var(--pink-darkest);
-    --about-base:    var(--green-lightest);     --about-surface:    var(--white);           --about-accent:    var(--green-darkest);
+    --about-base:    var(--green-light);        --about-surface:    var(--green-lightest);   --about-accent:    var(--green-darkest);
 }
 
 

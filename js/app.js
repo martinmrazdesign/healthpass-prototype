@@ -32,7 +32,7 @@ const CATEGORIES = {
   allergies:     { label: 'Allergies',     accent: 'var(--allergies-accent)',     surface: 'var(--allergies-surface)',     lightest: 'var(--allergies-base)',     icon: 'svg/hp-allergies-light.svg',     iconDark: 'svg/hp-allergies-dark.svg' },
   immunizations: { label: 'Vaccinations',  accent: 'var(--vaccinations-accent)',  surface: 'var(--vaccinations-surface)',  lightest: 'var(--vaccinations-base)',  icon: 'svg/hp-vaccinations-light.svg',  iconDark: 'svg/hp-vaccinations-dark.svg' },
   documents:     { label: 'Documents',     accent: 'var(--gray-darkest)',         surface: 'var(--gray-light)',            lightest: 'var(--gray-lightest)',      icon: 'svg/hp-documents-light.svg',     iconDark: 'svg/hp-documents-dark.svg' },
-  about:         { label: 'About me',      accent: 'var(--green-dark)',          surface: 'var(--white)',                 lightest: 'var(--about-base)',         icon: 'svg/hp-about-light.svg',         iconDark: 'svg/hp-about-dark.svg' },
+  about:         { label: 'About me',      accent: 'var(--about-accent)',         surface: 'var(--about-surface)',         lightest: 'var(--about-base)',         icon: 'svg/hp-about-light.svg',         iconDark: 'svg/hp-about-dark.svg' },
 };
 
 /* Per-kind document icons (Figma "Icon=<kind>, Background=Light" export set).
@@ -533,7 +533,7 @@ function loadQrLib() {
   if (_qrLibPromise) return _qrLibPromise;
   _qrLibPromise = new Promise((resolve, reject) => {
     const s = document.createElement('script');
-    s.src = 'js/qr-code-styling-1.6.0-rc.1.js?v=50';
+    s.src = 'js/qr-code-styling-1.6.0-rc.1.js?v=51';
     s.onload = resolve;
     s.onerror = () => { _qrLibPromise = null; reject(new Error('qr lib failed to load')); };
     document.head.appendChild(s);
@@ -595,7 +595,7 @@ window.openQrModal = function (title, data, icon) {
         cornersSquareOptions: { color: '#000000', type: 'extra-rounded' },
         cornersDotOptions: { color: '#000000', type: 'dot' },
         backgroundOptions: { color: '#ffffff' },
-        image: icon || 'svg/logo-healthpass.svg?v=50',
+        image: icon || 'svg/logo-healthpass.svg?v=51',
         imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
       }).append(container);
     } catch (e) {
