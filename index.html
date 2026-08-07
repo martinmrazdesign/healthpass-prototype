@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <title>healthpass</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<link rel="icon" href="svg/logo-healthpass.svg?v=52" type="image/svg+xml">
-<link rel="stylesheet" href="css/healthpass-components.css?v=52">
-<link rel="stylesheet" href="css/launch-animation.css?v=52">
-<link rel="stylesheet" href="css/loading-screen.css?v=52">
-<link rel="stylesheet" href="css/proto.css?v=52">
+<link rel="icon" href="svg/logo-healthpass.svg?v=53" type="image/svg+xml">
+<link rel="stylesheet" href="css/healthpass-components.css?v=53">
+<link rel="stylesheet" href="css/launch-animation.css?v=53">
+<link rel="stylesheet" href="css/loading-screen.css?v=53">
+<link rel="stylesheet" href="css/proto.css?v=53">
 </head>
 <body class="hp-pin-page" id="hp-body">
 
@@ -80,7 +80,7 @@
 
         <div style="height:72px;"></div>
 
-        <p class="text regular" style="color:var(--gray-dark);text-align:center;padding-bottom:calc(40px + env(safe-area-inset-bottom, 0px));">Prototype PIN: 3225</p>
+        <p class="text regular" style="color:var(--gray-dark);text-align:center;padding-bottom:calc(40px + env(safe-area-inset-bottom, 0px));">Find your PIN in our WhatsApp conversation</p>
       </div>
     </div>
   </div>
@@ -89,7 +89,7 @@
   <!-- Shown after a correct PIN, before the app appears — see css/loading-screen.css. -->
   <div id="hp-loading-screen" class="hp-loading-screen">
     <div class="hp-loading-icon">
-      <img class="hp-loading-icon-base" src="svg/hp-loading-icon-base.svg?v=52" alt="">
+      <img class="hp-loading-icon-base" src="svg/hp-loading-icon-base.svg?v=53" alt="">
       <!-- iOS-style spinner: bars stay fixed in place, only opacity chases around —
            inlined (not an <img src>) so CSS can animate each bar independently. -->
       <svg class="hp-loading-spinner" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -143,10 +143,10 @@
   <!-- qr-code-styling is NOT loaded here — app.js lazy-loads it on first
        actual QR-modal open (see loadQrLib()) so the ~14.5KB gzipped library
        isn't downloaded by visits that never open a share sheet. -->
-  <script src="js/data.js?v=52"></script>
-  <script src="js/pin.js?v=52"></script>
-  <script src="js/app.js?v=52"></script>
-  <script src="js/launch-animation.js?v=52"></script>
+  <script src="js/data.js?v=53"></script>
+  <script src="js/pin.js?v=53"></script>
+  <script src="js/app.js?v=53"></script>
+  <script src="js/launch-animation.js?v=53"></script>
   <script>
     /* animate=true (passed after a successful PIN check) cross-fades the PIN
        screen into the "Loading..." screen, holds there briefly to sell the
