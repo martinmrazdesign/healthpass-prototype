@@ -6,9 +6,10 @@ const PATIENT = {
   name: 'Amara Okonkwo',
   birthDate: 'March 14, 1990',
   age: 36,
+  sex: 'Female',
   gender: 'Female',
-  address: '123 Main St, Springfield, IL',
-  mobile: '+1 (555) 019-2837',
+  address: '14 Ogunlana Drive, Surulere, Lagos, Nigeria',
+  mobile: '+234 802 345 6789',
   patientId: 'MRN-88213-AO',
 };
 
