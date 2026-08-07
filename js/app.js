@@ -266,9 +266,7 @@ function detailPage({ category, title, badgeHtml, subtitleLeft, subtitleRight, c
             ${backArrow(c.accent)}
           </a>
           ${headerRightIcon
-            ? `<div style="position:absolute;right:16px;top:16px;z-index:10;width:40px;height:40px;border-radius:32px;background:${c.lightest};display:flex;align-items:center;justify-content:center;">
-                <img src="${headerRightIcon}" width="22" height="22" alt="">
-              </div>`
+            ? `<img src="${headerRightIcon}" width="80" height="80" alt="" style="position:absolute;right:16px;top:16px;z-index:10;">`
             : `<button onclick="openQrModal('${esc(title)}', '${esc(shareUrl)}', '${qrIcon || c.icon}')" class="hp-tap-color" style="--tap-bg:${c.surface};position:absolute;right:16px;top:16px;z-index:10;width:40px;height:40px;border-radius:32px;background:${c.lightest};border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;">
                 ${shareIcon(c.accent)}
               </button>`}
@@ -326,7 +324,7 @@ function infoRow(label, value) {
 function stackedInfoRow(label, value) {
   return `<div style="display:flex;flex-direction:column;gap:4px;">
     <span class="text regular" style="color:var(--gray-dark);">${esc(label)}</span>
-    <span class="header" style="font-size:24px;line-height:1;color:var(--app-text);">${esc(value)}</span>
+    <span class="title" style="color:var(--app-text);">${esc(value)}</span>
   </div>`;
 }
 
@@ -543,7 +541,7 @@ function loadQrLib() {
   if (_qrLibPromise) return _qrLibPromise;
   _qrLibPromise = new Promise((resolve, reject) => {
     const s = document.createElement('script');
-    s.src = 'js/qr-code-styling-1.6.0-rc.1.js?v=54';
+    s.src = 'js/qr-code-styling-1.6.0-rc.1.js?v=55';
     s.onload = resolve;
     s.onerror = () => { _qrLibPromise = null; reject(new Error('qr lib failed to load')); };
     document.head.appendChild(s);
@@ -605,7 +603,7 @@ window.openQrModal = function (title, data, icon) {
         cornersSquareOptions: { color: '#000000', type: 'extra-rounded' },
         cornersDotOptions: { color: '#000000', type: 'dot' },
         backgroundOptions: { color: '#ffffff' },
-        image: icon || 'svg/logo-healthpass.svg?v=54',
+        image: icon || 'svg/logo-healthpass.svg?v=55',
         imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
       }).append(container);
     } catch (e) {
@@ -966,11 +964,12 @@ function renderAbout() {
     stackedInfoRow('Gender', PATIENT.gender),
     stackedInfoRow('Address', PATIENT.address),
     stackedInfoRow('Mobile', PATIENT.mobile),
+    stackedInfoRow('Blood type', PATIENT.bloodType),
     stackedInfoRow('Patient ID', PATIENT.patientId),
   ];
   return detailPage({
     category: 'about', title: PATIENT.name, badgeHtml: '', subtitleLeft: '', subtitleRight: '',
-    chartHtml: '', cards, headerRightIcon: CATEGORIES.about.icon,
+    chartHtml: '', cards, headerRightIcon: CATEGORIES.about.iconDark,
   });
 }
 

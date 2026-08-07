@@ -8,6 +8,7 @@ const PATIENT = {
   age: 36,
   sex: 'Female',
   gender: 'Female',
+  bloodType: 'O+',
   address: '14 Ogunlana Drive, Surulere, Lagos, Nigeria',
   mobile: '+234 802 345 6789',
   patientId: 'MRN-88213-AO',
