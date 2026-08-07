@@ -24,6 +24,7 @@
     position: relative;
     width: 128px;
     height: 149px;
+    margin-top: -48px;
 }
 
 .hp-loading-icon-base {
