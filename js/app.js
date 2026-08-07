@@ -523,6 +523,24 @@ window.closeFamilyPanel = function () {
    and every detail page ("share this record"). Content is filled in fresh on
    each open since it differs per page — title, the link the QR encodes, and
    the icon shown in its center (category icon instead of the app logo). */
+/* Lazy-loads the QR rendering library on first actual use instead of on
+   every page load — it's ~14.5KB gzipped and only the small fraction of
+   visits that open a share sheet ever need it, which matters most exactly
+   for the low-bandwidth connections where every unnecessary KB counts. */
+let _qrLibPromise = null;
+function loadQrLib() {
+  if (window.QRCodeStyling) return Promise.resolve();
+  if (_qrLibPromise) return _qrLibPromise;
+  _qrLibPromise = new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = 'js/qr-code-styling-1.6.0-rc.1.js?v=46';
+    s.onload = resolve;
+    s.onerror = () => { _qrLibPromise = null; reject(new Error('qr lib failed to load')); };
+    document.head.appendChild(s);
+  });
+  return _qrLibPromise;
+}
+
 window.openQrModal = function (title, data, icon) {
   const modal = document.getElementById('qr-modal');
   initSheetDrag('qr-modal', window.closeQrModal);
@@ -539,25 +557,30 @@ window.openQrModal = function (title, data, icon) {
   if (pinEl) pinEl.innerHTML = '3225'.split('').map((d) => `<span class="header" style="background:var(--app-surface);color:var(--app-text);width:44px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;">${d}</span>`).join('');
 
   const container = document.getElementById('qrcode-modal');
-  container.innerHTML = '';
-  try {
-    // Size to the card's actual available width instead of a fixed px value —
-    // on narrower phones (e.g. 390px-wide screens) a hardcoded 316px QR was
-    // wider than the card's content box, so it overflowed unevenly on one side.
-    const qrSize = container.clientWidth || 316;
-    new QRCodeStyling({
-      width: qrSize, height: qrSize, type: 'svg',
-      data: data || 'https://wa.me/15550100000?text=healthpass-demo-share-3225',
-      dotsOptions: { color: '#000000', type: 'rounded' },
-      cornersSquareOptions: { color: '#000000', type: 'extra-rounded' },
-      cornersDotOptions: { color: '#000000', type: 'dot' },
-      backgroundOptions: { color: '#ffffff' },
-      image: icon || 'svg/logo-healthpass.svg?v=45',
-      imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
-    }).append(container);
-  } catch (e) {
+  container.innerHTML = '<span style="color:var(--gray-base);">Loading...</span>';
+  loadQrLib().then(() => {
+    container.innerHTML = '';
+    try {
+      // Size to the card's actual available width instead of a fixed px value —
+      // on narrower phones (e.g. 390px-wide screens) a hardcoded 316px QR was
+      // wider than the card's content box, so it overflowed unevenly on one side.
+      const qrSize = container.clientWidth || 316;
+      new QRCodeStyling({
+        width: qrSize, height: qrSize, type: 'svg',
+        data: data || 'https://wa.me/15550100000?text=healthpass-demo-share-3225',
+        dotsOptions: { color: '#000000', type: 'rounded' },
+        cornersSquareOptions: { color: '#000000', type: 'extra-rounded' },
+        cornersDotOptions: { color: '#000000', type: 'dot' },
+        backgroundOptions: { color: '#ffffff' },
+        image: icon || 'svg/logo-healthpass.svg?v=46',
+        imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
+      }).append(container);
+    } catch (e) {
+      container.innerHTML = '<span style="color:var(--gray-base);">QR preview unavailable</span>';
+    }
+  }).catch(() => {
     container.innerHTML = '<span style="color:var(--gray-base);">QR preview unavailable</span>';
-  }
+  });
 };
 
 window.closeQrModal = function () {
