@@ -83,18 +83,35 @@
     color: var(--gray-dark);
 }
 
+/* Each dot gets its own keyframes (same total duration, no delay) instead
+   of one shared keyframe + staggered delay — with a shared delay, dot 1 also
+   faded OUT first, then 2, then 3, which reads ambiguously (almost like the
+   opposite order) as the eye follows disappearance instead of appearance.
+   Here all three hold "on" until the SAME instant (90%) and drop out
+   together, so there's only one unambiguous direction to read: 1, 2, 3
+   appearing, then a synchronized reset. */
 .hp-loading-text-dots span {
     opacity: 0;
-    animation: hp-loading-dot-fade 1.35s ease-in-out infinite;
+    animation-duration: 1.5s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
 }
-.hp-loading-text-dots span:nth-child(1) { animation-delay: 0s; }
-.hp-loading-text-dots span:nth-child(2) { animation-delay: 0.3s; }
-.hp-loading-text-dots span:nth-child(3) { animation-delay: 0.6s; }
+.hp-loading-text-dots span:nth-child(1) { animation-name: hp-loading-dot-1; }
+.hp-loading-text-dots span:nth-child(2) { animation-name: hp-loading-dot-2; }
+.hp-loading-text-dots span:nth-child(3) { animation-name: hp-loading-dot-3; }
 
-@keyframes hp-loading-dot-fade {
-    0%   { opacity: 0; }
-    25%  { opacity: 1; }
-    70%  { opacity: 1; }
-    95%  { opacity: 0; }
-    100% { opacity: 0; }
+@keyframes hp-loading-dot-1 {
+    0%, 8%   { opacity: 0; }
+    18%, 90% { opacity: 1; }
+    100%     { opacity: 0; }
+}
+@keyframes hp-loading-dot-2 {
+    0%, 33%  { opacity: 0; }
+    43%, 90% { opacity: 1; }
+    100%     { opacity: 0; }
+}
+@keyframes hp-loading-dot-3 {
+    0%, 58%  { opacity: 0; }
+    68%, 90% { opacity: 1; }
+    100%     { opacity: 0; }
 }

@@ -244,7 +244,7 @@ function listPage({ category, title, rows, extraSections = [] }) {
     </div>`;
 }
 
-function detailPage({ category, title, badgeHtml, subtitleLeft, subtitleRight, chartHtml, cards, extraSections = [], qrIcon, qrUrl }) {
+function detailPage({ category, title, badgeHtml, subtitleLeft, subtitleRight, chartHtml, cards, extraSections = [], qrIcon, qrUrl, headerRightIcon }) {
   const c = CATEGORIES[category];
   const extraRows = [];
   if (badgeHtml) extraRows.push(badgeHtml);
@@ -265,9 +265,13 @@ function detailPage({ category, title, badgeHtml, subtitleLeft, subtitleRight, c
           <a href="#/home" onclick="goBack();return false;" class="hp-tap-color" style="--tap-bg:${c.lightest};position:absolute;left:0;top:0;z-index:10;width:64px;height:64px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;text-decoration:none;">
             ${backArrow(c.accent)}
           </a>
-          <button onclick="openQrModal('${esc(title)}', '${esc(shareUrl)}', '${qrIcon || c.icon}')" class="hp-tap-color" style="--tap-bg:${c.surface};position:absolute;right:16px;top:16px;z-index:10;width:40px;height:40px;border-radius:32px;background:${c.lightest};border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;">
-            ${shareIcon(c.accent)}
-          </button>
+          ${headerRightIcon
+            ? `<div style="position:absolute;right:16px;top:16px;z-index:10;width:40px;height:40px;border-radius:32px;background:${c.lightest};display:flex;align-items:center;justify-content:center;">
+                <img src="${headerRightIcon}" width="22" height="22" alt="">
+              </div>`
+            : `<button onclick="openQrModal('${esc(title)}', '${esc(shareUrl)}', '${qrIcon || c.icon}')" class="hp-tap-color" style="--tap-bg:${c.surface};position:absolute;right:16px;top:16px;z-index:10;width:40px;height:40px;border-radius:32px;background:${c.lightest};border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+                ${shareIcon(c.accent)}
+              </button>`}
           ${waveTop(c.surface)}
           <div style="background:${c.surface};border-radius:0 0 20px 20px;height:146px;box-sizing:border-box;padding:24px;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;margin-top:-1px;">
             <div class="header" style="color:${c.accent};">${esc(title)}</div>
@@ -316,6 +320,16 @@ function infoRow(label, value) {
   </div>`;
 }
 
+/* label above value, both left-aligned — the plain "same cards as
+   everything else" row style (matches the Documents/reading-history rows),
+   as opposed to infoRow()'s label-left/value-right layout above. */
+function stackedInfoRow(label, value) {
+  return `<div style="display:flex;flex-direction:column;gap:4px;">
+    <span class="text regular" style="color:var(--gray-dark);">${esc(label)}</span>
+    <span class="header" style="font-size:24px;line-height:1;color:var(--app-text);">${esc(value)}</span>
+  </div>`;
+}
+
 /* ---------------------------------------------------------------------- */
 /* Home                                                                    */
 /* ---------------------------------------------------------------------- */
@@ -327,9 +341,7 @@ function renderHome() {
       <div style="display:flex;flex-direction:column;gap:6px;">
         <div class="title" style="color:var(--app-text);">${esc(m.name)}</div>
         <div style="display:flex;gap:4px;">
-          <div style="background:var(--visits-base);height:28px;display:flex;align-items:center;padding:4px 12px;border-radius:24px;">
-            <span class="text regular" style="color:var(--visits-accent);">born ${esc(m.birthYear)}</span>
-          </div>
+          <span class="text regular" style="color:var(--gray-dark);">Born ${esc(m.birthYear)}</span>
         </div>
       </div>
     </a>`).join('');
@@ -387,9 +399,7 @@ function renderHome() {
                 <div style="display:flex;flex-direction:column;gap:6px;">
                   <div class="title" style="color:var(--app-text);">${esc(FAMILY_MEMBERS[0].name)}</div>
                   <div style="display:flex;gap:4px;">
-                    <div style="background:var(--visits-base);height:28px;display:flex;align-items:center;padding:4px 12px;border-radius:24px;">
-                      <span class="text regular" style="color:var(--visits-accent);">born ${esc(FAMILY_MEMBERS[0].birthYear)}</span>
-                    </div>
+                    <span class="text regular" style="color:var(--gray-dark);">Born ${esc(FAMILY_MEMBERS[0].birthYear)}</span>
                   </div>
                 </div>
                 <img src="svg/icon-checkmark.svg" width="24" height="24" alt="">
@@ -533,7 +543,7 @@ function loadQrLib() {
   if (_qrLibPromise) return _qrLibPromise;
   _qrLibPromise = new Promise((resolve, reject) => {
     const s = document.createElement('script');
-    s.src = 'js/qr-code-styling-1.6.0-rc.1.js?v=53';
+    s.src = 'js/qr-code-styling-1.6.0-rc.1.js?v=54';
     s.onload = resolve;
     s.onerror = () => { _qrLibPromise = null; reject(new Error('qr lib failed to load')); };
     document.head.appendChild(s);
@@ -595,7 +605,7 @@ window.openQrModal = function (title, data, icon) {
         cornersSquareOptions: { color: '#000000', type: 'extra-rounded' },
         cornersDotOptions: { color: '#000000', type: 'dot' },
         backgroundOptions: { color: '#ffffff' },
-        image: icon || 'svg/logo-healthpass.svg?v=53',
+        image: icon || 'svg/logo-healthpass.svg?v=54',
         imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
       }).append(container);
     } catch (e) {
@@ -950,17 +960,17 @@ function renderVisitsDetail(id) {
 }
 
 function renderAbout() {
-  const cards = [`
-    ${infoRow('Date of birth', `${PATIENT.birthDate} (${PATIENT.age})`)}
-    ${infoRow('Sex', PATIENT.sex)}
-    ${infoRow('Gender', PATIENT.gender)}
-    ${infoRow('Address', PATIENT.address)}
-    ${infoRow('Mobile', PATIENT.mobile)}
-    ${infoRow('Patient ID', PATIENT.patientId)}
-  `];
+  const cards = [
+    stackedInfoRow('Date of birth', `${PATIENT.birthDate} (${PATIENT.age})`),
+    stackedInfoRow('Sex', PATIENT.sex),
+    stackedInfoRow('Gender', PATIENT.gender),
+    stackedInfoRow('Address', PATIENT.address),
+    stackedInfoRow('Mobile', PATIENT.mobile),
+    stackedInfoRow('Patient ID', PATIENT.patientId),
+  ];
   return detailPage({
-    category: 'about', title: PATIENT.name, badgeHtml: '', subtitleLeft: 'Patient profile', subtitleRight: '',
-    chartHtml: '', cards,
+    category: 'about', title: PATIENT.name, badgeHtml: '', subtitleLeft: '', subtitleRight: '',
+    chartHtml: '', cards, headerRightIcon: CATEGORIES.about.icon,
   });
 }
 
