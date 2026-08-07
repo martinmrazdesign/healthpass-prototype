@@ -552,7 +552,7 @@ window.openQrModal = function (title, data, icon) {
       cornersSquareOptions: { color: '#000000', type: 'extra-rounded' },
       cornersDotOptions: { color: '#000000', type: 'dot' },
       backgroundOptions: { color: '#ffffff' },
-      image: icon || 'svg/logo-healthpass.svg?v=44',
+      image: icon || 'svg/logo-healthpass.svg?v=45',
       imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
     }).append(container);
   } catch (e) {
@@ -637,7 +637,7 @@ function vitalsChart(v, c) {
   const yAt = (val) => padT + plotH - ((val - yMin) / (yMax - yMin)) * plotH;
 
   const seriesDefs = isBP
-    ? [{ key: 'systolic', label: 'Systolic', color: 'var(--red-dark)' }, { key: 'diastolic', label: 'Diastolic', color: 'var(--gray-darkest)' }]
+    ? [{ key: 'systolic', label: 'Systolic', color: 'var(--red-darkest)' }, { key: 'diastolic', label: 'Diastolic', color: 'var(--gray-darkest)' }]
     : [{ key: 'value', label: v.name, color: c.accent }];
 
   const seriesHtml = seriesDefs.map((s) => {
@@ -657,10 +657,13 @@ function vitalsChart(v, c) {
   const tipW = Math.max(50, lastLabel.length * 6.2 + 20);
   const tipCx = Math.min(Math.max(lastCx, tipW / 2 + 2), W - tipW / 2 - 2);
 
+  /* Purely a legend (not a toggle) — same "Label" component as the range
+     pills (Above range, etc.), just without the icon and outlined instead
+     of filled, using each series' own darkest color. */
   const pills = !isBP ? '' : `<div style="display:flex;gap:8px;justify-content:center;margin-bottom:14px;">
-    ${seriesDefs.map((s) => `<button type="button" class="hp-vchart-pill" data-series="${s.key}" data-active="true" style="cursor:pointer;padding:5px 14px;border-radius:20px;background:transparent;border:1.5px solid ${s.color};font:inherit;">
+    ${seriesDefs.map((s) => `<div style="display:inline-flex;align-items:center;padding:2px 8px;border-radius:8px;border:1.5px solid ${s.color};">
       <span class="text bold" style="color:${s.color};">${esc(s.label)}</span>
-    </button>`).join('')}
+    </div>`).join('')}
   </div>`;
 
   /* Chart sits in its own red-lightest panel nested inside the white card
@@ -718,17 +721,6 @@ document.addEventListener('click', (e) => {
     svg.querySelectorAll('.hp-vchart-pt').forEach((p) => {
       p.setAttribute('r', p.dataset.i === i ? Number(p.dataset.r) + 1.5 : p.dataset.r);
     });
-    return;
-  }
-  const pill = e.target.closest('.hp-vchart-pill');
-  if (pill) {
-    const series = pill.getAttribute('data-series');
-    const nextActive = pill.getAttribute('data-active') !== 'true';
-    pill.setAttribute('data-active', String(nextActive));
-    pill.style.opacity = nextActive ? '1' : '0.4';
-    const svg = pill.closest('.hp-vchart-wrap').querySelector('svg');
-    const group = svg.querySelector(`.hp-vchart-series[data-series="${series}"]`);
-    if (group) group.style.display = nextActive ? '' : 'none';
   }
 });
 
@@ -747,7 +739,7 @@ function renderVitalsDetail(id) {
     </div>`);
   return detailPage({
     category: 'vitals', title: v.name, badgeHtml: '',
-    subtitleLeft: v.date, subtitleRight: '', chartHtml: { content: chart, padding: '8px 8px 12px' },
+    subtitleLeft: v.date, subtitleRight: '', chartHtml: { content: chart, padding: '8px 8px 12px', noDivider: true },
     cards: historyRows,
   });
 }
