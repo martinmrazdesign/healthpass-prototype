@@ -11,6 +11,8 @@ const PATIENT = {
   bloodType: 'O+',
   address: '14 Ogunlana Drive, Surulere, Lagos, Nigeria',
   mobile: '+234 802 345 6789',
+  emergencyContactName: 'Chidi Okonkwo (Brother)',
+  emergencyContactPhone: '+234 803 123 4567',
   patientId: 'MRN-88213-AO',
 };
 

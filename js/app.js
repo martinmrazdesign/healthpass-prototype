@@ -541,7 +541,7 @@ function loadQrLib() {
   if (_qrLibPromise) return _qrLibPromise;
   _qrLibPromise = new Promise((resolve, reject) => {
     const s = document.createElement('script');
-    s.src = 'js/qr-code-styling-1.6.0-rc.1.js?v=55';
+    s.src = 'js/qr-code-styling-1.6.0-rc.1.js?v=56';
     s.onload = resolve;
     s.onerror = () => { _qrLibPromise = null; reject(new Error('qr lib failed to load')); };
     document.head.appendChild(s);
@@ -603,7 +603,7 @@ window.openQrModal = function (title, data, icon) {
         cornersSquareOptions: { color: '#000000', type: 'extra-rounded' },
         cornersDotOptions: { color: '#000000', type: 'dot' },
         backgroundOptions: { color: '#ffffff' },
-        image: icon || 'svg/logo-healthpass.svg?v=55',
+        image: icon || 'svg/logo-healthpass.svg?v=56',
         imageOptions: { crossOrigin: 'anonymous', margin: 6, imageSize: 0.4, hideBackgroundDots: true },
       }).append(container);
     } catch (e) {
@@ -964,6 +964,8 @@ function renderAbout() {
     stackedInfoRow('Gender', PATIENT.gender),
     stackedInfoRow('Address', PATIENT.address),
     stackedInfoRow('Mobile', PATIENT.mobile),
+    stackedInfoRow('Emergency contact', PATIENT.emergencyContactName),
+    stackedInfoRow('Emergency contact phone', PATIENT.emergencyContactPhone),
     stackedInfoRow('Blood type', PATIENT.bloodType),
     stackedInfoRow('Patient ID', PATIENT.patientId),
   ];
